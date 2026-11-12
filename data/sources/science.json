@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "sourceId": "nasa-perseverance-location-map",
+      "title": "Perseverance Rover Location Map",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/location-map/",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "HiRISE (MRO) high-resolution basemap; Mars Express HRSC regional basemap",
+      "productId": null,
+      "publicationDate": null,
+      "acquisitionDate": "Traverse represented by map; page describes latest rover location, accessed 2026-11-12",
+      "attribution": "NASA/JPL-Caltech; basemap imagery credited to NASA/HiRISE and ESA/DLR/FU Berlin (HRSC)",
+      "limitations": "Page text documents the map layers and drive-endpoint/sol symbology but does not expose machine-readable traverse coordinates. Color processing is applied; not a substitute for source rasters or coordinate-bearing mission data."
+    },
+    {
+      "sourceId": "nasa-perseverance-mars-rock-samples",
+      "title": "Mars Rock Samples",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Perseverance sampling system; sample site investigations used rover science instruments",
+      "productId": "NASA public sample inventory; links to Mars 2020 Sample Dossier PDFs",
+      "publicationDate": null,
+      "acquisitionDate": "Ha’ahóni sealed 2022-03-07 (Sol 371); Atsá sealed 2022-03-13 (Sol 377)",
+      "attribution": "NASA/JPL-Caltech; sample dossier archive at NASA Planetary Data System Geosciences Node",
+      "limitations": "Inventory identifies sampling-location names and sample metadata, not site latitude/longitude. Do not infer exact coordinates or use the sample names as the identity of a hypothetical waypoint."
+    },
+    {
+      "sourceId": "pds-mars2020-geosciences",
+      "title": "PDS Geosciences Node: Mars 2020 Mission Data and Services",
+      "url": "https://pds-geosciences.wustl.edu/missions/mars2020/",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Mission archive index; links to instrument bundles, sample dossier, Three Forks depot, and rover PLACES bundle",
+      "productId": "Mars 2020 PDS Release 16 (sols 1740–1859; archive page dated 2026-08-11)",
+      "publicationDate": "2026-08-11 (Release 16 notice)",
+      "acquisitionDate": "Release 16 covers 2026-01-10 through 2026-05-13",
+      "attribution": "NASA Planetary Data System Geosciences Node / Washington University in St. Louis",
+      "limitations": "This is an archive index, not itself a traverse geometry file. It points to the Sample Dossier Bundle and PLACES bundle; their presence does not establish that either provides a ready-to-use geographic traverse GeoJSON."
+    },
+    {
+      "sourceId": "pds-mars2020-rover-places",
+      "title": "Mars 2020 Rover PLACES Bundle",
+      "url": "https://pds-geosciences.wustl.edu/missions/mars2020/places.htm",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Rover localization and mechanism-position archive (PLACES; operational position/localization data, not a science instrument)",
+      "productId": "Mars 2020 Rover PLACES Bundle, Release 16",
+      "publicationDate": "2026-08-11 (Release 16 notice)",
+      "acquisitionDate": "Bundle coverage 2021-02-18 through 2026-06-21 (sols 0–1897)",
+      "attribution": "NASA Planetary Data System Geosciences Node / Washington University in St. Louis; Mars 2020 mission",
+      "limitations": "Official archive documents rover localizations and mechanism positions and links to product collections and SIS; this index does not promise GeoJSON. Coordinate frames, localization fields, product structure, and suitability for a surface traverse must be checked against the SIS and release notes before extracting or interpreting route points."
+    }
+  ]
+}
