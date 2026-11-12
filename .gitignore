@@ -1,0 +1,33 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+# JavaScript
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+# Local tools and OS
+.DS_Store
+.idea/
+*.log
+# Bulk source data and generated region assets
+/data/raw/*
+!/data/raw/README.md
+/data/region/*
+!/data/region/README.md
+!/data/region/manifest.json
+!/data/region/science-stops.json
