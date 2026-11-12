@@ -1,6 +1,6 @@
 # Science evidence and geographic candidates
 
-Research checked 2026-11-12. The local projected origin is not yet defined, so `data/region/science-stops.json` intentionally contains no routable `scienceStops` or `positionXY` values.
+Research checked 2026-11-12. Real named sampling regions are recorded in `data/sources/science-candidates.json`; they are not registered sample-site waypoints. `data/region/science-stops.json` contains three explicitly hypothetical observation points on the prepared real CTX terrain, with source-backed regional context and no asserted sample identities.
 
 ## Verified sources
 
@@ -13,12 +13,12 @@ Research checked 2026-11-12. The local projected origin is not yet defined, so `
 
 “Octavia E. Butler Landing / Ch’ał outcrop” is retained as a named science-region candidate because NASA associates two real sample records with it. It is not converted into two waypoints: the inventory lacks site coordinates, and no source-backed point coordinate or uncertainty radius was verified. Do not use the sample names to label hypothetical destinations.
 
-The crop center (18.4446, 77.4509) was supplied by the project request. It is only a crop reference, not verified here as the exact landing coordinate. No claim is made that the candidate falls inside the final crop until A1 establishes crop bounds and a geographic source is available. A hypothetical waypoint may be added only as a clearly labeled, non-sample target after those bounds and the coordinate transform are agreed.
+The planning crop reference (18.4446, 77.4509) is only a discovery reference, not independently verified here as an exact landing coordinate or supplied by the user. No claim is made that the named sampling region falls inside the final crop. The hypothetical targets are local grid-cell centers, not inferred positions of real sample sites. Null location uncertainty means no measured geodetic uncertainty was established; grid spacing is recorded separately.
 
 ## Challenge-page access
 
-The official 2026 Space Apps challenge URL attempted was `https://www.spaceappschallenge.org/2026/challenges/the-martian-map/`. The fetch failed with an issuer-certificate error; strict `curl` verification also failed, so TLS verification was not bypassed. The challenge page/resources and any linked datasets therefore remain unverified. The old `mars.nasa.gov` rover-location URL did redirect successfully (with verified TLS) to the NASA Science location-map URL above.
+Direct Space Apps requests failed with an issuer-certificate error, so TLS verification was not bypassed. The correct official URL and its search-indexed challenge description are documented in [challenge alignment](challenge-alignment.md); direct Resources-tab verification remains outstanding. The old `mars.nasa.gov` rover-location URL redirected successfully (with verified TLS) to the NASA Science location-map URL above.
 
 ## Traverse-data follow-up
 
-No ready-to-use traverse GeoJSON was verified during this pass. PDS Rover PLACES is an official coordinate/localization-data lead; inspect its product collections and SIS before treating it as a geographic traverse. Keep science stops unregistered until coordinate provenance, crop inclusion, uncertainty, and local XY conversion are documented.
+No ready-to-use traverse GeoJSON was verified during this pass. PDS Rover PLACES is an official coordinate/localization-data lead; inspect its product collections and SIS before treating it as a geographic traverse. Keep real named sample sites unregistered until coordinate provenance, crop inclusion, uncertainty, and local XY conversion are documented.

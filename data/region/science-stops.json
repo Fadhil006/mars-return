@@ -1,0 +1,38 @@
+[
+  {
+    "id": "terrain-observation-a",
+    "name": "Hypothetical terrain observation A",
+    "positionXY": [1510, 1510],
+    "kind": "hypothetical_waypoint",
+    "locationUncertaintyM": null,
+    "gridSpacingM": 20,
+    "sourceIds": ["usgs-m20-ctx-dem-20m", "nasa-perseverance-mars-rock-samples"],
+    "description": "A hypothetical observation point on the real CTX grid. Compare orbital relief with the regional context of Perseverance science; this is not an identified rock sample or a mapped geological contact.",
+    "scientificQuestion": "What local relief can orbital topography resolve, and what surface observations would still be required?",
+    "locationProvenance": "Scenario-selected analysis-cell center; no claim of a published sampling-site position. NASA sample evidence supplies regional context only."
+  },
+  {
+    "id": "terrain-observation-b",
+    "name": "Hypothetical terrain observation B",
+    "positionXY": [2310, 1810],
+    "kind": "hypothetical_waypoint",
+    "locationUncertaintyM": null,
+    "gridSpacingM": 20,
+    "sourceIds": ["usgs-m20-ctx-dem-20m", "usgs-m20-ctx-ortho-5m"],
+    "description": "A scenario-selected point for comparing elevation, slope and orbital imagery. No specific lithology, chemistry, sample identity or present surface condition is inferred.",
+    "scientificQuestion": "How does the chosen route's relief differ from its destination's local grid slope?",
+    "locationProvenance": "Scenario-selected analysis-cell center on the prepared 20 m grid, not a registered rover observation."
+  },
+  {
+    "id": "terrain-observation-c",
+    "name": "Hypothetical terrain observation C",
+    "positionXY": [1910, 1010],
+    "kind": "hypothetical_waypoint",
+    "locationUncertaintyM": null,
+    "gridSpacingM": 20,
+    "sourceIds": ["usgs-m20-ctx-dem-20m", "usgs-m20-ctx-ortho-5m"],
+    "description": "A hypothetical destination for investigating the tradeoff between distance and a slope-weighted route objective on real terrain.",
+    "scientificQuestion": "Do shortest and slope-penalized paths differ under the same terrain exclusions?",
+    "locationProvenance": "Scenario-selected analysis-cell center; grid spacing is not geodetic or vertical measurement accuracy."
+  }
+]
