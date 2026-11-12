@@ -1,0 +1,862 @@
+{
+  "$defs": {
+    "Assessment": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "ok",
+            "over_budget",
+            "no_path",
+            "invalid_input",
+            "data_unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "outbound": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Leg"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "return": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Leg"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "currentToTarget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Leg"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "targetToBase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Leg"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "totalDistanceM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Totaldistancem"
+        },
+        "travelMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Travelmin"
+        },
+        "dwellMin": {
+          "title": "Dwellmin",
+          "type": "number"
+        },
+        "reserveMin": {
+          "title": "Reservemin",
+          "type": "number"
+        },
+        "totalRequiredMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Totalrequiredmin"
+        },
+        "marginMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Marginmin"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        }
+      },
+      "required": [
+        "status",
+        "totalDistanceM",
+        "travelMin",
+        "dwellMin",
+        "reserveMin",
+        "totalRequiredMin",
+        "marginMin"
+      ],
+      "title": "Assessment",
+      "type": "object"
+    },
+    "ErrorDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ErrorDetail",
+      "type": "object"
+    },
+    "ErrorResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requestid"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "over_budget",
+            "no_path",
+            "invalid_input",
+            "data_unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "error": {
+          "$ref": "#/$defs/ErrorDetail"
+        }
+      },
+      "required": [
+        "status",
+        "error"
+      ],
+      "title": "ErrorResponse",
+      "type": "object"
+    },
+    "Leg": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "ok",
+            "over_budget",
+            "no_path",
+            "invalid_input",
+            "data_unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "pathXY": {
+          "anyOf": [
+            {
+              "items": {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Pathxy"
+        },
+        "distanceM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Distancem"
+        },
+        "ascentM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ascentm"
+        },
+        "maxSlopeDeg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Maxslopedeg"
+        },
+        "meanSlopeDeg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Meanslopedeg"
+        },
+        "profile": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ProfileSample"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Profile"
+        },
+        "travelMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Travelmin"
+        },
+        "cost": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost"
+        },
+        "requestedStartXY": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requestedstartxy"
+        },
+        "requestedGoalXY": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requestedgoalxy"
+        },
+        "effectiveStartXY": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effectivestartxy"
+        },
+        "effectiveGoalXY": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effectivegoalxy"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        }
+      },
+      "required": [
+        "status",
+        "pathXY",
+        "distanceM",
+        "ascentM",
+        "maxSlopeDeg",
+        "meanSlopeDeg",
+        "profile"
+      ],
+      "title": "Leg",
+      "type": "object"
+    },
+    "PlanRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requestid",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "baseXY": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Basexy",
+          "type": "array"
+        },
+        "targetId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Targetid",
+          "type": "string"
+        },
+        "maxSlopeDeg": {
+          "default": 15,
+          "maximum": 30,
+          "minimum": 5,
+          "title": "Maxslopedeg",
+          "type": "number"
+        },
+        "speedMPerMin": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Speedmpermin",
+          "type": "number"
+        },
+        "reserveMin": {
+          "default": 20,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Reservemin",
+          "type": "number"
+        },
+        "blockedPolygonsXY": {
+          "default": [],
+          "items": {
+            "items": {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "maxItems": 16,
+          "title": "Blockedpolygonsxy",
+          "type": "array"
+        },
+        "totalBudgetMin": {
+          "default": 180,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Totalbudgetmin",
+          "type": "number"
+        },
+        "dwellMin": {
+          "default": 10,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Dwellmin",
+          "type": "number"
+        }
+      },
+      "required": [
+        "requestId",
+        "schemaVersion",
+        "datasetVersion",
+        "baseXY",
+        "targetId"
+      ],
+      "title": "PlanRequest",
+      "type": "object"
+    },
+    "PlanResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requestid",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "modelVersion": {
+          "default": "grid-constant-speed-v1",
+          "title": "Modelversion",
+          "type": "string"
+        },
+        "planId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Planid",
+          "type": "string"
+        },
+        "inputHash": {
+          "title": "Inputhash",
+          "type": "string"
+        },
+        "sourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourceids",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "options": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Assessment"
+          },
+          "propertyNames": {
+            "enum": [
+              "shortest",
+              "slope_penalized"
+            ]
+          },
+          "title": "Options",
+          "type": "object"
+        }
+      },
+      "required": [
+        "requestId",
+        "datasetVersion",
+        "planId",
+        "inputHash",
+        "sourceIds",
+        "warnings",
+        "options"
+      ],
+      "title": "PlanResponse",
+      "type": "object"
+    },
+    "ProfileSample": {
+      "additionalProperties": false,
+      "properties": {
+        "distanceM": {
+          "title": "Distancem",
+          "type": "number"
+        },
+        "elevationM": {
+          "title": "Elevationm",
+          "type": "number"
+        },
+        "slopeDeg": {
+          "title": "Slopedeg",
+          "type": "number"
+        }
+      },
+      "required": [
+        "distanceM",
+        "elevationM",
+        "slopeDeg"
+      ],
+      "title": "ProfileSample",
+      "type": "object"
+    },
+    "RehearsalRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requestid",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "baseXY": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Basexy",
+          "type": "array"
+        },
+        "targetId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Targetid",
+          "type": "string"
+        },
+        "maxSlopeDeg": {
+          "default": 15,
+          "maximum": 30,
+          "minimum": 5,
+          "title": "Maxslopedeg",
+          "type": "number"
+        },
+        "speedMPerMin": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 1000,
+          "title": "Speedmpermin",
+          "type": "number"
+        },
+        "reserveMin": {
+          "default": 20,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Reservemin",
+          "type": "number"
+        },
+        "blockedPolygonsXY": {
+          "default": [],
+          "items": {
+            "items": {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "maxItems": 16,
+          "title": "Blockedpolygonsxy",
+          "type": "array"
+        },
+        "selectedRouteMode": {
+          "enum": [
+            "shortest",
+            "slope_penalized"
+          ],
+          "title": "Selectedroutemode",
+          "type": "string"
+        },
+        "currentXY": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Currentxy",
+          "type": "array"
+        },
+        "elapsedMin": {
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Elapsedmin",
+          "type": "number"
+        },
+        "remainingBudgetMin": {
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Remainingbudgetmin",
+          "type": "number"
+        },
+        "remainingDwellMin": {
+          "default": 10,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Remainingdwellmin",
+          "type": "number"
+        }
+      },
+      "required": [
+        "requestId",
+        "schemaVersion",
+        "datasetVersion",
+        "baseXY",
+        "targetId",
+        "selectedRouteMode",
+        "currentXY",
+        "elapsedMin",
+        "remainingBudgetMin"
+      ],
+      "title": "RehearsalRequest",
+      "type": "object"
+    },
+    "RehearsalResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requestid",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "modelVersion": {
+          "default": "grid-constant-speed-v1",
+          "title": "Modelversion",
+          "type": "string"
+        },
+        "planId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Planid",
+          "type": "string"
+        },
+        "inputHash": {
+          "title": "Inputhash",
+          "type": "string"
+        },
+        "sourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourceids",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "selectedRouteMode": {
+          "enum": [
+            "shortest",
+            "slope_penalized"
+          ],
+          "title": "Selectedroutemode",
+          "type": "string"
+        },
+        "immediateReturn": {
+          "$ref": "#/$defs/Assessment"
+        },
+        "continueThenReturn": {
+          "$ref": "#/$defs/Assessment"
+        }
+      },
+      "required": [
+        "requestId",
+        "datasetVersion",
+        "planId",
+        "inputHash",
+        "sourceIds",
+        "warnings",
+        "selectedRouteMode",
+        "immediateReturn",
+        "continueThenReturn"
+      ],
+      "title": "RehearsalResponse",
+      "type": "object"
+    }
+  },
+  "title": "Mars Return API v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

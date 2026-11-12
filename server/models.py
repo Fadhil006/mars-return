@@ -1,0 +1,132 @@
+"""Version-one API definitions. Export with python -m server.export_schema."""
+
+import math
+from typing import Annotated, Literal
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+Finite = Annotated[float, Field(allow_inf_nan=False, strict=True)]
+Nonnegative = Annotated[Finite, Field(ge=0, le=1000000)]
+XY = tuple[Finite, Finite]
+Mode = Literal["shortest", "slope_penalized"]
+Status = Literal["ok", "over_budget", "no_path", "invalid_input", "data_unavailable"]
+Identifier = Annotated[str, Field(min_length=1, max_length=128)]
+
+
+class Model(BaseModel):
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+
+
+class Constraints(Model):
+    requestId: Identifier
+    schemaVersion: Literal[1]
+    datasetVersion: Identifier
+    baseXY: XY
+    targetId: Identifier
+    maxSlopeDeg: Annotated[Finite, Field(ge=5, le=30)] = 15
+    speedMPerMin: Annotated[Finite, Field(gt=0, le=1000)] = 30
+    reserveMin: Nonnegative = 20
+    blockedPolygonsXY: Annotated[list[list[XY]], Field(max_length=16)] = []
+
+    @model_validator(mode="after")
+    def polygons(self):
+        for polygon in self.blockedPolygonsXY:
+            if not 3 <= len(polygon) <= 128:
+                raise ValueError("Each polygon requires 3–128 vertices")
+            vertices = polygon[:-1] if polygon[0] == polygon[-1] else polygon
+            if len(set(vertices)) < 3:
+                raise ValueError("Polygon requires three distinct vertices")
+            area = sum(a[0]*b[1]-b[0]*a[1] for a, b in zip(vertices, vertices[1:]+vertices[:1]))
+            if not math.isfinite(area) or abs(area) < 1e-9:
+                raise ValueError("Polygon must have nonzero finite area")
+        return self
+
+
+class PlanRequest(Constraints):
+    totalBudgetMin: Nonnegative = 180
+    dwellMin: Nonnegative = 10
+
+    @model_validator(mode="after")
+    def reserve_fits(self):
+        if self.reserveMin > self.totalBudgetMin:
+            raise ValueError("reserveMin cannot exceed totalBudgetMin")
+        return self
+
+
+class RehearsalRequest(Constraints):
+    selectedRouteMode: Mode
+    currentXY: XY
+    elapsedMin: Nonnegative
+    remainingBudgetMin: Nonnegative
+    remainingDwellMin: Nonnegative = 10
+
+
+class ProfileSample(Model):
+    distanceM: Finite
+    elevationM: Finite
+    slopeDeg: Finite
+
+
+class Leg(Model):
+    status: Status
+    pathXY: list[XY] | None
+    distanceM: Finite | None
+    ascentM: Finite | None
+    maxSlopeDeg: Finite | None
+    meanSlopeDeg: Finite | None
+    profile: list[ProfileSample] | None
+    travelMin: Finite | None = None
+    cost: Finite | None = None
+    requestedStartXY: XY | None = None
+    requestedGoalXY: XY | None = None
+    effectiveStartXY: XY | None = None
+    effectiveGoalXY: XY | None = None
+    message: str | None = None
+
+
+class Assessment(Model):
+    status: Status
+    outbound: Leg | None = None
+    return_: Leg | None = Field(default=None, alias="return")
+    currentToTarget: Leg | None = None
+    targetToBase: Leg | None = None
+    totalDistanceM: Finite | None
+    travelMin: Finite | None
+    dwellMin: Finite
+    reserveMin: Finite
+    totalRequiredMin: Finite | None
+    marginMin: Finite | None
+    message: str | None = None
+
+
+class Envelope(Model):
+    requestId: Identifier
+    schemaVersion: Literal[1] = 1
+    datasetVersion: Identifier
+    modelVersion: str = "grid-constant-speed-v1"
+    planId: Identifier
+    inputHash: str
+    sourceIds: list[str]
+    warnings: list[str]
+
+
+class PlanResponse(Envelope):
+    options: dict[Mode, Assessment]
+
+
+class RehearsalResponse(Envelope):
+    selectedRouteMode: Mode
+    immediateReturn: Assessment
+    continueThenReturn: Assessment
+
+
+class ErrorDetail(Model):
+    code: str
+    message: str
+
+
+class ErrorResponse(Model):
+    requestId: str | None = None
+    schemaVersion: Literal[1] = 1
+    status: Status
+    error: ErrorDetail
