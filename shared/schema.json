@@ -589,17 +589,7 @@
           "type": "array"
         },
         "options": {
-          "additionalProperties": {
-            "$ref": "#/$defs/Assessment"
-          },
-          "propertyNames": {
-            "enum": [
-              "shortest",
-              "slope_penalized"
-            ]
-          },
-          "title": "Options",
-          "type": "object"
+          "$ref": "#/$defs/RouteOptions"
         }
       },
       "required": [
@@ -638,6 +628,57 @@
       "title": "ProfileSample",
       "type": "object"
     },
+    "RegionManifest": {
+      "additionalProperties": true,
+      "properties": {
+        "width": {
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Height",
+          "type": "integer"
+        },
+        "cellSizeM": {
+          "exclusiveMinimum": 0,
+          "title": "Cellsizem",
+          "type": "number"
+        },
+        "originXY": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Originxy",
+          "type": "array"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "cellSizeM",
+        "originXY",
+        "datasetVersion"
+      ],
+      "title": "RegionManifest",
+      "type": "object"
+    },
     "RegionResponse": {
       "additionalProperties": false,
       "properties": {
@@ -654,22 +695,18 @@
           "type": "string"
         },
         "manifest": {
-          "additionalProperties": true,
-          "title": "Manifest",
-          "type": "object"
+          "$ref": "#/$defs/RegionManifest"
         },
         "scienceStops": {
           "items": {
-            "additionalProperties": true,
-            "type": "object"
+            "$ref": "#/$defs/ScienceStop"
           },
           "title": "Sciencestops",
           "type": "array"
         },
         "sources": {
           "items": {
-            "additionalProperties": true,
-            "type": "object"
+            "$ref": "#/$defs/SourceRecord"
           },
           "title": "Sources",
           "type": "array"
@@ -922,6 +959,88 @@
         "continueThenReturn"
       ],
       "title": "RehearsalResponse",
+      "type": "object"
+    },
+    "RouteOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "shortest": {
+          "$ref": "#/$defs/Assessment"
+        },
+        "slope_penalized": {
+          "$ref": "#/$defs/Assessment"
+        }
+      },
+      "required": [
+        "shortest",
+        "slope_penalized"
+      ],
+      "title": "RouteOptions",
+      "type": "object"
+    },
+    "ScienceStop": {
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "positionXY": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Positionxy",
+          "type": "array"
+        },
+        "sourceIds": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourceids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "positionXY"
+      ],
+      "title": "ScienceStop",
+      "type": "object"
+    },
+    "SourceRecord": {
+      "additionalProperties": true,
+      "properties": {
+        "sourceId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Sourceid",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceId",
+        "title",
+        "url"
+      ],
+      "title": "SourceRecord",
       "type": "object"
     }
   },

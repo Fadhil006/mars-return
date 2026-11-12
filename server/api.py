@@ -3,6 +3,7 @@
 import logging
 import os
 from pathlib import Path
+from threading import Lock
 from time import perf_counter
 
 from fastapi import FastAPI, Request
@@ -32,6 +33,7 @@ def create_app(region_dir=None, *, region=None, store=None):
     app.state.store = store if store is not None else PlanStore()
     app.state.region = region
     app.state.load_attempted = region is not None
+    app.state.load_lock = Lock()
     configured = Path(region_dir or os.environ.get("REGION_DATA_DIR", "data/region"))
     app.state.region_dir = configured if configured.is_absolute() else ROOT / configured
 
@@ -56,12 +58,13 @@ def create_app(region_dir=None, *, region=None, store=None):
 
     def active_region():
         # The bundle is immutable for a running process; restart after replacing it.
-        if not app.state.load_attempted:
-            app.state.load_attempted = True
-            try:
-                app.state.region = load_region(app.state.region_dir)
-            except (OSError, ValueError, KeyError, TypeError):
-                LOGGER.warning("Prepared region unavailable or invalid")
+        with app.state.load_lock:
+            if not app.state.load_attempted:
+                app.state.load_attempted = True
+                try:
+                    app.state.region = load_region(app.state.region_dir)
+                except (OSError, ValueError, KeyError, TypeError):
+                    LOGGER.warning("Prepared region unavailable or invalid")
         return app.state.region
 
     @app.get("/api/region", response_model=RegionResponse)
@@ -76,7 +79,7 @@ def create_app(region_dir=None, *, region=None, store=None):
                            ("imagery.webp", "elevation.json", "slope.json", "mask.json")},
                 "parameterBounds": {"maxSlopeDeg": [5, 30], "speedMPerMin": [0, 1000],
                                     "speedMinimumExclusive": True},
-                "warnings": WARNINGS}
+                "warnings": WARNINGS + current["manifest"].get("warnings", [])}
 
     @app.get("/api/assets/{name}")
     def asset(name: str):
@@ -113,7 +116,8 @@ def create_app(region_dir=None, *, region=None, store=None):
         source_ids = sorted(set(s for stop in current["scienceStops"] for s in stop.get("sourceIds", [])) |
                             set(current["manifest"].get("sourceIds", [])))
         result.update(requestId=payload.requestId, schemaVersion=1, datasetVersion=payload.datasetVersion,
-                      modelVersion="grid-constant-speed-v1", sourceIds=source_ids, warnings=WARNINGS)
+                      modelVersion="grid-constant-speed-v1", sourceIds=source_ids,
+                      warnings=WARNINGS + current["manifest"].get("warnings", []))
         if rehearse:
             result["selectedRouteMode"] = payload.selectedRouteMode
         # Validate before persisting; B3 only sees trusted, serializable assessments.

@@ -110,8 +110,13 @@ class Envelope(Model):
     warnings: list[str]
 
 
+class RouteOptions(Model):
+    shortest: Assessment
+    slope_penalized: Assessment
+
+
 class PlanResponse(Envelope):
-    options: dict[Mode, Assessment]
+    options: RouteOptions
 
 
 class RehearsalResponse(Envelope):
@@ -120,12 +125,35 @@ class RehearsalResponse(Envelope):
     continueThenReturn: Assessment
 
 
+class RegionManifest(BaseModel):
+    model_config = ConfigDict(extra="allow", allow_inf_nan=False)
+    width: Annotated[int, Field(ge=1, le=512)]
+    height: Annotated[int, Field(ge=1, le=512)]
+    cellSizeM: Annotated[Finite, Field(gt=0)]
+    originXY: XY
+    datasetVersion: Identifier
+
+
+class SourceRecord(BaseModel):
+    model_config = ConfigDict(extra="allow")
+    sourceId: Identifier
+    title: str
+    url: str
+
+
+class ScienceStop(BaseModel):
+    model_config = ConfigDict(extra="allow", allow_inf_nan=False)
+    id: Identifier
+    positionXY: XY
+    sourceIds: list[str] = []
+
+
 class RegionResponse(Model):
     schemaVersion: Literal[1] = 1
     datasetVersion: Identifier
-    manifest: dict
-    scienceStops: list[dict]
-    sources: list[dict]
+    manifest: RegionManifest
+    scienceStops: list[ScienceStop]
+    sources: list[SourceRecord]
     layers: dict[str, str]
     parameterBounds: dict
     warnings: list[str]

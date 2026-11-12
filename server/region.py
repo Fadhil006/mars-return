@@ -7,10 +7,13 @@ from pathlib import Path
 
 import numpy as np
 
+from server.models import RegionManifest, ScienceStop, SourceRecord
+
 
 def load_region(directory):
     directory = Path(directory)
     manifest = json.loads((directory / "manifest.json").read_text())
+    RegionManifest.model_validate(manifest)
     width, height = manifest["width"], manifest["height"]
     if type(width) is not int or type(height) is not int or not 1 <= width <= 512 or not 1 <= height <= 512:
         raise ValueError("Region dimensions must be integers between 1 and 512")
@@ -52,6 +55,7 @@ def load_region(directory):
         raise ValueError("science-stops.json must contain a list")
     ids = set()
     for stop in region["scienceStops"]:
+        ScienceStop.model_validate(stop)
         if not isinstance(stop.get("id"), str) or not stop["id"]:
             raise ValueError("Science stop requires a nonempty string ID")
         if stop["id"] in ids:
@@ -62,5 +66,13 @@ def load_region(directory):
             raise ValueError("Science stop requires finite positionXY")
         source_ids(stop.get("sourceIds", []))
     region["sources"] = manifest.get("sources", [])
+    if not isinstance(region["sources"], list):
+        raise ValueError("sources must be a list of source records")
+    for source in region["sources"]:
+        SourceRecord.model_validate(source)
+    known_sources = {source["sourceId"] for source in region["sources"]}
+    referenced = set(manifest.get("sourceIds", [])) | {s for stop in region["scienceStops"] for s in stop.get("sourceIds", [])}
+    if region["sources"] and not referenced <= known_sources:
+        raise ValueError("Source reference missing from source records")
     region["directory"] = directory
     return region

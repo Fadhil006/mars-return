@@ -31,3 +31,4 @@ build/
 !/data/region/README.md
 !/data/region/manifest.json
 !/data/region/science-stops.json
+/data/packages/
