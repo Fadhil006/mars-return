@@ -1,0 +1,146 @@
+{
+  "synthetic": true,
+  "description": "Development-only invented grid, not NASA terrain or a scientific result.",
+  "endpoint": "/api/plan",
+  "request": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "datasetVersion": "synthetic-development-v1",
+    "baseXY": [
+      5,
+      25
+    ],
+    "targetId": "synthetic-stop"
+  },
+  "httpStatus": 200,
+  "response": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "datasetVersion": "synthetic-development-v1",
+    "modelVersion": "grid-constant-speed-v1",
+    "planId": "synthetic-fixture-no-path",
+    "inputHash": "ef2ac50dad5c47deee902825c5b89c994bc2bdb425cdcc8efb23b38f002f5d02",
+    "sourceIds": [
+      "synthetic-not-mars"
+    ],
+    "warnings": [
+      "Illustrative scenario, not certified astronaut navigation or physiological safety guidance.",
+      "Constant speed and horizontal grid distance do not model terrain-dependent fatigue or suit performance.",
+      "Endpoints are represented by containing-cell centers; paths are not smoothed."
+    ],
+    "options": {
+      "shortest": {
+        "status": "no_path",
+        "outbound": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "profile": null,
+          "travelMin": null,
+          "cost": null,
+          "requestedStartXY": [
+            5.0,
+            25.0
+          ],
+          "requestedGoalXY": [
+            95.0,
+            25.0
+          ],
+          "effectiveStartXY": null,
+          "effectiveGoalXY": null,
+          "message": null
+        },
+        "return": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "profile": null,
+          "travelMin": null,
+          "cost": null,
+          "requestedStartXY": [
+            95.0,
+            25.0
+          ],
+          "requestedGoalXY": [
+            5.0,
+            25.0
+          ],
+          "effectiveStartXY": null,
+          "effectiveGoalXY": null,
+          "message": null
+        },
+        "currentToTarget": null,
+        "targetToBase": null,
+        "totalDistanceM": null,
+        "travelMin": null,
+        "dwellMin": 10.0,
+        "reserveMin": 20.0,
+        "totalRequiredMin": null,
+        "marginMin": null,
+        "message": null
+      },
+      "slope_penalized": {
+        "status": "no_path",
+        "outbound": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "profile": null,
+          "travelMin": null,
+          "cost": null,
+          "requestedStartXY": [
+            5.0,
+            25.0
+          ],
+          "requestedGoalXY": [
+            95.0,
+            25.0
+          ],
+          "effectiveStartXY": null,
+          "effectiveGoalXY": null,
+          "message": null
+        },
+        "return": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "profile": null,
+          "travelMin": null,
+          "cost": null,
+          "requestedStartXY": [
+            95.0,
+            25.0
+          ],
+          "requestedGoalXY": [
+            5.0,
+            25.0
+          ],
+          "effectiveStartXY": null,
+          "effectiveGoalXY": null,
+          "message": null
+        },
+        "currentToTarget": null,
+        "targetToBase": null,
+        "totalDistanceM": null,
+        "travelMin": null,
+        "dwellMin": 10.0,
+        "reserveMin": 20.0,
+        "totalRequiredMin": null,
+        "marginMin": null,
+        "message": null
+      }
+    }
+  }
+}

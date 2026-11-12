@@ -638,6 +638,74 @@
       "title": "ProfileSample",
       "type": "object"
     },
+    "RegionResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "manifest": {
+          "additionalProperties": true,
+          "title": "Manifest",
+          "type": "object"
+        },
+        "scienceStops": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Sciencestops",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "layers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Layers",
+          "type": "object"
+        },
+        "parameterBounds": {
+          "additionalProperties": true,
+          "title": "Parameterbounds",
+          "type": "object"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "datasetVersion",
+        "manifest",
+        "scienceStops",
+        "sources",
+        "layers",
+        "parameterBounds",
+        "warnings"
+      ],
+      "title": "RegionResponse",
+      "type": "object"
+    },
     "RehearsalRequest": {
       "additionalProperties": false,
       "properties": {

@@ -6,13 +6,13 @@ from pathlib import Path
 
 from pydantic.json_schema import models_json_schema
 
-from server.models import ErrorResponse, PlanRequest, PlanResponse, RehearsalRequest, RehearsalResponse
+from server.models import ErrorResponse, PlanRequest, PlanResponse, RehearsalRequest, RehearsalResponse, RegionResponse
 
 OUTPUT = Path(__file__).resolve().parents[1] / "shared/schema.json"
 
 
 def schema_text():
-    models = [PlanRequest, PlanResponse, RehearsalRequest, RehearsalResponse, ErrorResponse]
+    models = [PlanRequest, PlanResponse, RehearsalRequest, RehearsalResponse, RegionResponse, ErrorResponse]
     _, schema = models_json_schema([(model, "validation") for model in models], title="Mars Return API v1")
     schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
     return json.dumps(schema, indent=2, allow_nan=False) + "\n"

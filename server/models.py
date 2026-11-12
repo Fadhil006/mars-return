@@ -120,6 +120,17 @@ class RehearsalResponse(Envelope):
     continueThenReturn: Assessment
 
 
+class RegionResponse(Model):
+    schemaVersion: Literal[1] = 1
+    datasetVersion: Identifier
+    manifest: dict
+    scienceStops: list[dict]
+    sources: list[dict]
+    layers: dict[str, str]
+    parameterBounds: dict
+    warnings: list[str]
+
+
 class ErrorDetail(Model):
     code: str
     message: str
