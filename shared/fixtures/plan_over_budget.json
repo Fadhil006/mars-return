@@ -1,0 +1,516 @@
+{
+  "name": "plan_over_budget",
+  "description": "Same 900 m round trip as plan_success but with a 50 min budget. Required time is 90 min, so both modes are valid routes yet over_budget with margin -40.",
+  "request": {
+    "requestId": "req-plan-over-budget-001",
+    "schemaVersion": 1,
+    "datasetVersion": "jezero-synthetic-2026.11-v1",
+    "baseXY": [
+      400.0,
+      400.0
+    ],
+    "targetId": "hazeltop",
+    "maxSlopeDeg": 15,
+    "speedMPerMin": 30,
+    "totalBudgetMin": 50,
+    "reserveMin": 20,
+    "dwellMin": 10,
+    "blockedPolygonsXY": []
+  },
+  "response": {
+    "requestId": "req-plan-over-budget-001",
+    "planId": "plan-fixture-over-budget-0001",
+    "schemaVersion": 1,
+    "datasetVersion": "jezero-synthetic-2026.11-v1",
+    "modelVersion": "group-a-1.0.0",
+    "status": "over_budget",
+    "routes": {
+      "shortest": {
+        "mode": "shortest",
+        "status": "over_budget",
+        "outbound": {
+          "status": "ok",
+          "pathXY": [
+            [
+              400.0,
+              400.0
+            ],
+            [
+              625.0,
+              400.0
+            ],
+            [
+              850.0,
+              400.0
+            ],
+            [
+              1075.0,
+              400.0
+            ],
+            [
+              1300.0,
+              400.0
+            ]
+          ],
+          "distanceM": 900.0,
+          "ascentM": 24.0,
+          "maxSlopeDeg": 14.2,
+          "meanSlopeDeg": 5.1,
+          "travelMin": 30.0,
+          "profile": [
+            {
+              "distanceM": 0,
+              "elevationM": -2600,
+              "slopeDeg": 0.0
+            },
+            {
+              "distanceM": 225,
+              "elevationM": -2598,
+              "slopeDeg": 4.1
+            },
+            {
+              "distanceM": 450,
+              "elevationM": -2590,
+              "slopeDeg": 7.8
+            },
+            {
+              "distanceM": 675,
+              "elevationM": -2585,
+              "slopeDeg": 14.2
+            },
+            {
+              "distanceM": 900,
+              "elevationM": -2576,
+              "slopeDeg": 5.3
+            }
+          ],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": []
+        },
+        "return": {
+          "status": "ok",
+          "pathXY": [
+            [
+              1300.0,
+              400.0
+            ],
+            [
+              1075.0,
+              400.0
+            ],
+            [
+              850.0,
+              400.0
+            ],
+            [
+              625.0,
+              400.0
+            ],
+            [
+              400.0,
+              400.0
+            ]
+          ],
+          "distanceM": 900.0,
+          "ascentM": 24.0,
+          "maxSlopeDeg": 14.2,
+          "meanSlopeDeg": 5.3,
+          "travelMin": 30.0,
+          "profile": [
+            {
+              "distanceM": 0,
+              "elevationM": -2576,
+              "slopeDeg": 0.0
+            },
+            {
+              "distanceM": 225,
+              "elevationM": -2585,
+              "slopeDeg": 6.2
+            },
+            {
+              "distanceM": 450,
+              "elevationM": -2590,
+              "slopeDeg": 9.9
+            },
+            {
+              "distanceM": 675,
+              "elevationM": -2598,
+              "slopeDeg": 14.2
+            },
+            {
+              "distanceM": 900,
+              "elevationM": -2600,
+              "slopeDeg": 4.0
+            }
+          ],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": []
+        },
+        "pathXY": [
+          [
+            400.0,
+            400.0
+          ],
+          [
+            625.0,
+            400.0
+          ],
+          [
+            850.0,
+            400.0
+          ],
+          [
+            1075.0,
+            400.0
+          ],
+          [
+            1300.0,
+            400.0
+          ],
+          [
+            1075.0,
+            400.0
+          ],
+          [
+            850.0,
+            400.0
+          ],
+          [
+            625.0,
+            400.0
+          ],
+          [
+            400.0,
+            400.0
+          ]
+        ],
+        "distanceM": 1800.0,
+        "ascentM": 48.0,
+        "maxSlopeDeg": 14.2,
+        "meanSlopeDeg": 5.2,
+        "travelMin": 60.0,
+        "dwellMin": 10.0,
+        "reserveMin": 20.0,
+        "totalRequiredMin": 90.0,
+        "marginMin": -40.0,
+        "profile": [
+          {
+            "distanceM": 0,
+            "elevationM": -2600,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 225,
+            "elevationM": -2598,
+            "slopeDeg": 4.1
+          },
+          {
+            "distanceM": 450,
+            "elevationM": -2590,
+            "slopeDeg": 7.8
+          },
+          {
+            "distanceM": 675,
+            "elevationM": -2585,
+            "slopeDeg": 14.2
+          },
+          {
+            "distanceM": 900,
+            "elevationM": -2576,
+            "slopeDeg": 5.3
+          },
+          {
+            "distanceM": 900.0,
+            "elevationM": -2576,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 1125.0,
+            "elevationM": -2585,
+            "slopeDeg": 6.2
+          },
+          {
+            "distanceM": 1350.0,
+            "elevationM": -2590,
+            "slopeDeg": 9.9
+          },
+          {
+            "distanceM": 1575.0,
+            "elevationM": -2598,
+            "slopeDeg": 14.2
+          },
+          {
+            "distanceM": 1800.0,
+            "elevationM": -2600,
+            "slopeDeg": 4.0
+          }
+        ],
+        "sourceIds": [
+          "nasa-perseverance-sample-hazeltop",
+          "usgs-jezero-dem",
+          "usgs-jezero-ortho"
+        ],
+        "datasetVersion": "jezero-synthetic-2026.11-v1",
+        "modelVersion": "group-a-1.0.0",
+        "warnings": [],
+        "errors": []
+      },
+      "slope_penalized": {
+        "mode": "slope_penalized",
+        "status": "over_budget",
+        "outbound": {
+          "status": "ok",
+          "pathXY": [
+            [
+              400.0,
+              400.0
+            ],
+            [
+              650.0,
+              430.0
+            ],
+            [
+              880.0,
+              470.0
+            ],
+            [
+              1090.0,
+              420.0
+            ],
+            [
+              1300.0,
+              400.0
+            ]
+          ],
+          "distanceM": 940.0,
+          "ascentM": 16.0,
+          "maxSlopeDeg": 9.8,
+          "meanSlopeDeg": 3.9,
+          "travelMin": 31.33,
+          "profile": [
+            {
+              "distanceM": 0,
+              "elevationM": -2600,
+              "slopeDeg": 0.0
+            },
+            {
+              "distanceM": 235,
+              "elevationM": -2596,
+              "slopeDeg": 3.0
+            },
+            {
+              "distanceM": 470,
+              "elevationM": -2584,
+              "slopeDeg": 5.2
+            },
+            {
+              "distanceM": 705,
+              "elevationM": -2578,
+              "slopeDeg": 9.8
+            },
+            {
+              "distanceM": 940,
+              "elevationM": -2576,
+              "slopeDeg": 4.6
+            }
+          ],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": []
+        },
+        "return": {
+          "status": "ok",
+          "pathXY": [
+            [
+              1300.0,
+              400.0
+            ],
+            [
+              1090.0,
+              420.0
+            ],
+            [
+              880.0,
+              470.0
+            ],
+            [
+              650.0,
+              430.0
+            ],
+            [
+              400.0,
+              400.0
+            ]
+          ],
+          "distanceM": 940.0,
+          "ascentM": 16.0,
+          "maxSlopeDeg": 9.8,
+          "meanSlopeDeg": 4.2,
+          "travelMin": 31.33,
+          "profile": [
+            {
+              "distanceM": 0,
+              "elevationM": -2576,
+              "slopeDeg": 0.0
+            },
+            {
+              "distanceM": 235,
+              "elevationM": -2578,
+              "slopeDeg": 4.1
+            },
+            {
+              "distanceM": 470,
+              "elevationM": -2584,
+              "slopeDeg": 6.8
+            },
+            {
+              "distanceM": 705,
+              "elevationM": -2596,
+              "slopeDeg": 9.8
+            },
+            {
+              "distanceM": 940,
+              "elevationM": -2600,
+              "slopeDeg": 3.4
+            }
+          ],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": []
+        },
+        "pathXY": [
+          [
+            400.0,
+            400.0
+          ],
+          [
+            650.0,
+            430.0
+          ],
+          [
+            880.0,
+            470.0
+          ],
+          [
+            1090.0,
+            420.0
+          ],
+          [
+            1300.0,
+            400.0
+          ],
+          [
+            1090.0,
+            420.0
+          ],
+          [
+            880.0,
+            470.0
+          ],
+          [
+            650.0,
+            430.0
+          ],
+          [
+            400.0,
+            400.0
+          ]
+        ],
+        "distanceM": 1880.0,
+        "ascentM": 32.0,
+        "maxSlopeDeg": 9.8,
+        "meanSlopeDeg": 4.05,
+        "travelMin": 62.66,
+        "dwellMin": 10.0,
+        "reserveMin": 20.0,
+        "totalRequiredMin": 92.66,
+        "marginMin": -42.66,
+        "profile": [
+          {
+            "distanceM": 0,
+            "elevationM": -2600,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 235,
+            "elevationM": -2596,
+            "slopeDeg": 3.0
+          },
+          {
+            "distanceM": 470,
+            "elevationM": -2584,
+            "slopeDeg": 5.2
+          },
+          {
+            "distanceM": 705,
+            "elevationM": -2578,
+            "slopeDeg": 9.8
+          },
+          {
+            "distanceM": 940,
+            "elevationM": -2576,
+            "slopeDeg": 4.6
+          },
+          {
+            "distanceM": 940.0,
+            "elevationM": -2576,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 1175.0,
+            "elevationM": -2578,
+            "slopeDeg": 4.1
+          },
+          {
+            "distanceM": 1410.0,
+            "elevationM": -2584,
+            "slopeDeg": 6.8
+          },
+          {
+            "distanceM": 1645.0,
+            "elevationM": -2596,
+            "slopeDeg": 9.8
+          },
+          {
+            "distanceM": 1880.0,
+            "elevationM": -2600,
+            "slopeDeg": 3.4
+          }
+        ],
+        "sourceIds": [
+          "nasa-perseverance-sample-hazeltop",
+          "usgs-jezero-dem",
+          "usgs-jezero-ortho"
+        ],
+        "datasetVersion": "jezero-synthetic-2026.11-v1",
+        "modelVersion": "group-a-1.0.0",
+        "warnings": [],
+        "errors": []
+      }
+    },
+    "warnings": [],
+    "generatedAt": "2026-11-13T00:00:00Z"
+  }
+}

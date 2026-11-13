@@ -1,0 +1,199 @@
+{
+  "name": "plan_no_path",
+  "description": "A north-south closure at x=800..820 severs the corridor. Both modes return status no_path with null paths and metrics (never zeroes).",
+  "request": {
+    "requestId": "req-plan-no-path-001",
+    "schemaVersion": 1,
+    "datasetVersion": "jezero-synthetic-2026.11-v1",
+    "baseXY": [
+      400.0,
+      400.0
+    ],
+    "targetId": "hazeltop",
+    "maxSlopeDeg": 15,
+    "speedMPerMin": 30,
+    "totalBudgetMin": 180,
+    "reserveMin": 20,
+    "dwellMin": 10,
+    "blockedPolygonsXY": [
+      [
+        [
+          800.0,
+          0.0
+        ],
+        [
+          820.0,
+          0.0
+        ],
+        [
+          820.0,
+          3000.0
+        ],
+        [
+          800.0,
+          3000.0
+        ]
+      ]
+    ]
+  },
+  "response": {
+    "requestId": "req-plan-no-path-001",
+    "planId": "plan-fixture-no-path-0001",
+    "schemaVersion": 1,
+    "datasetVersion": "jezero-synthetic-2026.11-v1",
+    "modelVersion": "group-a-1.0.0",
+    "status": "no_path",
+    "routes": {
+      "shortest": {
+        "mode": "shortest",
+        "status": "no_path",
+        "outbound": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "travelMin": null,
+          "profile": [],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": [
+            {
+              "code": "no_path",
+              "message": "No traversable route from base to target inside the slope ceiling.",
+              "severity": "error"
+            }
+          ]
+        },
+        "return": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "travelMin": null,
+          "profile": [],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": [
+            {
+              "code": "no_path",
+              "message": "No traversable return route from target to base.",
+              "severity": "error"
+            }
+          ]
+        },
+        "pathXY": null,
+        "distanceM": null,
+        "ascentM": null,
+        "maxSlopeDeg": null,
+        "meanSlopeDeg": null,
+        "travelMin": null,
+        "dwellMin": 10.0,
+        "reserveMin": 20.0,
+        "totalRequiredMin": null,
+        "marginMin": null,
+        "profile": [],
+        "sourceIds": [
+          "nasa-perseverance-sample-hazeltop",
+          "usgs-jezero-dem",
+          "usgs-jezero-ortho"
+        ],
+        "datasetVersion": "jezero-synthetic-2026.11-v1",
+        "modelVersion": "group-a-1.0.0",
+        "warnings": []
+      },
+      "slope_penalized": {
+        "mode": "slope_penalized",
+        "status": "no_path",
+        "outbound": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "travelMin": null,
+          "profile": [],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": [
+            {
+              "code": "no_path",
+              "message": "No traversable route from base to target inside the slope ceiling.",
+              "severity": "error"
+            }
+          ]
+        },
+        "return": {
+          "status": "no_path",
+          "pathXY": null,
+          "distanceM": null,
+          "ascentM": null,
+          "maxSlopeDeg": null,
+          "meanSlopeDeg": null,
+          "travelMin": null,
+          "profile": [],
+          "sourceIds": [
+            "nasa-perseverance-sample-hazeltop",
+            "usgs-jezero-dem",
+            "usgs-jezero-ortho"
+          ],
+          "datasetVersion": "jezero-synthetic-2026.11-v1",
+          "modelVersion": "group-a-1.0.0",
+          "warnings": [
+            {
+              "code": "no_path",
+              "message": "No traversable return route from target to base.",
+              "severity": "error"
+            }
+          ]
+        },
+        "pathXY": null,
+        "distanceM": null,
+        "ascentM": null,
+        "maxSlopeDeg": null,
+        "meanSlopeDeg": null,
+        "travelMin": null,
+        "dwellMin": 10.0,
+        "reserveMin": 20.0,
+        "totalRequiredMin": null,
+        "marginMin": null,
+        "profile": [],
+        "sourceIds": [
+          "nasa-perseverance-sample-hazeltop",
+          "usgs-jezero-dem",
+          "usgs-jezero-ortho"
+        ],
+        "datasetVersion": "jezero-synthetic-2026.11-v1",
+        "modelVersion": "group-a-1.0.0",
+        "warnings": []
+      }
+    },
+    "warnings": [
+      {
+        "code": "route_disconnected",
+        "message": "The slope ceiling and injected closures disconnect base from target.",
+        "severity": "warning"
+      }
+    ],
+    "generatedAt": "2026-11-13T00:00:00Z"
+  }
+}

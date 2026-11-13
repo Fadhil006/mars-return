@@ -1,0 +1,549 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mars-return.local/shared/schema.json",
+  "title": "Mars Return API Contract",
+  "description": "Versioned contract for the Group A backend. All coordinates are local metric [x_m, y_m] where +x is East and +y is North. row=0 is the North edge, col=0 is the West edge.",
+  "schemaVersion": 1,
+  "modelVersion": "group-a-1.0.0",
+  "endpoints": {
+    "GET /api/region": {
+      "request": null,
+      "response": { "$ref": "#/$defs/regionResponse" }
+    },
+    "POST /api/plan": {
+      "request": { "$ref": "#/$defs/planRequest" },
+      "response": { "$ref": "#/$defs/planResponse" }
+    },
+    "POST /api/rehearse": {
+      "request": { "$ref": "#/$defs/rehearseRequest" },
+      "response": { "$ref": "#/$defs/rehearseResponse" }
+    },
+    "POST /api/brief": {
+      "request": { "$ref": "#/$defs/briefRequest" },
+      "response": { "$ref": "#/$defs/briefResponse" }
+    }
+  },
+  "$defs": {
+    "schemaVersion": { "const": 1 },
+    "status": {
+      "enum": ["ok", "over_budget", "no_path", "invalid_input", "data_unavailable"]
+    },
+    "xy": {
+      "type": "array",
+      "description": "[x_m, y_m] in local metres; +x East, +y North.",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" }
+    },
+    "polygonXY": {
+      "type": "array",
+      "description": "Closed or open ring of [x_m, y_m] vertices.",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/xy" }
+    },
+    "warning": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "severity": { "enum": ["info", "warning", "error"] }
+      },
+      "additionalProperties": false
+    },
+    "profileSample": {
+      "type": "object",
+      "required": ["distanceM", "elevationM", "slopeDeg"],
+      "properties": {
+        "distanceM": { "type": "number", "minimum": 0 },
+        "elevationM": { "type": "number" },
+        "slopeDeg": { "type": ["number", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "leg": {
+      "type": "object",
+      "required": [
+        "status", "pathXY", "distanceM", "ascentM", "maxSlopeDeg",
+        "meanSlopeDeg", "travelMin", "profile", "sourceIds",
+        "datasetVersion", "modelVersion", "warnings"
+      ],
+      "properties": {
+        "status": { "$ref": "#/$defs/status" },
+        "pathXY": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/xy" }
+        },
+        "distanceM": { "type": ["number", "null"], "minimum": 0 },
+        "ascentM": { "type": ["number", "null"], "minimum": 0 },
+        "maxSlopeDeg": { "type": ["number", "null"] },
+        "meanSlopeDeg": { "type": ["number", "null"] },
+        "travelMin": { "type": ["number", "null"], "minimum": 0 },
+        "profile": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/profileSample" }
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "routeAssessment": {
+      "type": "object",
+      "required": [
+        "mode", "status", "outbound", "return", "pathXY", "distanceM",
+        "ascentM", "maxSlopeDeg", "meanSlopeDeg", "travelMin", "dwellMin",
+        "reserveMin", "totalRequiredMin", "marginMin", "profile",
+        "sourceIds", "datasetVersion", "modelVersion", "warnings"
+      ],
+      "properties": {
+        "mode": { "enum": ["shortest", "slope_penalized"] },
+        "status": { "$ref": "#/$defs/status" },
+        "outbound": { "$ref": "#/$defs/leg" },
+        "return": { "$ref": "#/$defs/leg" },
+        "pathXY": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/xy" }
+        },
+        "distanceM": { "type": ["number", "null"], "minimum": 0 },
+        "ascentM": { "type": ["number", "null"], "minimum": 0 },
+        "maxSlopeDeg": { "type": ["number", "null"] },
+        "meanSlopeDeg": { "type": ["number", "null"] },
+        "travelMin": { "type": ["number", "null"], "minimum": 0 },
+        "dwellMin": { "type": "number", "minimum": 0 },
+        "reserveMin": { "type": "number", "minimum": 0 },
+        "totalRequiredMin": { "type": ["number", "null"], "minimum": 0 },
+        "marginMin": { "type": ["number", "null"] },
+        "profile": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/profileSample" }
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "planRequest": {
+      "type": "object",
+      "required": [
+        "requestId", "schemaVersion", "datasetVersion", "baseXY", "targetId",
+        "maxSlopeDeg", "speedMPerMin", "totalBudgetMin", "reserveMin",
+        "dwellMin", "blockedPolygonsXY"
+      ],
+      "properties": {
+        "requestId": { "type": "string", "minLength": 1 },
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "datasetVersion": { "type": "string", "minLength": 1 },
+        "baseXY": { "$ref": "#/$defs/xy" },
+        "targetId": { "type": "string", "minLength": 1 },
+        "maxSlopeDeg": { "type": "number", "minimum": 5, "maximum": 30 },
+        "speedMPerMin": { "type": "number", "minimum": 0 },
+        "totalBudgetMin": { "type": "number", "minimum": 0 },
+        "reserveMin": { "type": "number", "minimum": 0 },
+        "dwellMin": { "type": "number", "minimum": 0 },
+        "blockedPolygonsXY": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/polygonXY" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "planResponse": {
+      "type": "object",
+      "required": [
+        "requestId", "planId", "schemaVersion", "datasetVersion",
+        "modelVersion", "status", "routes", "warnings", "generatedAt"
+      ],
+      "properties": {
+        "requestId": { "type": "string" },
+        "planId": { "type": "string" },
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "status": { "$ref": "#/$defs/status" },
+        "routes": {
+          "type": "object",
+          "required": ["shortest", "slope_penalized"],
+          "properties": {
+            "shortest": { "$ref": "#/$defs/routeAssessment" },
+            "slope_penalized": { "$ref": "#/$defs/routeAssessment" }
+          },
+          "additionalProperties": false
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "errors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "rehearseRequest": {
+      "type": "object",
+      "required": [
+        "requestId", "schemaVersion", "datasetVersion", "currentXY",
+        "elapsedMin", "remainingBudgetMin", "targetId", "baseXY",
+        "maxSlopeDeg", "speedMPerMin", "dwellMin", "reserveMin",
+        "blockedPolygonsXY"
+      ],
+      "properties": {
+        "requestId": { "type": "string", "minLength": 1 },
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "datasetVersion": { "type": "string", "minLength": 1 },
+        "currentXY": { "$ref": "#/$defs/xy" },
+        "elapsedMin": { "type": "number", "minimum": 0 },
+        "remainingBudgetMin": { "type": "number", "minimum": 0 },
+        "targetId": { "type": "string", "minLength": 1 },
+        "baseXY": { "$ref": "#/$defs/xy" },
+        "maxSlopeDeg": { "type": "number", "minimum": 5, "maximum": 30 },
+        "speedMPerMin": { "type": "number", "minimum": 0 },
+        "dwellMin": { "type": "number", "minimum": 0 },
+        "reserveMin": { "type": "number", "minimum": 0 },
+        "routeMode": {
+          "enum": ["shortest", "slope_penalized"],
+          "default": "shortest"
+        },
+        "blockedPolygonsXY": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/polygonXY" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "rehearseAssessment": {
+      "type": "object",
+      "required": [
+        "label", "status", "pathXY", "distanceM", "ascentM",
+        "maxSlopeDeg", "meanSlopeDeg", "travelMin", "dwellMin",
+        "reserveMin", "totalRequiredMin", "marginMin", "profile",
+        "sourceIds", "datasetVersion", "modelVersion", "warnings"
+      ],
+      "properties": {
+        "label": { "enum": ["immediate_return", "continue_then_return"] },
+        "status": { "$ref": "#/$defs/status" },
+        "pathXY": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/xy" }
+        },
+        "distanceM": { "type": ["number", "null"], "minimum": 0 },
+        "ascentM": { "type": ["number", "null"], "minimum": 0 },
+        "maxSlopeDeg": { "type": ["number", "null"] },
+        "meanSlopeDeg": { "type": ["number", "null"] },
+        "travelMin": { "type": ["number", "null"], "minimum": 0 },
+        "dwellMin": { "type": "number", "minimum": 0 },
+        "reserveMin": { "type": "number", "minimum": 0 },
+        "totalRequiredMin": { "type": ["number", "null"], "minimum": 0 },
+        "marginMin": { "type": ["number", "null"] },
+        "profile": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/profileSample" }
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "rehearseResponse": {
+      "type": "object",
+      "required": [
+        "requestId", "rehearsalId", "schemaVersion", "datasetVersion",
+        "modelVersion", "status", "currentPositionValid", "elapsedMin",
+        "remainingBudgetMin", "immediateReturn", "continueThenReturn",
+        "warnings", "generatedAt"
+      ],
+      "properties": {
+        "requestId": { "type": "string" },
+        "rehearsalId": { "type": "string" },
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "status": { "$ref": "#/$defs/status" },
+        "currentPositionValid": { "type": "boolean" },
+        "elapsedMin": { "type": "number", "minimum": 0 },
+        "remainingBudgetMin": { "type": "number", "minimum": 0 },
+        "immediateReturn": { "$ref": "#/$defs/rehearseAssessment" },
+        "continueThenReturn": { "$ref": "#/$defs/rehearseAssessment" },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "errors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "briefRequest": {
+      "type": "object",
+      "required": ["requestId", "planId", "selectedRouteMode", "question"],
+      "properties": {
+        "requestId": { "type": "string", "minLength": 1 },
+        "planId": { "type": "string", "minLength": 1 },
+        "selectedRouteMode": { "enum": ["shortest", "slope_penalized"] },
+        "question": { "type": "string", "minLength": 1, "maxLength": 2000 }
+      },
+      "additionalProperties": false
+    },
+    "metricRef": {
+      "type": "object",
+      "required": ["metric", "value", "unit"],
+      "properties": {
+        "metric": { "type": "string" },
+        "value": { "type": ["number", "null"] },
+        "unit": { "type": "string" },
+        "routeMode": { "enum": ["shortest", "slope_penalized"] },
+        "leg": {
+          "enum": ["combined", "outbound", "return", "immediate_return", "continue_then_return"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "briefResponse": {
+      "type": "object",
+      "required": [
+        "requestId", "planId", "answerText", "sourceIds", "metricRefs",
+        "mode", "datasetVersion", "modelVersion", "warnings"
+      ],
+      "properties": {
+        "requestId": { "type": "string" },
+        "planId": { "type": "string" },
+        "answerText": { "type": "string" },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "metricRefs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/metricRef" }
+        },
+        "mode": { "enum": ["model", "template"] },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "sourceRecord": {
+      "type": "object",
+      "required": ["sourceId", "title", "publisher", "url", "role"],
+      "properties": {
+        "sourceId": { "type": "string" },
+        "title": { "type": "string" },
+        "publisher": { "type": "string" },
+        "url": { "type": "string" },
+        "accessed": { "type": "string" },
+        "license": { "type": "string" },
+        "role": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "scienceStop": {
+      "type": "object",
+      "required": [
+        "targetId", "name", "xy", "description", "geology",
+        "sourceIds", "provenance"
+      ],
+      "properties": {
+        "targetId": { "type": "string" },
+        "name": { "type": "string" },
+        "xy": { "$ref": "#/$defs/xy" },
+        "description": { "type": "string" },
+        "geology": { "type": "string" },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "provenance": {
+          "type": "object",
+          "required": ["mission", "site", "citation"],
+          "properties": {
+            "mission": { "type": "string" },
+            "site": { "type": "string" },
+            "sol": { "type": ["integer", "null"] },
+            "date": { "type": ["string", "null"] },
+            "latitudeDeg": { "type": ["number", "null"] },
+            "longitudeDeg": { "type": ["number", "null"] },
+            "citation": { "type": "string" },
+            "url": { "type": ["string", "null"] },
+            "note": { "type": ["string", "null"] }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "parameterBounds": {
+      "type": "object",
+      "required": ["maxSlopeDeg", "speedMPerMin", "totalBudgetMin", "reserveMin", "dwellMin"],
+      "properties": {
+        "maxSlopeDeg": { "$ref": "#/$defs/bound" },
+        "speedMPerMin": { "$ref": "#/$defs/bound" },
+        "totalBudgetMin": { "$ref": "#/$defs/bound" },
+        "reserveMin": { "$ref": "#/$defs/bound" },
+        "dwellMin": { "$ref": "#/$defs/bound" }
+      },
+      "additionalProperties": false
+    },
+    "bound": {
+      "type": "object",
+      "required": ["min", "max", "default"],
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "default": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "regionResponse": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "datasetVersion", "modelVersion", "region", "grid",
+        "mars", "layers", "parameterBounds", "scienceStops", "sources",
+        "checksums", "generatedAt"
+      ],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/schemaVersion" },
+        "datasetVersion": { "type": "string" },
+        "modelVersion": { "type": "string" },
+        "region": {
+          "type": "object",
+          "required": ["name", "boundsXY", "widthM", "heightM"],
+          "properties": {
+            "name": { "type": "string" },
+            "boundsXY": {
+              "type": "object",
+              "required": ["minX", "minY", "maxX", "maxY"],
+              "properties": {
+                "minX": { "type": "number" },
+                "minY": { "type": "number" },
+                "maxX": { "type": "number" },
+                "maxY": { "type": "number" }
+              },
+              "additionalProperties": false
+            },
+            "widthM": { "type": "number" },
+            "heightM": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "grid": {
+          "type": "object",
+          "required": ["rows", "cols", "cellSizeM", "transform", "projection"],
+          "properties": {
+            "rows": { "type": "integer", "minimum": 1, "maximum": 512 },
+            "cols": { "type": "integer", "minimum": 1, "maximum": 512 },
+            "cellSizeM": { "type": "number", "enum": [10, 20] },
+            "transform": {
+              "type": "object",
+              "required": ["a", "b", "c", "d", "e", "f"],
+              "properties": {
+                "a": { "type": "number" },
+                "b": { "type": "number" },
+                "c": { "type": "number" },
+                "d": { "type": "number" },
+                "e": { "type": "number" },
+                "f": { "type": "number" }
+              },
+              "additionalProperties": false
+            },
+            "projection": { "type": "string" },
+            "pixelRegistration": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "mars": {
+          "type": "object",
+          "required": ["datum", "meanRadiusM"],
+          "properties": {
+            "datum": { "type": "string" },
+            "meanRadiusM": { "type": "number" },
+            "referenceEllipsoid": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "layers": {
+          "type": "object",
+          "required": ["elevation", "slope", "mask", "imagery", "scienceStops"],
+          "properties": {
+            "elevation": { "type": "string" },
+            "slope": { "type": "string" },
+            "mask": { "type": "string" },
+            "imagery": { "type": "string" },
+            "scienceStops": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "parameterBounds": { "$ref": "#/$defs/parameterBounds" },
+        "scienceStops": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/scienceStop" }
+        },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sourceRecord" }
+        },
+        "checksums": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "errorResponse": {
+      "type": "object",
+      "required": ["status", "code", "message", "warnings"],
+      "properties": {
+        "status": { "$ref": "#/$defs/status" },
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "recalculate": { "type": "boolean" },
+        "planId": { "type": ["string", "null"] },
+        "warnings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/warning" }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

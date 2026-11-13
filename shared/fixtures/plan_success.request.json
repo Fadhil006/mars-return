@@ -1,0 +1,16 @@
+{
+  "requestId": "req-plan-success-001",
+  "schemaVersion": 1,
+  "datasetVersion": "jezero-synthetic-2026.11-v1",
+  "baseXY": [
+    400.0,
+    400.0
+  ],
+  "targetId": "hazeltop",
+  "maxSlopeDeg": 15,
+  "speedMPerMin": 30,
+  "totalBudgetMin": 180,
+  "reserveMin": 20,
+  "dwellMin": 10,
+  "blockedPolygonsXY": []
+}
