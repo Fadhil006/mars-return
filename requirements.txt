@@ -1,0 +1,10 @@
+# Pinned runtime + test dependencies for the Group A backend.
+# Created with Python 3.14.8 on 2026-11-13.
+fastapi==0.162.5
+uvicorn==0.54.0
+numpy==2.5.4
+rasterio==1.5.2
+pillow==13.0.0
+pydantic==2.14.3
+pytest==9.2.0
+httpx==0.28.1

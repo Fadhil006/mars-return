@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "jezero-synthetic-2026.11-v1",
+  "modelVersion": "group-a-1.0.0",
+  "generatedAt": "2026-11-13T00:00:00Z",
+  "region": {
+    "name": "Jezero Crater western delta (local metric grid)",
+    "boundsXY": {
+      "minX": 0.0,
+      "minY": 0.0,
+      "maxX": 3000.0,
+      "maxY": 3000.0
+    },
+    "widthM": 3000.0,
+    "heightM": 3000.0
+  },
+  "grid": {
+    "rows": 150,
+    "cols": 150,
+    "cellSizeM": 20.0,
+    "transform": {
+      "a": 20.0,
+      "b": 0.0,
+      "c": 0.0,
+      "d": 0.0,
+      "e": -20.0,
+      "f": 3000.0
+    },
+    "projection": "LOCAL_METRIC_TANGENT_PLANE (synthetic analog; +x East, +y North)",
+    "pixelRegistration": "north-up; row 0 = north edge, col 0 = west edge; values at cell centres"
+  },
+  "mars": {
+    "datum": "Mars 2000 / IAU_2015:49900",
+    "meanRadiusM": 3389500.0,
+    "referenceEllipsoid": "IAU 2015 Mars sphere (R = 3,389,500 m)"
+  },
+  "layers": {
+    "elevation": "data/region/elevation.json",
+    "slope": "data/region/slope.json",
+    "mask": "data/region/mask.json",
+    "imagery": "data/region/imagery.webp",
+    "scienceStops": "data/region/science-stops.json"
+  },
+  "parameterBounds": {
+    "maxSlopeDeg": {
+      "min": 5.0,
+      "max": 30.0,
+      "default": 15.0
+    },
+    "speedMPerMin": {
+      "min": 1.0,
+      "max": 120.0,
+      "default": 30.0
+    },
+    "totalBudgetMin": {
+      "min": 0.0,
+      "max": 1440.0,
+      "default": 180.0
+    },
+    "reserveMin": {
+      "min": 0.0,
+      "max": 1440.0,
+      "default": 20.0
+    },
+    "dwellMin": {
+      "min": 0.0,
+      "max": 720.0,
+      "default": 10.0
+    }
+  },
+  "scienceStops": [
+    {
+      "targetId": "hazeltop",
+      "sourceId": "nasa-perseverance-sample-hazeltop",
+      "name": "Hazeltop",
+      "xy": [
+        1300.0,
+        400.0
+      ],
+      "description": "Sedimentary rock core from the Wildcat Ridge member of the Jezero delta front; drilled and sealed by Perseverance.",
+      "geology": "Fine-grained delta-front sedimentary rock with sulfate and clay-bearing signals, sampled to study ancient lake chemistry.",
+      "sourceIds": [
+        "nasa-perseverance-sample-hazeltop",
+        "nasa-perseverance-samples",
+        "usgs-jezero-dem"
+      ],
+      "provenance": {
+        "mission": "NASA Mars 2020 Perseverance",
+        "site": "Wildcat Ridge, Delta Front, Jezero Crater",
+        "sol": 509,
+        "date": "2022-07-27",
+        "latitudeDeg": 18.444,
+        "longitudeDeg": 77.451,
+        "citation": "NASA Science, Mars Rock Samples, sample 12 (Hazeltop), sol 509; accessed 2026-11-13.",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+        "note": "xy is a local synthetic-grid position; latitude/longitude is approximate contextual provenance, not a surveyed fix."
+      }
+    },
+    {
+      "targetId": "montdenier",
+      "sourceId": "nasa-perseverance-sample-montdenier",
+      "name": "Montdenier",
+      "xy": [
+        1100.0,
+        1200.0
+      ],
+      "description": "Igneous rock core from the Rochette outcrop at Artuby Ridge, one of the first two cores cached by Perseverance.",
+      "geology": "Olivine-bearing basaltic lava-flow rock, sampled to date Jezero floor volcanism and assess aqueous alteration.",
+      "sourceIds": [
+        "nasa-perseverance-sample-montdenier",
+        "nasa-perseverance-samples",
+        "usgs-jezero-dem"
+      ],
+      "provenance": {
+        "mission": "NASA Mars 2020 Perseverance",
+        "site": "Artuby Ridge (Rochette), Jezero Crater floor",
+        "sol": 194,
+        "date": "2021-09-06",
+        "latitudeDeg": 18.43,
+        "longitudeDeg": 77.452,
+        "citation": "NASA Science, Mars Rock Samples, sample 2 (Montdenier), sol 194; accessed 2026-11-13.",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+        "note": "xy is a local synthetic-grid position; latitude/longitude is approximate contextual provenance, not a surveyed fix."
+      }
+    },
+    {
+      "targetId": "mageik",
+      "sourceId": "nasa-perseverance-sample-mageik",
+      "name": "Mageik",
+      "xy": [
+        1800.0,
+        900.0
+      ],
+      "description": "Sedimentary rock core from the Amalik member of the delta front, sealed during the 2022 delta campaign.",
+      "geology": "Delta-front mudstone/sandstone package used to reconstruct fluvial-lacustrine depositional conditions.",
+      "sourceIds": [
+        "nasa-perseverance-sample-mageik",
+        "nasa-perseverance-samples",
+        "usgs-jezero-dem"
+      ],
+      "provenance": {
+        "mission": "NASA Mars 2020 Perseverance",
+        "site": "Amalik, Delta Front, Jezero Crater",
+        "sol": 619,
+        "date": "2022-11-16",
+        "latitudeDeg": 18.451,
+        "longitudeDeg": 77.438,
+        "citation": "NASA Science, Mars Rock Samples, sample 15 (Mageik), sol 619; accessed 2026-11-13.",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+        "note": "xy is a local synthetic-grid position; latitude/longitude is approximate contextual provenance, not a surveyed fix."
+      }
+    }
+  ],
+  "sources": [
+    {
+      "sourceId": "usgs-jezero-dem",
+      "title": "Mars 2020 Perseverance landing site digital elevation model",
+      "publisher": "USGS Astrogeology Science Center",
+      "url": "https://astrogeology.usgs.gov/search/map/mars_2020_perseverance_landing_site_dem",
+      "accessed": "2026-11-13",
+      "license": "Public domain (US Government)",
+      "role": "elevation",
+      "notes": "DEM source for slope and ascent calculations."
+    },
+    {
+      "sourceId": "usgs-jezero-ortho",
+      "title": "Jezero Crater orthoimage mosaic",
+      "publisher": "USGS Astrogeology Science Center / NASA HiRISE",
+      "url": "https://astrogeology.usgs.gov/search/map/mars_2020_perseverance_landing_site_orthoimage",
+      "accessed": "2026-11-13",
+      "license": "Public domain (US Government)",
+      "role": "orthoimagery",
+      "notes": "Orthoimage source for the regional imagery layer."
+    },
+    {
+      "sourceId": "nasa-perseverance-samples",
+      "title": "Mars Rock Samples collected by Perseverance",
+      "publisher": "NASA Science",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+      "accessed": "2026-11-13",
+      "license": "Public domain (NASA)",
+      "role": "science-stop provenance",
+      "notes": "Sample names, sols, sites, rock types and science notes."
+    },
+    {
+      "sourceId": "synthetic-jezero-analog",
+      "title": "Offline synthetic Jezero western-delta analog",
+      "publisher": "mars-return project",
+      "url": "local://data/region",
+      "accessed": "2026-11-13",
+      "license": "Project-generated synthetic data",
+      "role": "synthetic fallback terrain",
+      "notes": "Deterministic terrain generator used when USGS rasters are not available. It is a physically plausible analog, not a measured DEM; coordinates are local grid positions."
+    }
+  ],
+  "checksums": {
+    "elevation.json": "sha256:962457a5afab19ea6545c13ecdab1d7badb9eee7c982fdcda8f1ff00224abfd3",
+    "slope.json": "sha256:758f03bca7096904ce19a9f073b72c941ea189926d39f5eb31d358d31c600f3d",
+    "mask.json": "sha256:95732764b8c90dbb6dc81f77c59db3321f1b1fa62f13705a54c1f8ef22a69d7e",
+    "imagery.webp": "sha256:782c99361d8f255c2871a081a18328da5424fbb54f38ad6ee16007c2b6026580",
+    "science-stops.json": "sha256:a38d360d14fa031745bed1e83b1db383c3f953ace7da2466bca85fd126510c18"
+  },
+  "notes": [
+    "Synthetic offline fallback: deterministic western-Jezero-delta analog, not a measured DEM. Cell size 20 m, grid capped at 512 cells."
+  ]
+}

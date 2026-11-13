@@ -1,0 +1,225 @@
+{
+  "name": "rehearse_return_only",
+  "description": "Mid-mission rehearsal at [1000, 400]. elapsedMin=35 is context and is NOT subtracted again: remainingBudgetMin=60 is the time available now. Immediate return costs 600/30 + 20 = 40 min (margin +20, ok), while continuing to Hazeltop then returning costs 1050/30 + 10 + 20 = 65 min (margin -5, over_budget).",
+  "request": {
+    "requestId": "req-rehearse-return-only-001",
+    "schemaVersion": 1,
+    "datasetVersion": "jezero-synthetic-2026.11-v1",
+    "currentXY": [
+      1000.0,
+      400.0
+    ],
+    "elapsedMin": 35,
+    "remainingBudgetMin": 60,
+    "targetId": "hazeltop",
+    "baseXY": [
+      400.0,
+      400.0
+    ],
+    "maxSlopeDeg": 15,
+    "speedMPerMin": 30,
+    "dwellMin": 10,
+    "reserveMin": 20,
+    "routeMode": "shortest",
+    "blockedPolygonsXY": []
+  },
+  "response": {
+    "requestId": "req-rehearse-return-only-001",
+    "rehearsalId": "reh-fixture-return-only-0001",
+    "schemaVersion": 1,
+    "datasetVersion": "jezero-synthetic-2026.11-v1",
+    "modelVersion": "group-a-1.0.0",
+    "status": "over_budget",
+    "currentPositionValid": true,
+    "currentXY": [
+      1000.0,
+      400.0
+    ],
+    "elapsedMin": 35.0,
+    "remainingBudgetMin": 60.0,
+    "immediateReturn": {
+      "label": "immediate_return",
+      "status": "ok",
+      "pathXY": [
+        [
+          1000.0,
+          400.0
+        ],
+        [
+          850.0,
+          400.0
+        ],
+        [
+          700.0,
+          400.0
+        ],
+        [
+          550.0,
+          400.0
+        ],
+        [
+          400.0,
+          400.0
+        ]
+      ],
+      "distanceM": 600.0,
+      "ascentM": 12.0,
+      "maxSlopeDeg": 8.8,
+      "meanSlopeDeg": 3.4,
+      "travelMin": 20.0,
+      "dwellMin": 0.0,
+      "reserveMin": 20.0,
+      "totalRequiredMin": 40.0,
+      "marginMin": 20.0,
+      "profile": [
+        {
+          "distanceM": 0,
+          "elevationM": -2588,
+          "slopeDeg": 0.0
+        },
+        {
+          "distanceM": 150,
+          "elevationM": -2591,
+          "slopeDeg": 3.1
+        },
+        {
+          "distanceM": 300,
+          "elevationM": -2595,
+          "slopeDeg": 5.4
+        },
+        {
+          "distanceM": 450,
+          "elevationM": -2598,
+          "slopeDeg": 8.8
+        },
+        {
+          "distanceM": 600,
+          "elevationM": -2600,
+          "slopeDeg": 3.0
+        }
+      ],
+      "sourceIds": [
+        "nasa-perseverance-sample-hazeltop",
+        "usgs-jezero-dem",
+        "usgs-jezero-ortho"
+      ],
+      "datasetVersion": "jezero-synthetic-2026.11-v1",
+      "modelVersion": "group-a-1.0.0",
+      "warnings": []
+    },
+    "continueThenReturn": {
+      "label": "continue_then_return",
+      "status": "over_budget",
+      "pathXY": [
+        [
+          1000.0,
+          400.0
+        ],
+        [
+          1075.0,
+          400.0
+        ],
+        [
+          1150.0,
+          400.0
+        ],
+        [
+          1225.0,
+          400.0
+        ],
+        [
+          1300.0,
+          400.0
+        ],
+        [
+          1075.0,
+          400.0
+        ],
+        [
+          850.0,
+          400.0
+        ],
+        [
+          625.0,
+          400.0
+        ],
+        [
+          400.0,
+          400.0
+        ]
+      ],
+      "distanceM": 1050.0,
+      "ascentM": 24.0,
+      "maxSlopeDeg": 14.2,
+      "meanSlopeDeg": 5.6,
+      "travelMin": 35.0,
+      "dwellMin": 10.0,
+      "reserveMin": 20.0,
+      "totalRequiredMin": 65.0,
+      "marginMin": -5.0,
+      "profile": [
+        {
+          "distanceM": 0,
+          "elevationM": -2588,
+          "slopeDeg": 0.0
+        },
+        {
+          "distanceM": 37.5,
+          "elevationM": -2584,
+          "slopeDeg": 2.5
+        },
+        {
+          "distanceM": 75,
+          "elevationM": -2580,
+          "slopeDeg": 4.0
+        },
+        {
+          "distanceM": 112.5,
+          "elevationM": -2578,
+          "slopeDeg": 6.2
+        },
+        {
+          "distanceM": 150,
+          "elevationM": -2576,
+          "slopeDeg": 4.8
+        },
+        {
+          "distanceM": 375,
+          "elevationM": -2585,
+          "slopeDeg": 9.9
+        },
+        {
+          "distanceM": 600,
+          "elevationM": -2590,
+          "slopeDeg": 14.2
+        },
+        {
+          "distanceM": 825,
+          "elevationM": -2598,
+          "slopeDeg": 11.0
+        },
+        {
+          "distanceM": 1050,
+          "elevationM": -2600,
+          "slopeDeg": 4.0
+        }
+      ],
+      "sourceIds": [
+        "nasa-perseverance-sample-hazeltop",
+        "usgs-jezero-dem",
+        "usgs-jezero-ortho"
+      ],
+      "datasetVersion": "jezero-synthetic-2026.11-v1",
+      "modelVersion": "group-a-1.0.0",
+      "warnings": []
+    },
+    "warnings": [
+      {
+        "code": "continue_exceeds_budget",
+        "message": "Continuing to the target then returning needs 70 min but only 60 min remain; immediate return needs 40 min.",
+        "severity": "warning"
+      }
+    ],
+    "generatedAt": "2026-11-13T00:00:00Z"
+  }
+}

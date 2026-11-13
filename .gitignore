@@ -2,12 +2,14 @@
 .env
 .env.*
 !.env.example
+
 # JavaScript
 node_modules/
 dist/
 coverage/
 playwright-report/
 test-results/
+
 # Python
 .venv/
 venv/
@@ -20,10 +22,16 @@ __pycache__/
 htmlcov/
 *.egg-info/
 build/
+
 # Local tools and OS
 .DS_Store
 .idea/
 *.log
+*.swp
+
+# Ephemeral API state
+data/plans/
+
 # Bulk source data and generated region assets
 /data/raw/*
 !/data/raw/README.md
@@ -31,3 +39,7 @@ build/
 !/data/region/README.md
 !/data/region/manifest.json
 !/data/region/science-stops.json
+!/data/region/elevation.json
+!/data/region/slope.json
+!/data/region/mask.json
+!/data/region/imagery.webp

@@ -1,0 +1,22 @@
+{
+  "requestId": "req-rehearse-return-only-001",
+  "schemaVersion": 1,
+  "datasetVersion": "jezero-synthetic-2026.11-v1",
+  "currentXY": [
+    1000.0,
+    400.0
+  ],
+  "elapsedMin": 35,
+  "remainingBudgetMin": 60,
+  "targetId": "hazeltop",
+  "baseXY": [
+    400.0,
+    400.0
+  ],
+  "maxSlopeDeg": 15,
+  "speedMPerMin": 30,
+  "dwellMin": 10,
+  "reserveMin": 20,
+  "routeMode": "shortest",
+  "blockedPolygonsXY": []
+}
