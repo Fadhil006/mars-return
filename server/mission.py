@@ -13,6 +13,8 @@ def _leg(region, start, end, request, mode):
     result = route(region, start, end, mode, request["maxSlopeDeg"], request.get("blockedPolygonsXY", []))
     if result["status"] == "ok":
         result["travelMin"] = result["distanceM"] / request["speedMPerMin"]
+        if not math.isfinite(result["travelMin"]):
+            raise ValueError("speedMPerMin is too small to produce a finite travel time")
     return result
 
 
@@ -29,6 +31,8 @@ def _assessment(legs, speed, budget, reserve, dwell):
     total_distance = sum(distances)
     travel = total_distance / speed
     required = travel + dwell + reserve
+    if not math.isfinite(required):
+        raise ValueError("Scenario produces a non-finite required time")
     return {"status": "ok" if required <= budget else "over_budget", "totalDistanceM": total_distance,
             "travelMin": travel, "dwellMin": dwell, "reserveMin": reserve,
             "totalRequiredMin": required, "marginMin": budget - required}

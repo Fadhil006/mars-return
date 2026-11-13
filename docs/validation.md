@@ -1,6 +1,6 @@
 # Group A validation record
 
-Verified locally on 12 November 2026, Linux / Python 3.14.8. This establishes backend behavior, not a completed Space Apps submission or certified Mars navigation.
+Initial real-data validation on 12 November 2026; expanded parallel verification on 13 November 2026, Linux / Python 3.14.8. This establishes backend behavior, not a completed Space Apps submission or certified Mars navigation.
 
 ## Dataset and environment
 
@@ -18,9 +18,11 @@ Verified locally on 12 November 2026, Linux / Python 3.14.8. This establishes ba
 git diff --check
 ```
 
-Result: **57 passed**; schema consistency and whitespace checks passed. One dependency deprecation warning: Starlette's HTTPX TestClient integration recommends a newer client. The pinned combination currently passes; no warning was hidden.
+Final result: **102 passed** in the project environment and **102 passed** in a separately created clean virtual environment on the same host. All 32 pinned dependencies installed there; `pip check` found no broken requirements, and schema consistency/whitespace checks passed. One dependency deprecation warning: Starlette's HTTPX TestClient integration recommends a newer client. The pinned combination currently passes; no warning was hidden.
 
 Coverage includes coordinates/boundaries, known-plane slope, missing-data support under shifted resampling, invalid resolution/input rejection, layer checksums, A* versus independent Dijkstra for both objectives, obstacles/diagonal corners, distance-weighted slopes, zero-distance legs, round trips, reserve/dwell accounting, closure/reset, API errors, request limits, trusted-plan expiry/eviction, symlink rejection, fixtures and portable packaging.
+
+Parallel GPT-6.1 Sol medium workers added API boundary regressions and 48 seeded tiny-grid comparisons per objective against an independent Dijkstra oracle. They found a finite-but-subnormal speed overflow: mission calculations now reject non-finite derived times with HTTP 422 instead of response-validation failure/500. Both planning and rehearsal have regression coverage. An initial clean-environment run overlapped unfinished tests and failed; the finalized suite was rerun successfully in both environments.
 
 ## Real-data scenarios
 
@@ -41,6 +43,7 @@ Synthetic regression: 900 m outbound + 900 m return at 30 m/min, 10-minute dwell
 ## Independent numeric and reproducibility checks
 
 - Original DEM sampled directly at projected coordinates corresponding to local `[510,1510]`: **−2554.556640625 m**. Prepared elevation is identical; difference **0 m** at this checked sample. This does not establish accuracy everywhere.
+- Independent follow-up audit verified the two raw-source hashes, all five declared asset hashes, the manifest-derived dataset version, and exact source/prepared elevation equality at additional local cell centers `[2250,2370]` and `[870,570]`. All three published hypothetical destinations also returned feasible results for both objectives through the API.
 - Returned leg distances independently summed using Euclidean distances between XY vertices; all checked legs match within 1e-6 m.
 - Removing the hypothetical closure restores the baseline result after intervening closure/no-path evaluations.
 - Ran complete preparation twice: byte-identical manifest/version, with matching exported-layer checksums.

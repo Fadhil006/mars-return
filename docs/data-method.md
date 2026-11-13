@@ -48,7 +48,7 @@ For raster preparation alone, after obtaining the verified inputs, run from the 
   --output-dir data/region --cell-size-m 20
 ```
 
-Crop bounds are in the DEM's native projected meters and supplied in west, south, east, north order. The run produces 150 × 150 cells; 22,500 have elevation coverage and 21,904 have a complete slope neighborhood. Imagery validity and combined true-mask cell counts are recorded separately. The crop has elevations from −2,616.9055 m to −2,475.135 m (mean −2,570.5252 m in the source units). Raster preparation alone versions layers and crop parameters; `scripts.prepare_demo` additionally versions the destination checksum, source records, and scenario metadata. Use the complete command before serving the documented scenario.
+Crop bounds are in the DEM's native projected meters and supplied in west, south, east, north order. The run produces 150 × 150 cells; 22,500 have elevation coverage and 21,904 have a complete slope neighborhood. Imagery validity and combined true-mask cell counts are recorded separately. The crop has elevations from −2,616.9055 m to −2,475.135 m (prepared-array mean −2,570.5251 m in the source units). Raster preparation alone versions layers and crop parameters; `scripts.prepare_demo` additionally versions the destination checksum, source records, and scenario metadata. Use the complete command before serving the documented scenario.
 
 ## Limitations and use
 
