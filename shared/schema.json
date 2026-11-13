@@ -278,9 +278,9 @@
       "type": "object",
       "required": [
         "requestId", "rehearsalId", "schemaVersion", "datasetVersion",
-        "modelVersion", "status", "currentPositionValid", "elapsedMin",
-        "remainingBudgetMin", "immediateReturn", "continueThenReturn",
-        "warnings", "generatedAt"
+        "modelVersion", "status", "currentPositionValid", "currentXY",
+        "elapsedMin", "remainingBudgetMin", "immediateReturn",
+        "continueThenReturn", "warnings", "generatedAt"
       ],
       "properties": {
         "requestId": { "type": "string" },
@@ -290,6 +290,12 @@
         "modelVersion": { "type": "string" },
         "status": { "$ref": "#/$defs/status" },
         "currentPositionValid": { "type": "boolean" },
+        "currentXY": {
+          "type": ["array", "null"],
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "number" }
+        },
         "elapsedMin": { "type": "number", "minimum": 0 },
         "remainingBudgetMin": { "type": "number", "minimum": 0 },
         "immediateReturn": { "$ref": "#/$defs/rehearseAssessment" },
