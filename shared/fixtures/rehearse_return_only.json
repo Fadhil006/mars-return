@@ -31,6 +31,10 @@
     "modelVersion": "group-a-1.0.0",
     "status": "over_budget",
     "currentPositionValid": true,
+    "currentXY": [
+      1000.0,
+      400.0
+    ],
     "elapsedMin": 35.0,
     "remainingBudgetMin": 60.0,
     "immediateReturn": {

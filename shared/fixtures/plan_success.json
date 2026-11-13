@@ -264,8 +264,7 @@
         ],
         "datasetVersion": "jezero-synthetic-2026.11-v1",
         "modelVersion": "group-a-1.0.0",
-        "warnings": [],
-        "errors": []
+        "warnings": []
       },
       "slope_penalized": {
         "mode": "slope_penalized",
@@ -506,8 +505,7 @@
         ],
         "datasetVersion": "jezero-synthetic-2026.11-v1",
         "modelVersion": "group-a-1.0.0",
-        "warnings": [],
-        "errors": []
+        "warnings": []
       }
     },
     "warnings": [],

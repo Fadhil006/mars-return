@@ -157,6 +157,10 @@ def xy_to_pixel(
     x = _number(x_m, "x_m")
     y = _number(y_m, "y_m")
 
+    # The north edge is the open upper boundary of row 0.
+    if y >= grid["f"]:
+        return None
+
     # Inverse of the north-up affine (b = d = 0).
     col = (x - grid["c"]) / grid["a"]
     row = (y - grid["f"]) / grid["e"]
@@ -169,7 +173,7 @@ def xy_to_pixel(
 
     if not (0 <= col < grid["cols"] and 0 <= row < grid["rows"]):
         return None
-    return [int(col), int(row)]
+    return [int(row), int(col)]
 
 
 def is_xy_in_bounds(x_m: float, y_m: float, manifest: Mapping[str, Any]) -> bool:
