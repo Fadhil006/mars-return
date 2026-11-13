@@ -1,8 +1,14 @@
 # MARS RETURN
 
-A Mars mission rehearsal project for the NASA Space Apps Martian Map challenge: explore real terrain, compare routes, and ask **“Can we still get back?”** when a scenario changes.
+A Mars mission rehearsal project for the NASA Space Apps Martian Map challenge:
+explore real terrain, compare routes, and ask **“Can we still get back?”** when a
+scenario changes.
 
-**Status:** folder structure and planning documents only. No runnable frontend/backend, dependency installation, scientific datasets or application tests have been added yet.
+**Status:** the Group A backend is implemented (shared contract, data
+preprocessing, routing, mission/rehearsal arithmetic, API, evidence briefs, and
+tests). The frontend has **not** been implemented. The `web/` tree exists on
+this branch only because it is inherited from `origin/main`; it contains 10
+tracked placeholder README files and no React/TypeScript/Vite application code.
 
 ## Start here
 
@@ -11,32 +17,82 @@ A Mars mission rehearsal project for the NASA Space Apps Martian Map challenge: 
 3. Confirm the [shared API design](shared/api-contract.md) before implementing either side.
 4. Use the [collaboration guide](CONTRIBUTING.md) for ownership and handoffs.
 
+## Group A backend
+
+Local, offline-first route planning service for a Mars rover traverse around
+Jezero Crater. It contains the shared contract, data preprocessing, coordinate
+transforms, routing, mission budget arithmetic, rehearsal planning,
+evidence-backed briefs, and tests. There is no frontend application code in this
+branch; `web/` still contains only placeholder READMEs inherited from
+`origin/main`.
+
+Quick start from the repository root:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python server/preprocess.py --synthetic-fallback
+.venv/bin/pytest server/tests -q
+.venv/bin/uvicorn server.api:app --port 8000
+```
+
+See [server/README.md](server/README.md) for full setup/run/test instructions,
+and [docs/data-method.md](docs/data-method.md) /
+[docs/validation.md](docs/validation.md) for methodology and measured results.
+
+Key Group A files:
+
+| Path | Purpose |
+| --- | --- |
+| `shared/schema.json` | Versioned request/response contract (`schemaVersion: 1`) |
+| `shared/fixtures/` | Synthetic request/response fixtures |
+| `server/coordinates.py` | Pixel <-> local metric coordinate transforms |
+| `server/preprocess.py` | Raster -> bounded metric grid + manifest |
+| `server/routing.py` | 8-neighbour A* (`shortest`, `slope_penalized`) |
+| `server/mission.py` | Plan/rehearsal timings, ascent, budget margins |
+| `server/evidence.py` | Science-stop evidence + template briefs |
+| `server/api.py` | FastAPI service |
+| `server/tests/` | Pytest unit + integration suite |
+| `data/region/` | Committed synthetic fallback dataset |
+
 ## Repository structure
+
+The Group A backend is implemented. The `web/` tree is inherited from
+`origin/main` and is not part of the Group A implementation.
 
 ```text
 mars-return/
-├── server/                 # A1/A2/A3: data processing, routing and API; B3: assistant
+├── server/                 # Group A: data processing, routing and API
+│   ├── api.py              # FastAPI endpoints
+│   ├── evidence.py         # Grounded template briefs
+│   ├── coordinates.py      # Pixel <-> metric transforms
+│   ├── preprocess.py       # Raster -> metric grid
+│   ├── routing.py          # A* routing modes
+│   ├── mission.py          # Budget and rehearsal arithmetic
 │   └── tests/              # Numerical, coordinate, budget and API tests
-├── web/
+├── web/                    # Frontend NOT implemented; placeholder READMEs only
+│   ├── README.md
+│   ├── public/README.md
 │   ├── src/
-│   │   ├── mission/        # B1: mission state, controls and route comparison
-│   │   ├── map/            # B1: local 2D imagery and overlays
-│   │   ├── terrain/        # B2: data-derived 3D terrain and playback
-│   │   ├── assistant/      # B3: grounded explanations
-│   │   ├── evidence/       # B3: citations and data limitations
-│   │   └── report/         # B3: mission summary/export
-│   ├── public/             # Small attributed static assets
-│   └── tests/              # User-flow and cross-view checks
+│   │   ├── README.md
+│   │   ├── assistant/README.md
+│   │   ├── evidence/README.md
+│   │   ├── map/README.md
+│   │   ├── mission/README.md
+│   │   ├── report/README.md
+│   │   └── terrain/README.md
+│   └── tests/README.md
 ├── shared/
 │   ├── api-contract.md     # Draft interface; A3 + B1 own changes
-│   └── fixtures/           # Synthetic development responses, still to create
+│   ├── schema.json         # Implemented Group A contract
+│   └── fixtures/           # Synthetic development responses
 ├── data/
 │   ├── raw/                # Local source downloads, ignored by Git
-│   ├── region/             # Prepared region bundle; products still to create
+│   ├── region/             # Prepared region bundle (committed synthetic fallback)
 │   └── sources/            # Source attribution and acquisition records
 ├── docs/
 │   ├── plans/              # Shared plan and both detailed group plans
-│   └── ...                 # Architecture, validation, demo and submission guides
+│   └── ...                 # Architecture, data method, validation and demo guides
 └── scripts/                # Future preparation, validation and packaging tools
 ```
 
@@ -53,13 +109,24 @@ mars-return/
 
 ## Development status
 
-The suggested stack is React/TypeScript/Vite + Three.js and Python/FastAPI + NumPy/Rasterio. A3 initializes the Python environment; B1 initializes the web application. They will add real setup commands and compatible dependency locks when those projects exist. There is no install or run command for this structural scaffold.
+The Group A backend is runnable with the pinned Python dependencies in
+`requirements.txt` and passing tests. The suggested frontend stack remains
+React/TypeScript/Vite + Three.js; the `web/` tree is still placeholder
+documentation. Group B will add the web application, and B3 will add
+`server/assistant.py`.
 
-Keep downloaded rasters and generated bulk data out of ordinary Git commits. Record sources and reproducible acquisition steps. Keep secrets in ignored local environment files. The starter environment file names are proposed settings and are not read by code yet.
+Keep downloaded source rasters and other large generated bulk data out of
+ordinary Git commits. The small deterministic synthetic fallback in
+`data/region/` is committed intentionally so the backend runs offline. Record
+sources and reproducible acquisition steps. Keep secrets in ignored local
+environment files.
 
 ## Scientific scope
 
-Use actual imagery/elevation for the region. The base, blocked corridor, speed, time budget and slope ceiling are hypothetical scenario inputs. Derived routes are model results, not certified astronaut navigation or safety guidance. Preserve missing-data masks and show data resolution.
+Use actual imagery/elevation for the region. The base, blocked corridor, speed,
+time budget and slope ceiling are hypothetical scenario inputs. Derived routes
+are model results, not certified astronaut navigation or safety guidance.
+Preserve missing-data masks and show data resolution.
 
 ## Project links
 
