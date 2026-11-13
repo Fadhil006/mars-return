@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "jezero-synthetic-2026.11-v1",
+  "stops": [
+    {
+      "targetId": "hazeltop",
+      "sourceId": "nasa-perseverance-sample-hazeltop",
+      "name": "Hazeltop",
+      "xy": [
+        1300.0,
+        400.0
+      ],
+      "description": "Sedimentary rock core from the Wildcat Ridge member of the Jezero delta front; drilled and sealed by Perseverance.",
+      "geology": "Fine-grained delta-front sedimentary rock with sulfate and clay-bearing signals, sampled to study ancient lake chemistry.",
+      "sourceIds": [
+        "nasa-perseverance-sample-hazeltop",
+        "nasa-perseverance-samples",
+        "usgs-jezero-dem"
+      ],
+      "provenance": {
+        "mission": "NASA Mars 2020 Perseverance",
+        "site": "Wildcat Ridge, Delta Front, Jezero Crater",
+        "sol": 509,
+        "date": "2022-07-27",
+        "latitudeDeg": 18.444,
+        "longitudeDeg": 77.451,
+        "citation": "NASA Science, Mars Rock Samples, sample 12 (Hazeltop), sol 509; accessed 2026-11-13.",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+        "note": "xy is a local synthetic-grid position; latitude/longitude is approximate contextual provenance, not a surveyed fix."
+      }
+    },
+    {
+      "targetId": "montdenier",
+      "sourceId": "nasa-perseverance-sample-montdenier",
+      "name": "Montdenier",
+      "xy": [
+        1100.0,
+        1200.0
+      ],
+      "description": "Igneous rock core from the Rochette outcrop at Artuby Ridge, one of the first two cores cached by Perseverance.",
+      "geology": "Olivine-bearing basaltic lava-flow rock, sampled to date Jezero floor volcanism and assess aqueous alteration.",
+      "sourceIds": [
+        "nasa-perseverance-sample-montdenier",
+        "nasa-perseverance-samples",
+        "usgs-jezero-dem"
+      ],
+      "provenance": {
+        "mission": "NASA Mars 2020 Perseverance",
+        "site": "Artuby Ridge (Rochette), Jezero Crater floor",
+        "sol": 194,
+        "date": "2021-09-06",
+        "latitudeDeg": 18.43,
+        "longitudeDeg": 77.452,
+        "citation": "NASA Science, Mars Rock Samples, sample 2 (Montdenier), sol 194; accessed 2026-11-13.",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+        "note": "xy is a local synthetic-grid position; latitude/longitude is approximate contextual provenance, not a surveyed fix."
+      }
+    },
+    {
+      "targetId": "mageik",
+      "sourceId": "nasa-perseverance-sample-mageik",
+      "name": "Mageik",
+      "xy": [
+        1800.0,
+        900.0
+      ],
+      "description": "Sedimentary rock core from the Amalik member of the delta front, sealed during the 2022 delta campaign.",
+      "geology": "Delta-front mudstone/sandstone package used to reconstruct fluvial-lacustrine depositional conditions.",
+      "sourceIds": [
+        "nasa-perseverance-sample-mageik",
+        "nasa-perseverance-samples",
+        "usgs-jezero-dem"
+      ],
+      "provenance": {
+        "mission": "NASA Mars 2020 Perseverance",
+        "site": "Amalik, Delta Front, Jezero Crater",
+        "sol": 619,
+        "date": "2022-11-16",
+        "latitudeDeg": 18.451,
+        "longitudeDeg": 77.438,
+        "citation": "NASA Science, Mars Rock Samples, sample 15 (Mageik), sol 619; accessed 2026-11-13.",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+        "note": "xy is a local synthetic-grid position; latitude/longitude is approximate contextual provenance, not a surveyed fix."
+      }
+    }
+  ]
+}

@@ -378,11 +378,12 @@
     "scienceStop": {
       "type": "object",
       "required": [
-        "targetId", "name", "xy", "description", "geology",
+        "targetId", "sourceId", "name", "xy", "description", "geology",
         "sourceIds", "provenance"
       ],
       "properties": {
         "targetId": { "type": "string" },
+        "sourceId": { "type": "string" },
         "name": { "type": "string" },
         "xy": { "$ref": "#/$defs/xy" },
         "description": { "type": "string" },
