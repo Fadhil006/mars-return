@@ -1,5 +1,5 @@
 {
-  "datasetVersion": "4492c9ffb6cf016a",
+  "datasetVersion": "9a4cd252af07db1a",
   "modelVersion": "grid-constant-speed-v1",
   "synthetic": false,
   "scenarioInputsAreHypothetical": true,
@@ -12,22 +12,103 @@
     "preparedElevationM": -2554.556640625,
     "differenceM": 0.0
   },
+  "roverElevationCrossCheck": {
+    "roverLocalizations": 125,
+    "solRange": [
+      13,
+      404
+    ],
+    "meanDifferenceM": -0.817,
+    "medianDifferenceM": -0.868,
+    "standardDeviationM": 1.976,
+    "maxAbsDifferenceM": 4.785,
+    "maxGridSlopeAtRoverStopDeg": 6.769,
+    "definition": "rover elev_geoid minus prepared CTX elevation at the containing 20 m cell"
+  },
+  "sampleSites": [
+    {
+      "id": "m20-roubion",
+      "name": "Roubion \u2014 Polygon Valley",
+      "roundTripM": 2884.995667241114,
+      "marginMin": 53.83347775862953,
+      "stressVerdict": "robust",
+      "closuresSurvived": "8/8",
+      "worstMarginMin": 50.938047258291135,
+      "largestDetourM": 86.86291501015239
+    },
+    {
+      "id": "m20-rochette",
+      "name": "Rochette \u2014 Artuby Ridge",
+      "roundTripM": 2193.624817342638,
+      "marginMin": 76.8791727552454,
+      "stressVerdict": "robust",
+      "closuresSurvived": "8/8",
+      "worstMarginMin": 75.77460325558381,
+      "largestDetourM": 33.13708498984761
+    },
+    {
+      "id": "m20-brac",
+      "name": "Brac \u2014 South S\u00e9\u00edtah",
+      "roundTripM": 1727.3506473629427,
+      "marginMin": 92.42164508790191,
+      "stressVerdict": "robust",
+      "closuresSurvived": "8/8",
+      "worstMarginMin": 90.85954792089683,
+      "largestDetourM": 46.86291501015239
+    },
+    {
+      "id": "m20-issole",
+      "name": "Issole \u2014 South S\u00e9\u00edtah",
+      "roundTripM": 1804.5079348883237,
+      "marginMin": 89.84973550372254,
+      "stressVerdict": "robust",
+      "closuresSurvived": "8/8",
+      "worstMarginMin": 88.74516600406096,
+      "largestDetourM": 33.13708498984761
+    },
+    {
+      "id": "m20-sid",
+      "name": "Sid \u2014 Octavia E. Butler Landing / Ch\u2019a\u0142 outcrop",
+      "roundTripM": 2209.7056274847714,
+      "marginMin": 76.34314575050762,
+      "stressVerdict": "robust",
+      "closuresSurvived": "8/8",
+      "worstMarginMin": 75.23857625084604,
+      "largestDetourM": 33.13708498984761
+    }
+  ],
+  "returnEnvelope50Min": {
+    "open": {
+      "status": "ok",
+      "allowanceMin": 30,
+      "reachableAreaM2": 8750800,
+      "returnableAreaM2": 1928800,
+      "farthestReturnableMin": 30.0
+    },
+    "withClosure": {
+      "status": "ok",
+      "allowanceMin": 30,
+      "reachableAreaM2": 8645200,
+      "returnableAreaM2": 1847600,
+      "farthestReturnableMin": 30.0
+    }
+  },
   "geometryCheck": "Each valid leg distance independently summed from returned XY segments",
   "timing": {
-    "planMs": 18.64,
-    "validationTotalMs": 292.22
+    "planMs": 19.93,
+    "validationTotalMs": 1049.99
   },
   "scenarios": [
     {
       "name": "default-plan",
       "request": {
         "schemaVersion": 1,
-        "datasetVersion": "4492c9ffb6cf016a",
+        "datasetVersion": "9a4cd252af07db1a",
         "baseXY": [
           510,
           1510
         ],
-        "targetId": "terrain-observation-a",
+        "targetId": "m20-sid",
         "maxSlopeDeg": 15,
         "speedMPerMin": 30,
         "reserveMin": 20,
@@ -40,12 +121,12 @@
         "options": {
           "shortest": {
             "status": "ok",
-            "totalDistanceM": 2000.0,
-            "travelMin": 66.66666666666667,
+            "totalDistanceM": 2209.7056274847714,
+            "travelMin": 73.65685424949238,
             "dwellMin": 10,
             "reserveMin": 20,
-            "totalRequiredMin": 96.66666666666667,
-            "marginMin": 83.33333333333333,
+            "totalRequiredMin": 103.65685424949238,
+            "marginMin": 76.34314575050762,
             "outbound": {
               "status": "ok",
               "pathXY": [
@@ -247,17 +328,33 @@
                 ],
                 [
                   1490.0,
-                  1510.0
+                  1490.0
                 ],
                 [
                   1510.0,
-                  1510.0
+                  1490.0
+                ],
+                [
+                  1530.0,
+                  1470.0
+                ],
+                [
+                  1550.0,
+                  1470.0
+                ],
+                [
+                  1570.0,
+                  1470.0
+                ],
+                [
+                  1590.0,
+                  1450.0
                 ]
               ],
-              "distanceM": 1000.0,
-              "ascentM": 11.412109375,
+              "distanceM": 1104.8528137423857,
+              "ascentM": 11.84375,
               "maxSlopeDeg": 5.822439975391289,
-              "meanSlopeDeg": 3.2931775786945843,
+              "meanSlopeDeg": 3.139674610955753,
               "profile": [
                 {
                   "distanceM": 0.0,
@@ -505,233 +602,269 @@
                   "slopeDeg": 2.575649491526711
                 },
                 {
-                  "distanceM": 980.0,
-                  "elevationM": -2567.05419921875,
-                  "slopeDeg": 2.705791084889359
+                  "distanceM": 988.2842712474619,
+                  "elevationM": -2567.35693359375,
+                  "slopeDeg": 1.8280672729791974
                 },
                 {
-                  "distanceM": 1000.0,
-                  "elevationM": -2567.99267578125,
-                  "slopeDeg": 2.754880224939734
+                  "distanceM": 1008.2842712474619,
+                  "elevationM": -2568.046875,
+                  "slopeDeg": 2.052291838768789
+                },
+                {
+                  "distanceM": 1036.5685424949238,
+                  "elevationM": -2568.38916015625,
+                  "slopeDeg": 1.6419428572234678
+                },
+                {
+                  "distanceM": 1056.5685424949238,
+                  "elevationM": -2568.77685546875,
+                  "slopeDeg": 1.6683167399657501
+                },
+                {
+                  "distanceM": 1076.5685424949238,
+                  "elevationM": -2568.9921875,
+                  "slopeDeg": 1.6347503165285393
+                },
+                {
+                  "distanceM": 1104.8528137423857,
+                  "elevationM": -2568.560546875,
+                  "slopeDeg": 1.026216859617201
                 }
               ],
-              "cost": 1000.0,
+              "cost": 1104.8528137423857,
               "requestedStartXY": [
                 510,
                 1510
               ],
               "requestedGoalXY": [
-                1510,
-                1510
+                1581.2,
+                1456.7
               ],
               "effectiveStartXY": [
                 510.0,
                 1510.0
               ],
               "effectiveGoalXY": [
-                1510.0,
-                1510.0
+                1590.0,
+                1450.0
               ],
-              "travelMin": 33.333333333333336
+              "travelMin": 36.82842712474619
             },
             "return": {
               "status": "ok",
               "pathXY": [
                 [
+                  1590.0,
+                  1450.0
+                ],
+                [
+                  1570.0,
+                  1450.0
+                ],
+                [
+                  1550.0,
+                  1450.0
+                ],
+                [
+                  1530.0,
+                  1450.0
+                ],
+                [
                   1510.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1490.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1470.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1450.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1430.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1410.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1390.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1370.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1350.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1330.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1310.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1290.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1270.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1250.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1230.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1210.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1190.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1170.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1150.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1130.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1110.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1090.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1070.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1050.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1030.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1010.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   990.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   970.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   950.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   930.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   910.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   890.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   870.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   850.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   830.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   810.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   790.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   770.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   750.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   730.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   710.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   690.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   670.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   650.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   630.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   610.0,
-                  1510.0
+                  1470.0
                 ],
                 [
                   590.0,
-                  1510.0
+                  1470.0
                 ],
                 [
                   570.0,
-                  1510.0
+                  1490.0
                 ],
                 [
                   550.0,
-                  1510.0
+                  1490.0
                 ],
                 [
                   530.0,
@@ -742,295 +875,315 @@
                   1510.0
                 ]
               ],
-              "distanceM": 1000.0,
-              "ascentM": 24.84814453125,
-              "maxSlopeDeg": 5.822439975391289,
-              "meanSlopeDeg": 3.2931775786945847,
+              "distanceM": 1104.8528137423857,
+              "ascentM": 19.885498046875,
+              "maxSlopeDeg": 4.478098329604271,
+              "meanSlopeDeg": 2.4818434766099293,
               "profile": [
                 {
                   "distanceM": 0.0,
-                  "elevationM": -2567.99267578125,
-                  "slopeDeg": 2.754880224939734
+                  "elevationM": -2568.560546875,
+                  "slopeDeg": 1.026216859617201
                 },
                 {
                   "distanceM": 20.0,
-                  "elevationM": -2567.05419921875,
-                  "slopeDeg": 2.705791084889359
+                  "elevationM": -2568.540771484375,
+                  "slopeDeg": 0.9715722782815032
                 },
                 {
                   "distanceM": 40.0,
-                  "elevationM": -2566.29248046875,
-                  "slopeDeg": 2.575649491526711
+                  "elevationM": -2568.361328125,
+                  "slopeDeg": 1.1702889903050393
                 },
                 {
                   "distanceM": 60.0,
-                  "elevationM": -2565.863037109375,
-                  "slopeDeg": 2.6655929410621817
+                  "elevationM": -2568.029541015625,
+                  "slopeDeg": 1.340767770365273
                 },
                 {
                   "distanceM": 80.0,
-                  "elevationM": -2565.64697265625,
-                  "slopeDeg": 2.871196660232801
+                  "elevationM": -2567.65185546875,
+                  "slopeDeg": 1.1568360426406765
                 },
                 {
                   "distanceM": 100.0,
-                  "elevationM": -2565.50732421875,
-                  "slopeDeg": 2.869443065774504
+                  "elevationM": -2567.408203125,
+                  "slopeDeg": 0.5527871270415735
                 },
                 {
                   "distanceM": 120.0,
-                  "elevationM": -2565.533447265625,
-                  "slopeDeg": 2.6511000108614025
+                  "elevationM": -2567.433349609375,
+                  "slopeDeg": 0.3419530297378442
                 },
                 {
                   "distanceM": 140.0,
-                  "elevationM": -2565.847900390625,
-                  "slopeDeg": 2.507499227525388
+                  "elevationM": -2567.646484375,
+                  "slopeDeg": 0.7128473273387363
                 },
                 {
                   "distanceM": 160.0,
-                  "elevationM": -2566.450927734375,
-                  "slopeDeg": 2.6021593779988037
+                  "elevationM": -2567.847900390625,
+                  "slopeDeg": 0.7997745724256456
                 },
                 {
                   "distanceM": 180.0,
-                  "elevationM": -2567.308349609375,
-                  "slopeDeg": 2.806096425962
+                  "elevationM": -2567.906982421875,
+                  "slopeDeg": 0.7222237910819862
                 },
                 {
                   "distanceM": 200.0,
-                  "elevationM": -2568.2958984375,
-                  "slopeDeg": 2.7450206238834793
+                  "elevationM": -2567.779052734375,
+                  "slopeDeg": 0.8526916138128057
                 },
                 {
                   "distanceM": 220.0,
-                  "elevationM": -2569.202392578125,
-                  "slopeDeg": 2.1983746501577337
+                  "elevationM": -2567.545654296875,
+                  "slopeDeg": 0.7272875604886926
                 },
                 {
                   "distanceM": 240.0,
-                  "elevationM": -2569.828125,
-                  "slopeDeg": 1.2818412866879927
+                  "elevationM": -2567.409423828125,
+                  "slopeDeg": 0.07520700816859119
                 },
                 {
                   "distanceM": 260.0,
-                  "elevationM": -2570.085205078125,
-                  "slopeDeg": 0.5186913190506935
+                  "elevationM": -2567.51513671875,
+                  "slopeDeg": 0.9379283621681093
                 },
                 {
                   "distanceM": 280.0,
-                  "elevationM": -2569.99658203125,
-                  "slopeDeg": 0.8827112321806712
+                  "elevationM": -2567.819580078125,
+                  "slopeDeg": 1.7491047269504356
                 },
                 {
                   "distanceM": 300.0,
-                  "elevationM": -2569.681396484375,
-                  "slopeDeg": 1.3443487320266945
+                  "elevationM": -2568.34716796875,
+                  "slopeDeg": 2.3901681349067374
                 },
                 {
                   "distanceM": 320.0,
-                  "elevationM": -2569.259521484375,
-                  "slopeDeg": 1.6056563806534605
+                  "elevationM": -2569.09423828125,
+                  "slopeDeg": 2.483601819687865
                 },
                 {
                   "distanceM": 340.0,
-                  "elevationM": -2568.79150390625,
-                  "slopeDeg": 1.7806249226185902
+                  "elevationM": -2569.732177734375,
+                  "slopeDeg": 1.8211934768595162
                 },
                 {
                   "distanceM": 360.0,
-                  "elevationM": -2568.2451171875,
-                  "slopeDeg": 2.096154011819999
+                  "elevationM": -2569.975830078125,
+                  "slopeDeg": 1.1584812159677467
                 },
                 {
                   "distanceM": 380.0,
-                  "elevationM": -2567.490478515625,
-                  "slopeDeg": 2.8330239986170764
+                  "elevationM": -2569.814453125,
+                  "slopeDeg": 1.4680971708895951
                 },
                 {
                   "distanceM": 400.0,
-                  "elevationM": -2566.3662109375,
-                  "slopeDeg": 3.964613922671871
+                  "elevationM": -2569.3447265625,
+                  "slopeDeg": 2.2224360410573447
                 },
                 {
                   "distanceM": 420.0,
-                  "elevationM": -2564.822021484375,
-                  "slopeDeg": 5.140016298015429
+                  "elevationM": -2568.61474609375,
+                  "slopeDeg": 2.85345212117557
                 },
                 {
                   "distanceM": 440.0,
-                  "elevationM": -2562.88818359375,
-                  "slopeDeg": 5.822439975391289
+                  "elevationM": -2567.706787109375,
+                  "slopeDeg": 3.199992639591464
                 },
                 {
                   "distanceM": 460.0,
-                  "elevationM": -2560.87060546875,
-                  "slopeDeg": 5.632699978379958
+                  "elevationM": -2566.744140625,
+                  "slopeDeg": 3.3219011182601785
                 },
                 {
                   "distanceM": 480.0,
-                  "elevationM": -2559.116943359375,
-                  "slopeDeg": 4.899466985497111
+                  "elevationM": -2565.79736328125,
+                  "slopeDeg": 3.4151701123158116
                 },
                 {
                   "distanceM": 500.0,
-                  "elevationM": -2557.7138671875,
-                  "slopeDeg": 4.189231925911758
+                  "elevationM": -2564.718994140625,
+                  "slopeDeg": 3.5513398915804872
                 },
                 {
                   "distanceM": 520.0,
-                  "elevationM": -2556.55078125,
-                  "slopeDeg": 3.7039388937669004
+                  "elevationM": -2563.46240234375,
+                  "slopeDeg": 3.6621940949442555
                 },
                 {
                   "distanceM": 540.0,
-                  "elevationM": -2555.550048828125,
-                  "slopeDeg": 3.529946598726695
+                  "elevationM": -2562.15966796875,
+                  "slopeDeg": 3.794881011876504
                 },
                 {
                   "distanceM": 560.0,
-                  "elevationM": -2554.6083984375,
-                  "slopeDeg": 3.8516508941516894
+                  "elevationM": -2560.902587890625,
+                  "slopeDeg": 3.916381885509876
                 },
                 {
                   "distanceM": 580.0,
-                  "elevationM": -2553.537841796875,
-                  "slopeDeg": 4.489993057587698
+                  "elevationM": -2559.678466796875,
+                  "slopeDeg": 3.929382388960289
                 },
                 {
                   "distanceM": 600.0,
-                  "elevationM": -2552.31201171875,
-                  "slopeDeg": 4.9564440828319185
+                  "elevationM": -2558.4912109375,
+                  "slopeDeg": 3.705370491497371
                 },
                 {
                   "distanceM": 620.0,
-                  "elevationM": -2551.030517578125,
-                  "slopeDeg": 5.0688749728312885
+                  "elevationM": -2557.433349609375,
+                  "slopeDeg": 3.1594196419943144
                 },
                 {
                   "distanceM": 640.0,
-                  "elevationM": -2549.830810546875,
-                  "slopeDeg": 4.374930487508794
+                  "elevationM": -2556.578125,
+                  "slopeDeg": 2.456989458908125
                 },
                 {
                   "distanceM": 660.0,
-                  "elevationM": -2549.07421875,
-                  "slopeDeg": 3.2789974154467605
+                  "elevationM": -2555.926513671875,
+                  "slopeDeg": 1.891763601562757
                 },
                 {
                   "distanceM": 680.0,
-                  "elevationM": -2548.679443359375,
-                  "slopeDeg": 2.9348210589182484
+                  "elevationM": -2555.4208984375,
+                  "slopeDeg": 1.7367396064903409
                 },
                 {
                   "distanceM": 700.0,
-                  "elevationM": -2548.381591796875,
-                  "slopeDeg": 3.475509727156119
+                  "elevationM": -2554.957763671875,
+                  "slopeDeg": 2.161586890661315
                 },
                 {
                   "distanceM": 720.0,
-                  "elevationM": -2547.986328125,
-                  "slopeDeg": 3.5942756124243442
+                  "elevationM": -2554.4716796875,
+                  "slopeDeg": 2.95170364302844
                 },
                 {
                   "distanceM": 740.0,
-                  "elevationM": -2547.877197265625,
-                  "slopeDeg": 3.2796403752300503
+                  "elevationM": -2553.932373046875,
+                  "slopeDeg": 3.721600439491144
                 },
                 {
                   "distanceM": 760.0,
-                  "elevationM": -2548.3125,
-                  "slopeDeg": 3.598318460724705
+                  "elevationM": -2553.385498046875,
+                  "slopeDeg": 4.273428079510321
                 },
                 {
                   "distanceM": 780.0,
-                  "elevationM": -2549.100341796875,
-                  "slopeDeg": 4.039319670745633
+                  "elevationM": -2552.913818359375,
+                  "slopeDeg": 4.478098329604271
                 },
                 {
                   "distanceM": 800.0,
-                  "elevationM": -2550.006591796875,
-                  "slopeDeg": 4.107497742555931
+                  "elevationM": -2552.63916015625,
+                  "slopeDeg": 4.449481243100053
                 },
                 {
                   "distanceM": 820.0,
-                  "elevationM": -2550.867431640625,
-                  "slopeDeg": 3.8194596679589945
+                  "elevationM": -2552.655029296875,
+                  "slopeDeg": 4.34428919467792
                 },
                 {
                   "distanceM": 840.0,
-                  "elevationM": -2551.62548828125,
-                  "slopeDeg": 3.3913993205525275
+                  "elevationM": -2552.878173828125,
+                  "slopeDeg": 4.06318450025915
                 },
                 {
                   "distanceM": 860.0,
-                  "elevationM": -2552.32177734375,
-                  "slopeDeg": 3.0345054624349084
+                  "elevationM": -2553.1826171875,
+                  "slopeDeg": 3.6124718654053445
                 },
                 {
                   "distanceM": 880.0,
-                  "elevationM": -2553.0390625,
-                  "slopeDeg": 2.744319753323374
+                  "elevationM": -2553.562255859375,
+                  "slopeDeg": 3.21094663999279
                 },
                 {
                   "distanceM": 900.0,
-                  "elevationM": -2553.7158203125,
-                  "slopeDeg": 2.381902718627622
+                  "elevationM": -2553.96875,
+                  "slopeDeg": 2.9106909594988153
                 },
                 {
                   "distanceM": 920.0,
-                  "elevationM": -2554.2392578125,
-                  "slopeDeg": 1.9951016787191695
+                  "elevationM": -2554.306884765625,
+                  "slopeDeg": 2.6326533537477292
                 },
                 {
                   "distanceM": 940.0,
-                  "elevationM": -2554.56787109375,
-                  "slopeDeg": 1.8026373828095563
+                  "elevationM": -2554.552490234375,
+                  "slopeDeg": 2.3676386031000938
                 },
                 {
                   "distanceM": 960.0,
-                  "elevationM": -2554.71142578125,
-                  "slopeDeg": 1.8588732656596032
+                  "elevationM": -2554.814697265625,
+                  "slopeDeg": 2.1168721794958123
                 },
                 {
-                  "distanceM": 980.0,
+                  "distanceM": 988.2842712474619,
+                  "elevationM": -2554.68310546875,
+                  "slopeDeg": 1.8478931180401246
+                },
+                {
+                  "distanceM": 1008.2842712474619,
+                  "elevationM": -2555.1181640625,
+                  "slopeDeg": 1.619463688232485
+                },
+                {
+                  "distanceM": 1036.5685424949238,
+                  "elevationM": -2555.03271484375,
+                  "slopeDeg": 1.497902695950309
+                },
+                {
+                  "distanceM": 1056.5685424949238,
+                  "elevationM": -2555.238525390625,
+                  "slopeDeg": 1.4747244187004278
+                },
+                {
+                  "distanceM": 1084.8528137423857,
                   "elevationM": -2554.67578125,
                   "slopeDeg": 2.0780548749625876
                 },
                 {
-                  "distanceM": 1000.0,
+                  "distanceM": 1104.8528137423857,
                   "elevationM": -2554.556640625,
                   "slopeDeg": 2.202645069127041
                 }
               ],
-              "cost": 1000.0,
+              "cost": 1104.8528137423857,
               "requestedStartXY": [
-                1510,
-                1510
+                1581.2,
+                1456.7
               ],
               "requestedGoalXY": [
                 510,
                 1510
               ],
               "effectiveStartXY": [
-                1510.0,
-                1510.0
+                1590.0,
+                1450.0
               ],
               "effectiveGoalXY": [
                 510.0,
                 1510.0
               ],
-              "travelMin": 33.333333333333336
+              "travelMin": 36.82842712474619
             }
           },
           "slope_penalized": {
             "status": "ok",
-            "totalDistanceM": 2132.5483399593904,
-            "travelMin": 71.08494466531302,
+            "totalDistanceM": 2242.842712474619,
+            "travelMin": 74.76142374915396,
             "dwellMin": 10,
             "reserveMin": 20,
-            "totalRequiredMin": 101.08494466531302,
-            "marginMin": 78.91505533468698,
+            "totalRequiredMin": 104.76142374915396,
+            "marginMin": 75.23857625084604,
             "outbound": {
               "status": "ok",
               "pathXY": [
@@ -1228,21 +1381,37 @@
                 ],
                 [
                   1470.0,
-                  1470.0
+                  1450.0
                 ],
                 [
                   1490.0,
-                  1490.0
+                  1450.0
                 ],
                 [
                   1510.0,
-                  1510.0
+                  1450.0
+                ],
+                [
+                  1530.0,
+                  1450.0
+                ],
+                [
+                  1550.0,
+                  1450.0
+                ],
+                [
+                  1570.0,
+                  1450.0
+                ],
+                [
+                  1590.0,
+                  1450.0
                 ]
               ],
-              "distanceM": 1066.2741699796952,
-              "ascentM": 5.37451171875,
+              "distanceM": 1121.4213562373095,
+              "ascentM": 5.29150390625,
               "maxSlopeDeg": 3.993966006809936,
-              "meanSlopeDeg": 2.284547806211841,
+              "meanSlopeDeg": 2.164970816709049,
               "profile": [
                 {
                   "distanceM": 0.0,
@@ -1485,54 +1654,90 @@
                   "slopeDeg": 0.7128473273387363
                 },
                 {
-                  "distanceM": 1009.7056274847714,
-                  "elevationM": -2567.3251953125,
-                  "slopeDeg": 0.8660189175304966
+                  "distanceM": 1001.4213562373095,
+                  "elevationM": -2567.433349609375,
+                  "slopeDeg": 0.3419530297378442
                 },
                 {
-                  "distanceM": 1037.9898987322333,
-                  "elevationM": -2567.35693359375,
-                  "slopeDeg": 1.8280672729791974
+                  "distanceM": 1021.4213562373095,
+                  "elevationM": -2567.408203125,
+                  "slopeDeg": 0.5527871270415735
                 },
                 {
-                  "distanceM": 1066.2741699796952,
-                  "elevationM": -2567.99267578125,
-                  "slopeDeg": 2.754880224939734
+                  "distanceM": 1041.4213562373095,
+                  "elevationM": -2567.65185546875,
+                  "slopeDeg": 1.1568360426406765
+                },
+                {
+                  "distanceM": 1061.4213562373095,
+                  "elevationM": -2568.029541015625,
+                  "slopeDeg": 1.340767770365273
+                },
+                {
+                  "distanceM": 1081.4213562373095,
+                  "elevationM": -2568.361328125,
+                  "slopeDeg": 1.1702889903050393
+                },
+                {
+                  "distanceM": 1101.4213562373095,
+                  "elevationM": -2568.540771484375,
+                  "slopeDeg": 0.9715722782815032
+                },
+                {
+                  "distanceM": 1121.4213562373095,
+                  "elevationM": -2568.560546875,
+                  "slopeDeg": 1.026216859617201
                 }
               ],
-              "cost": 1181.1273381725357,
+              "cost": 1233.3057492564078,
               "requestedStartXY": [
                 510,
                 1510
               ],
               "requestedGoalXY": [
-                1510,
-                1510
+                1581.2,
+                1456.7
               ],
               "effectiveStartXY": [
                 510.0,
                 1510.0
               ],
               "effectiveGoalXY": [
-                1510.0,
-                1510.0
+                1590.0,
+                1450.0
               ],
-              "travelMin": 35.54247233265651
+              "travelMin": 37.38071187457698
             },
             "return": {
               "status": "ok",
               "pathXY": [
                 [
+                  1590.0,
+                  1450.0
+                ],
+                [
+                  1570.0,
+                  1450.0
+                ],
+                [
+                  1550.0,
+                  1450.0
+                ],
+                [
+                  1530.0,
+                  1450.0
+                ],
+                [
                   1510.0,
-                  1510.0
+                  1450.0
                 ],
                 [
                   1490.0,
-                  1490.0
+                  1450.0
                 ],
                 [
                   1470.0,
-                  1470.0
+                  1450.0
                 ],
                 [
                   1450.0,
@@ -1727,285 +1932,305 @@
                   1510.0
                 ]
               ],
-              "distanceM": 1066.2741699796952,
-              "ascentM": 18.810546875,
+              "distanceM": 1121.4213562373095,
+              "ascentM": 19.29541015625,
               "maxSlopeDeg": 3.993966006809936,
-              "meanSlopeDeg": 2.2845478062118416,
+              "meanSlopeDeg": 2.16497081670905,
               "profile": [
                 {
                   "distanceM": 0.0,
-                  "elevationM": -2567.99267578125,
-                  "slopeDeg": 2.754880224939734
+                  "elevationM": -2568.560546875,
+                  "slopeDeg": 1.026216859617201
                 },
                 {
-                  "distanceM": 28.284271247461902,
-                  "elevationM": -2567.35693359375,
-                  "slopeDeg": 1.8280672729791974
+                  "distanceM": 20.0,
+                  "elevationM": -2568.540771484375,
+                  "slopeDeg": 0.9715722782815032
                 },
                 {
-                  "distanceM": 56.568542494923804,
-                  "elevationM": -2567.3251953125,
-                  "slopeDeg": 0.8660189175304966
+                  "distanceM": 40.0,
+                  "elevationM": -2568.361328125,
+                  "slopeDeg": 1.1702889903050393
                 },
                 {
-                  "distanceM": 84.8528137423857,
+                  "distanceM": 60.0,
+                  "elevationM": -2568.029541015625,
+                  "slopeDeg": 1.340767770365273
+                },
+                {
+                  "distanceM": 80.0,
+                  "elevationM": -2567.65185546875,
+                  "slopeDeg": 1.1568360426406765
+                },
+                {
+                  "distanceM": 100.0,
+                  "elevationM": -2567.408203125,
+                  "slopeDeg": 0.5527871270415735
+                },
+                {
+                  "distanceM": 120.0,
+                  "elevationM": -2567.433349609375,
+                  "slopeDeg": 0.3419530297378442
+                },
+                {
+                  "distanceM": 140.0,
                   "elevationM": -2567.646484375,
                   "slopeDeg": 0.7128473273387363
                 },
                 {
-                  "distanceM": 104.8528137423857,
+                  "distanceM": 160.0,
                   "elevationM": -2567.847900390625,
                   "slopeDeg": 0.7997745724256456
                 },
                 {
-                  "distanceM": 124.8528137423857,
+                  "distanceM": 180.0,
                   "elevationM": -2567.906982421875,
                   "slopeDeg": 0.7222237910819862
                 },
                 {
-                  "distanceM": 144.8528137423857,
+                  "distanceM": 200.0,
                   "elevationM": -2567.779052734375,
                   "slopeDeg": 0.8526916138128057
                 },
                 {
-                  "distanceM": 164.8528137423857,
+                  "distanceM": 220.0,
                   "elevationM": -2567.545654296875,
                   "slopeDeg": 0.7272875604886926
                 },
                 {
-                  "distanceM": 184.8528137423857,
+                  "distanceM": 240.0,
                   "elevationM": -2567.409423828125,
                   "slopeDeg": 0.07520700816859119
                 },
                 {
-                  "distanceM": 204.8528137423857,
+                  "distanceM": 260.0,
                   "elevationM": -2567.51513671875,
                   "slopeDeg": 0.9379283621681093
                 },
                 {
-                  "distanceM": 224.8528137423857,
+                  "distanceM": 280.0,
                   "elevationM": -2567.819580078125,
                   "slopeDeg": 1.7491047269504356
                 },
                 {
-                  "distanceM": 244.8528137423857,
+                  "distanceM": 300.0,
                   "elevationM": -2568.34716796875,
                   "slopeDeg": 2.3901681349067374
                 },
                 {
-                  "distanceM": 264.8528137423857,
+                  "distanceM": 320.0,
                   "elevationM": -2569.09423828125,
                   "slopeDeg": 2.483601819687865
                 },
                 {
-                  "distanceM": 284.8528137423857,
+                  "distanceM": 340.0,
                   "elevationM": -2569.732177734375,
                   "slopeDeg": 1.8211934768595162
                 },
                 {
-                  "distanceM": 304.8528137423857,
+                  "distanceM": 360.0,
                   "elevationM": -2569.975830078125,
                   "slopeDeg": 1.1584812159677467
                 },
                 {
-                  "distanceM": 324.8528137423857,
+                  "distanceM": 380.0,
                   "elevationM": -2569.814453125,
                   "slopeDeg": 1.4680971708895951
                 },
                 {
-                  "distanceM": 344.8528137423857,
+                  "distanceM": 400.0,
                   "elevationM": -2569.3447265625,
                   "slopeDeg": 2.2224360410573447
                 },
                 {
-                  "distanceM": 364.8528137423857,
+                  "distanceM": 420.0,
                   "elevationM": -2568.61474609375,
                   "slopeDeg": 2.85345212117557
                 },
                 {
-                  "distanceM": 384.8528137423857,
+                  "distanceM": 440.0,
                   "elevationM": -2567.706787109375,
                   "slopeDeg": 3.199992639591464
                 },
                 {
-                  "distanceM": 413.1370849898476,
+                  "distanceM": 468.2842712474619,
                   "elevationM": -2566.078125,
                   "slopeDeg": 3.1534826097239423
                 },
                 {
-                  "distanceM": 433.1370849898476,
+                  "distanceM": 488.2842712474619,
                   "elevationM": -2565.186279296875,
                   "slopeDeg": 2.9107667870315748
                 },
                 {
-                  "distanceM": 453.1370849898476,
+                  "distanceM": 508.2842712474619,
                   "elevationM": -2564.321533203125,
                   "slopeDeg": 2.6315260931937305
                 },
                 {
-                  "distanceM": 473.1370849898476,
+                  "distanceM": 528.2842712474619,
                   "elevationM": -2563.449462890625,
                   "slopeDeg": 2.5530694777238323
                 },
                 {
-                  "distanceM": 493.1370849898476,
+                  "distanceM": 548.2842712474619,
                   "elevationM": -2562.538330078125,
                   "slopeDeg": 2.9279984149774427
                 },
                 {
-                  "distanceM": 513.1370849898476,
+                  "distanceM": 568.2842712474619,
                   "elevationM": -2561.5185546875,
                   "slopeDeg": 3.491672520549594
                 },
                 {
-                  "distanceM": 533.1370849898476,
+                  "distanceM": 588.2842712474619,
                   "elevationM": -2560.373291015625,
                   "slopeDeg": 3.8976845643590288
                 },
                 {
-                  "distanceM": 553.1370849898476,
+                  "distanceM": 608.2842712474619,
                   "elevationM": -2559.162841796875,
                   "slopeDeg": 3.993966006809936
                 },
                 {
-                  "distanceM": 573.1370849898476,
+                  "distanceM": 628.2842712474619,
                   "elevationM": -2557.978515625,
                   "slopeDeg": 3.657661242704794
                 },
                 {
-                  "distanceM": 593.1370849898476,
+                  "distanceM": 648.2842712474619,
                   "elevationM": -2556.925537109375,
                   "slopeDeg": 2.9229468967046977
                 },
                 {
-                  "distanceM": 613.1370849898476,
+                  "distanceM": 668.2842712474619,
                   "elevationM": -2556.087158203125,
                   "slopeDeg": 2.0782409480608006
                 },
                 {
-                  "distanceM": 633.1370849898476,
+                  "distanceM": 688.2842712474619,
                   "elevationM": -2555.490966796875,
                   "slopeDeg": 1.4296232747281785
                 },
                 {
-                  "distanceM": 653.1370849898476,
+                  "distanceM": 708.2842712474619,
                   "elevationM": -2555.10693359375,
                   "slopeDeg": 1.0600150447374956
                 },
                 {
-                  "distanceM": 673.1370849898476,
+                  "distanceM": 728.2842712474619,
                   "elevationM": -2554.800537109375,
                   "slopeDeg": 0.8440773170966887
                 },
                 {
-                  "distanceM": 693.1370849898476,
+                  "distanceM": 748.2842712474619,
                   "elevationM": -2554.518798828125,
                   "slopeDeg": 0.9381204648886244
                 },
                 {
-                  "distanceM": 713.1370849898476,
+                  "distanceM": 768.2842712474619,
                   "elevationM": -2554.2744140625,
                   "slopeDeg": 1.5483841954946003
                 },
                 {
-                  "distanceM": 733.1370849898476,
+                  "distanceM": 788.2842712474619,
                   "elevationM": -2554.03515625,
                   "slopeDeg": 2.34317952427212
                 },
                 {
-                  "distanceM": 753.1370849898476,
+                  "distanceM": 808.2842712474619,
                   "elevationM": -2553.87841796875,
                   "slopeDeg": 2.9405076805669226
                 },
                 {
-                  "distanceM": 773.1370849898476,
+                  "distanceM": 828.2842712474619,
                   "elevationM": -2553.92138671875,
                   "slopeDeg": 3.2132890066481954
                 },
                 {
-                  "distanceM": 793.1370849898476,
+                  "distanceM": 848.2842712474619,
                   "elevationM": -2554.088134765625,
                   "slopeDeg": 3.1780224484426443
                 },
                 {
-                  "distanceM": 813.1370849898476,
+                  "distanceM": 868.2842712474619,
                   "elevationM": -2554.267333984375,
                   "slopeDeg": 3.022541808724912
                 },
                 {
-                  "distanceM": 833.1370849898476,
+                  "distanceM": 888.2842712474619,
                   "elevationM": -2554.51806640625,
                   "slopeDeg": 2.9242509475178937
                 },
                 {
-                  "distanceM": 853.1370849898476,
+                  "distanceM": 908.2842712474619,
                   "elevationM": -2554.857177734375,
                   "slopeDeg": 2.886644672887229
                 },
                 {
-                  "distanceM": 881.4213562373095,
+                  "distanceM": 936.5685424949238,
                   "elevationM": -2554.306884765625,
                   "slopeDeg": 2.6326533537477292
                 },
                 {
-                  "distanceM": 901.4213562373095,
+                  "distanceM": 956.5685424949238,
                   "elevationM": -2554.552490234375,
                   "slopeDeg": 2.3676386031000938
                 },
                 {
-                  "distanceM": 921.4213562373095,
+                  "distanceM": 976.5685424949238,
                   "elevationM": -2554.814697265625,
                   "slopeDeg": 2.1168721794958123
                 },
                 {
-                  "distanceM": 941.4213562373095,
+                  "distanceM": 996.5685424949238,
                   "elevationM": -2555.141357421875,
                   "slopeDeg": 1.8953798026255624
                 },
                 {
-                  "distanceM": 969.7056274847714,
+                  "distanceM": 1024.8528137423857,
                   "elevationM": -2555.1181640625,
                   "slopeDeg": 1.619463688232485
                 },
                 {
-                  "distanceM": 989.7056274847714,
+                  "distanceM": 1044.8528137423857,
                   "elevationM": -2555.458740234375,
                   "slopeDeg": 1.4480670962070294
                 },
                 {
-                  "distanceM": 1017.9898987322333,
+                  "distanceM": 1073.1370849898476,
                   "elevationM": -2555.238525390625,
                   "slopeDeg": 1.4747244187004278
                 },
                 {
-                  "distanceM": 1037.9898987322333,
+                  "distanceM": 1093.1370849898476,
                   "elevationM": -2555.31103515625,
                   "slopeDeg": 1.7532913598004545
                 },
                 {
-                  "distanceM": 1066.2741699796952,
+                  "distanceM": 1121.4213562373095,
                   "elevationM": -2554.556640625,
                   "slopeDeg": 2.202645069127041
                 }
               ],
-              "cost": 1181.1273381725357,
+              "cost": 1233.3057492564078,
               "requestedStartXY": [
-                1510,
-                1510
+                1581.2,
+                1456.7
               ],
               "requestedGoalXY": [
                 510,
                 1510
               ],
               "effectiveStartXY": [
-                1510.0,
-                1510.0
+                1590.0,
+                1450.0
               ],
               "effectiveGoalXY": [
                 510.0,
                 1510.0
               ],
-              "travelMin": 35.54247233265651
+              "travelMin": 37.38071187457698
             }
           }
         }
@@ -2015,12 +2240,12 @@
       "name": "closure-return-only",
       "request": {
         "schemaVersion": 1,
-        "datasetVersion": "4492c9ffb6cf016a",
+        "datasetVersion": "9a4cd252af07db1a",
         "baseXY": [
           510,
           1510
         ],
-        "targetId": "terrain-observation-a",
+        "targetId": "m20-sid",
         "maxSlopeDeg": 15,
         "speedMPerMin": 30,
         "reserveMin": 20,
@@ -2047,7 +2272,7 @@
         "requestId": "real-return-only",
         "selectedRouteMode": "shortest",
         "currentXY": [
-          1010.0,
+          1050.0,
           1510.0
         ],
         "elapsedMin": 130,
@@ -2057,15 +2282,23 @@
       "result": {
         "immediateReturn": {
           "status": "ok",
-          "totalDistanceM": 500.0,
-          "travelMin": 16.666666666666668,
+          "totalDistanceM": 540.0,
+          "travelMin": 18.0,
           "dwellMin": 0,
           "reserveMin": 20,
-          "totalRequiredMin": 36.66666666666667,
-          "marginMin": 13.333333333333329,
+          "totalRequiredMin": 38.0,
+          "marginMin": 12.0,
           "return": {
             "status": "ok",
             "pathXY": [
+              [
+                1050.0,
+                1510.0
+              ],
+              [
+                1030.0,
+                1510.0
+              ],
               [
                 1010.0,
                 1510.0
@@ -2171,145 +2404,155 @@
                 1510.0
               ]
             ],
-            "distanceM": 500.0,
-            "ascentM": 9.991455078125,
-            "maxSlopeDeg": 5.0688749728312885,
-            "meanSlopeDeg": 3.5602357233128368,
+            "distanceM": 540.0,
+            "ascentM": 13.148193359375,
+            "maxSlopeDeg": 5.632699978379958,
+            "meanSlopeDeg": 3.68659481654437,
             "profile": [
               {
                 "distanceM": 0.0,
+                "elevationM": -2560.87060546875,
+                "slopeDeg": 5.632699978379958
+              },
+              {
+                "distanceM": 20.0,
+                "elevationM": -2559.116943359375,
+                "slopeDeg": 4.899466985497111
+              },
+              {
+                "distanceM": 40.0,
                 "elevationM": -2557.7138671875,
                 "slopeDeg": 4.189231925911758
               },
               {
-                "distanceM": 20.0,
+                "distanceM": 60.0,
                 "elevationM": -2556.55078125,
                 "slopeDeg": 3.7039388937669004
               },
               {
-                "distanceM": 40.0,
+                "distanceM": 80.0,
                 "elevationM": -2555.550048828125,
                 "slopeDeg": 3.529946598726695
               },
               {
-                "distanceM": 60.0,
+                "distanceM": 100.0,
                 "elevationM": -2554.6083984375,
                 "slopeDeg": 3.8516508941516894
               },
               {
-                "distanceM": 80.0,
+                "distanceM": 120.0,
                 "elevationM": -2553.537841796875,
                 "slopeDeg": 4.489993057587698
               },
               {
-                "distanceM": 100.0,
+                "distanceM": 140.0,
                 "elevationM": -2552.31201171875,
                 "slopeDeg": 4.9564440828319185
               },
               {
-                "distanceM": 120.0,
+                "distanceM": 160.0,
                 "elevationM": -2551.030517578125,
                 "slopeDeg": 5.0688749728312885
               },
               {
-                "distanceM": 140.0,
+                "distanceM": 180.0,
                 "elevationM": -2549.830810546875,
                 "slopeDeg": 4.374930487508794
               },
               {
-                "distanceM": 160.0,
+                "distanceM": 200.0,
                 "elevationM": -2549.07421875,
                 "slopeDeg": 3.2789974154467605
               },
               {
-                "distanceM": 180.0,
+                "distanceM": 220.0,
                 "elevationM": -2548.679443359375,
                 "slopeDeg": 2.9348210589182484
               },
               {
-                "distanceM": 200.0,
+                "distanceM": 240.0,
                 "elevationM": -2548.381591796875,
                 "slopeDeg": 3.475509727156119
               },
               {
-                "distanceM": 220.0,
+                "distanceM": 260.0,
                 "elevationM": -2547.986328125,
                 "slopeDeg": 3.5942756124243442
               },
               {
-                "distanceM": 240.0,
+                "distanceM": 280.0,
                 "elevationM": -2547.877197265625,
                 "slopeDeg": 3.2796403752300503
               },
               {
-                "distanceM": 260.0,
+                "distanceM": 300.0,
                 "elevationM": -2548.3125,
                 "slopeDeg": 3.598318460724705
               },
               {
-                "distanceM": 280.0,
+                "distanceM": 320.0,
                 "elevationM": -2549.100341796875,
                 "slopeDeg": 4.039319670745633
               },
               {
-                "distanceM": 300.0,
+                "distanceM": 340.0,
                 "elevationM": -2550.006591796875,
                 "slopeDeg": 4.107497742555931
               },
               {
-                "distanceM": 320.0,
+                "distanceM": 360.0,
                 "elevationM": -2550.867431640625,
                 "slopeDeg": 3.8194596679589945
               },
               {
-                "distanceM": 340.0,
+                "distanceM": 380.0,
                 "elevationM": -2551.62548828125,
                 "slopeDeg": 3.3913993205525275
               },
               {
-                "distanceM": 360.0,
+                "distanceM": 400.0,
                 "elevationM": -2552.32177734375,
                 "slopeDeg": 3.0345054624349084
               },
               {
-                "distanceM": 380.0,
+                "distanceM": 420.0,
                 "elevationM": -2553.0390625,
                 "slopeDeg": 2.744319753323374
               },
               {
-                "distanceM": 400.0,
+                "distanceM": 440.0,
                 "elevationM": -2553.7158203125,
                 "slopeDeg": 2.381902718627622
               },
               {
-                "distanceM": 420.0,
+                "distanceM": 460.0,
                 "elevationM": -2554.2392578125,
                 "slopeDeg": 1.9951016787191695
               },
               {
-                "distanceM": 440.0,
+                "distanceM": 480.0,
                 "elevationM": -2554.56787109375,
                 "slopeDeg": 1.8026373828095563
               },
               {
-                "distanceM": 460.0,
+                "distanceM": 500.0,
                 "elevationM": -2554.71142578125,
                 "slopeDeg": 1.8588732656596032
               },
               {
-                "distanceM": 480.0,
+                "distanceM": 520.0,
                 "elevationM": -2554.67578125,
                 "slopeDeg": 2.0780548749625876
               },
               {
-                "distanceM": 500.0,
+                "distanceM": 540.0,
                 "elevationM": -2554.556640625,
                 "slopeDeg": 2.202645069127041
               }
             ],
-            "cost": 500.0,
+            "cost": 540.0,
             "requestedStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "requestedGoalXY": [
@@ -2317,927 +2560,900 @@
               1510
             ],
             "effectiveStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "effectiveGoalXY": [
               510.0,
               1510.0
             ],
-            "travelMin": 16.666666666666668
+            "travelMin": 18.0
           }
         },
         "continueThenReturn": {
           "status": "over_budget",
-          "totalDistanceM": 2063.675323681471,
-          "travelMin": 68.78917745604903,
+          "totalDistanceM": 2061.6652224137047,
+          "travelMin": 68.72217408045682,
           "dwellMin": 10,
           "reserveMin": 20,
-          "totalRequiredMin": 98.78917745604903,
-          "marginMin": -48.78917745604903,
+          "totalRequiredMin": 98.72217408045682,
+          "marginMin": -48.722174080456824,
           "currentToTarget": {
             "status": "ok",
             "pathXY": [
               [
-                1010.0,
-                1510.0
-              ],
-              [
-                1030.0,
-                1530.0
-              ],
-              [
                 1050.0,
-                1550.0
+                1510.0
               ],
               [
                 1070.0,
-                1570.0
+                1490.0
               ],
               [
                 1090.0,
-                1590.0
+                1470.0
               ],
               [
                 1110.0,
-                1610.0
+                1450.0
               ],
               [
                 1130.0,
-                1630.0
+                1430.0
               ],
               [
                 1150.0,
-                1650.0
+                1410.0
               ],
               [
                 1170.0,
-                1670.0
+                1390.0
               ],
               [
                 1170.0,
-                1690.0
+                1370.0
               ],
               [
                 1170.0,
-                1710.0
+                1350.0
               ],
               [
                 1170.0,
-                1730.0
+                1330.0
+              ],
+              [
+                1170.0,
+                1310.0
+              ],
+              [
+                1170.0,
+                1290.0
+              ],
+              [
+                1170.0,
+                1270.0
               ],
               [
                 1190.0,
-                1730.0
+                1270.0
               ],
               [
                 1210.0,
-                1730.0
+                1270.0
               ],
               [
                 1230.0,
-                1730.0
+                1270.0
               ],
               [
                 1250.0,
-                1730.0
+                1270.0
               ],
               [
                 1270.0,
-                1730.0
+                1270.0
               ],
               [
                 1290.0,
-                1730.0
+                1270.0
               ],
               [
                 1310.0,
-                1730.0
+                1270.0
               ],
               [
                 1330.0,
-                1730.0
+                1270.0
               ],
               [
                 1350.0,
-                1730.0
+                1270.0
               ],
               [
                 1370.0,
-                1730.0
+                1270.0
               ],
               [
                 1390.0,
-                1730.0
+                1270.0
               ],
               [
                 1410.0,
-                1730.0
+                1270.0
               ],
               [
                 1430.0,
-                1730.0
-              ],
-              [
-                1430.0,
-                1710.0
-              ],
-              [
-                1430.0,
-                1690.0
-              ],
-              [
-                1430.0,
-                1670.0
+                1270.0
               ],
               [
                 1450.0,
-                1650.0
-              ],
-              [
-                1450.0,
-                1630.0
+                1290.0
               ],
               [
                 1470.0,
-                1610.0
-              ],
-              [
-                1470.0,
-                1590.0
+                1310.0
               ],
               [
                 1490.0,
-                1570.0
-              ],
-              [
-                1490.0,
-                1550.0
-              ],
-              [
-                1490.0,
-                1530.0
+                1330.0
               ],
               [
                 1510.0,
-                1510.0
+                1350.0
+              ],
+              [
+                1530.0,
+                1370.0
+              ],
+              [
+                1550.0,
+                1390.0
+              ],
+              [
+                1570.0,
+                1410.0
+              ],
+              [
+                1570.0,
+                1430.0
+              ],
+              [
+                1590.0,
+                1450.0
               ]
             ],
-            "distanceM": 799.4112549695428,
-            "ascentM": 6.94580078125,
-            "maxSlopeDeg": 6.551859014922064,
-            "meanSlopeDeg": 3.2372688781206085,
+            "distanceM": 795.9797974644666,
+            "ascentM": 3.828857421875,
+            "maxSlopeDeg": 5.632699978379958,
+            "meanSlopeDeg": 2.1294018361181744,
             "profile": [
               {
                 "distanceM": 0.0,
-                "elevationM": -2557.7138671875,
-                "slopeDeg": 4.189231925911758
+                "elevationM": -2560.87060546875,
+                "slopeDeg": 5.632699978379958
               },
               {
                 "distanceM": 28.284271247461902,
-                "elevationM": -2558.41845703125,
-                "slopeDeg": 5.219836500818533
+                "elevationM": -2563.345947265625,
+                "slopeDeg": 5.447609432677867
               },
               {
                 "distanceM": 56.568542494923804,
-                "elevationM": -2559.58935546875,
-                "slopeDeg": 6.324608104849786
+                "elevationM": -2565.16455078125,
+                "slopeDeg": 4.249703295337003
               },
               {
                 "distanceM": 84.8528137423857,
-                "elevationM": -2561.35791015625,
-                "slopeDeg": 6.551859014922064
+                "elevationM": -2565.79736328125,
+                "slopeDeg": 3.4151701123158116
               },
               {
                 "distanceM": 113.13708498984761,
-                "elevationM": -2563.1259765625,
-                "slopeDeg": 5.911272520492806
+                "elevationM": -2566.078125,
+                "slopeDeg": 3.1534826097239423
               },
               {
                 "distanceM": 141.4213562373095,
-                "elevationM": -2564.78466796875,
-                "slopeDeg": 5.125516005866792
+                "elevationM": -2566.3642578125,
+                "slopeDeg": 3.0132443030452305
               },
               {
                 "distanceM": 169.7056274847714,
-                "elevationM": -2566.280029296875,
-                "slopeDeg": 4.144047989126748
+                "elevationM": -2566.609130859375,
+                "slopeDeg": 2.7800918277924898
               },
               {
-                "distanceM": 197.9898987322333,
-                "elevationM": -2567.491455078125,
-                "slopeDeg": 3.2227488683949046
+                "distanceM": 189.7056274847714,
+                "elevationM": -2566.056640625,
+                "slopeDeg": 2.5251287879565294
               },
               {
-                "distanceM": 226.27416997969522,
-                "elevationM": -2568.2529296875,
-                "slopeDeg": 2.6288737954264803
+                "distanceM": 209.7056274847714,
+                "elevationM": -2565.55224609375,
+                "slopeDeg": 2.164369482956551
               },
               {
-                "distanceM": 246.27416997969522,
-                "elevationM": -2567.97607421875,
-                "slopeDeg": 2.837105506327145
+                "distanceM": 229.7056274847714,
+                "elevationM": -2565.228759765625,
+                "slopeDeg": 1.6844546254687927
               },
               {
-                "distanceM": 266.2741699796952,
-                "elevationM": -2567.629150390625,
-                "slopeDeg": 2.9491005245783057
+                "distanceM": 249.7056274847714,
+                "elevationM": -2564.895751953125,
+                "slopeDeg": 1.000168716115566
               },
               {
-                "distanceM": 286.2741699796952,
-                "elevationM": -2567.2275390625,
-                "slopeDeg": 2.8853577871595752
+                "distanceM": 269.7056274847714,
+                "elevationM": -2564.7314453125,
+                "slopeDeg": 0.6437317844276425
               },
               {
-                "distanceM": 306.2741699796952,
-                "elevationM": -2568.126953125,
-                "slopeDeg": 2.6001044537831635
+                "distanceM": 289.7056274847714,
+                "elevationM": -2564.4560546875,
+                "slopeDeg": 1.1733855309449162
               },
               {
-                "distanceM": 326.2741699796952,
-                "elevationM": -2568.895751953125,
-                "slopeDeg": 2.15585366470356
+                "distanceM": 309.7056274847714,
+                "elevationM": -2564.191650390625,
+                "slopeDeg": 1.5830306205502396
               },
               {
-                "distanceM": 346.2741699796952,
-                "elevationM": -2569.520751953125,
-                "slopeDeg": 1.6442598512031237
+                "distanceM": 329.7056274847714,
+                "elevationM": -2564.07275390625,
+                "slopeDeg": 1.8111696388317235
               },
               {
-                "distanceM": 366.2741699796952,
-                "elevationM": -2569.98828125,
-                "slopeDeg": 1.0894459325712498
+                "distanceM": 349.7056274847714,
+                "elevationM": -2564.058349609375,
+                "slopeDeg": 1.752389569488663
               },
               {
-                "distanceM": 386.2741699796952,
-                "elevationM": -2570.273193359375,
-                "slopeDeg": 0.6676736944829724
+                "distanceM": 369.7056274847714,
+                "elevationM": -2564.14013671875,
+                "slopeDeg": 1.4417099567358627
               },
               {
-                "distanceM": 406.2741699796952,
-                "elevationM": -2570.434814453125,
-                "slopeDeg": 0.616346359350313
+                "distanceM": 389.7056274847714,
+                "elevationM": -2564.366943359375,
+                "slopeDeg": 1.1711140434784955
               },
               {
-                "distanceM": 426.2741699796952,
-                "elevationM": -2570.5380859375,
-                "slopeDeg": 0.6449245768142614
+                "distanceM": 409.7056274847714,
+                "elevationM": -2564.743408203125,
+                "slopeDeg": 1.344321961047652
               },
               {
-                "distanceM": 446.2741699796952,
-                "elevationM": -2570.58544921875,
-                "slopeDeg": 0.6237352258065892
+                "distanceM": 429.7056274847714,
+                "elevationM": -2565.298828125,
+                "slopeDeg": 1.9073345408378528
               },
               {
-                "distanceM": 466.2741699796952,
-                "elevationM": -2570.569580078125,
-                "slopeDeg": 0.7057536398484894
+                "distanceM": 449.7056274847714,
+                "elevationM": -2566.04345703125,
+                "slopeDeg": 2.3674501584537078
               },
               {
-                "distanceM": 486.2741699796952,
-                "elevationM": -2570.487548828125,
-                "slopeDeg": 0.9919303668189653
+                "distanceM": 469.7056274847714,
+                "elevationM": -2566.8525390625,
+                "slopeDeg": 2.4759338039181262
               },
               {
-                "distanceM": 506.2741699796952,
-                "elevationM": -2570.1875,
-                "slopeDeg": 1.8001706265863109
+                "distanceM": 489.7056274847714,
+                "elevationM": -2567.603515625,
+                "slopeDeg": 2.1653187552140594
               },
               {
-                "distanceM": 526.2741699796952,
-                "elevationM": -2569.45849609375,
-                "slopeDeg": 2.916258763935769
+                "distanceM": 509.7056274847714,
+                "elevationM": -2568.142333984375,
+                "slopeDeg": 1.520842353961811
               },
               {
-                "distanceM": 546.2741699796952,
-                "elevationM": -2568.362060546875,
-                "slopeDeg": 3.5668451244175174
+                "distanceM": 529.7056274847714,
+                "elevationM": -2568.3994140625,
+                "slopeDeg": 0.9396001869012692
               },
               {
-                "distanceM": 566.2741699796952,
-                "elevationM": -2567.8798828125,
-                "slopeDeg": 3.611880699553012
+                "distanceM": 549.7056274847714,
+                "elevationM": -2568.472900390625,
+                "slopeDeg": 0.629796418057651
               },
               {
-                "distanceM": 586.2741699796952,
-                "elevationM": -2567.11474609375,
-                "slopeDeg": 3.5590790578920197
+                "distanceM": 577.9898987322333,
+                "elevationM": -2568.293212890625,
+                "slopeDeg": 0.5549690923270009
               },
               {
                 "distanceM": 606.2741699796952,
-                "elevationM": -2566.372802734375,
-                "slopeDeg": 3.2883858528368655
+                "elevationM": -2568.135009765625,
+                "slopeDeg": 1.123005437360891
               },
               {
                 "distanceM": 634.5584412271571,
-                "elevationM": -2565.091552734375,
-                "slopeDeg": 1.6588382360038876
+                "elevationM": -2567.55126953125,
+                "slopeDeg": 1.7408170234047626
               },
               {
-                "distanceM": 654.5584412271571,
-                "elevationM": -2564.767578125,
-                "slopeDeg": 1.1268437550021433
+                "distanceM": 662.842712474619,
+                "elevationM": -2567.19482421875,
+                "slopeDeg": 1.391765426148886
               },
               {
-                "distanceM": 682.842712474619,
-                "elevationM": -2564.6650390625,
-                "slopeDeg": 1.1943833473237009
+                "distanceM": 691.1269837220809,
+                "elevationM": -2567.407958984375,
+                "slopeDeg": 1.3348386220403077
               },
               {
-                "distanceM": 702.842712474619,
-                "elevationM": -2564.7529296875,
-                "slopeDeg": 1.6770605651767447
+                "distanceM": 719.4112549695428,
+                "elevationM": -2567.839599609375,
+                "slopeDeg": 0.919042453049839
               },
               {
-                "distanceM": 731.1269837220809,
-                "elevationM": -2565.89501953125,
-                "slopeDeg": 3.3537119444033068
+                "distanceM": 747.6955262170047,
+                "elevationM": -2568.189208984375,
+                "slopeDeg": 0.5494412377715435
               },
               {
-                "distanceM": 751.1269837220809,
-                "elevationM": -2566.1904296875,
-                "slopeDeg": 3.6951634273492426
+                "distanceM": 767.6955262170047,
+                "elevationM": -2568.34375,
+                "slopeDeg": 0.5838547741112721
               },
               {
-                "distanceM": 771.1269837220809,
-                "elevationM": -2566.530517578125,
-                "slopeDeg": 3.4441468954092618
-              },
-              {
-                "distanceM": 799.4112549695428,
-                "elevationM": -2567.99267578125,
-                "slopeDeg": 2.754880224939734
+                "distanceM": 795.9797974644666,
+                "elevationM": -2568.560546875,
+                "slopeDeg": 1.026216859617201
               }
             ],
-            "cost": 799.4112549695428,
+            "cost": 795.9797974644666,
             "requestedStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "requestedGoalXY": [
-              1510,
-              1510
+              1581.2,
+              1456.7
             ],
             "effectiveStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "effectiveGoalXY": [
-              1510.0,
-              1510.0
+              1590.0,
+              1450.0
             ],
-            "travelMin": 26.647041832318095
+            "travelMin": 26.53265991548222
           },
           "targetToBase": {
             "status": "ok",
             "pathXY": [
               [
+                1590.0,
+                1450.0
+              ],
+              [
+                1570.0,
+                1430.0
+              ],
+              [
+                1550.0,
+                1410.0
+              ],
+              [
+                1530.0,
+                1390.0
+              ],
+              [
                 1510.0,
-                1510.0
+                1370.0
               ],
               [
                 1490.0,
-                1530.0
+                1350.0
               ],
               [
                 1470.0,
-                1550.0
+                1330.0
               ],
               [
                 1450.0,
-                1570.0
+                1310.0
               ],
               [
                 1430.0,
-                1590.0
+                1290.0
               ],
               [
                 1430.0,
-                1610.0
-              ],
-              [
-                1430.0,
-                1630.0
-              ],
-              [
-                1430.0,
-                1650.0
-              ],
-              [
-                1430.0,
-                1670.0
-              ],
-              [
-                1430.0,
-                1690.0
-              ],
-              [
-                1430.0,
-                1710.0
-              ],
-              [
-                1430.0,
-                1730.0
+                1270.0
               ],
               [
                 1410.0,
-                1730.0
+                1270.0
               ],
               [
                 1390.0,
-                1730.0
+                1270.0
               ],
               [
                 1370.0,
-                1730.0
+                1270.0
               ],
               [
                 1350.0,
-                1730.0
+                1270.0
               ],
               [
                 1330.0,
-                1730.0
+                1270.0
               ],
               [
                 1310.0,
-                1730.0
+                1270.0
               ],
               [
                 1290.0,
-                1730.0
+                1270.0
               ],
               [
                 1270.0,
-                1730.0
+                1270.0
               ],
               [
                 1250.0,
-                1730.0
+                1270.0
               ],
               [
                 1230.0,
-                1730.0
+                1270.0
               ],
               [
                 1210.0,
-                1730.0
+                1270.0
               ],
               [
                 1190.0,
-                1730.0
+                1270.0
               ],
               [
                 1170.0,
-                1730.0
+                1270.0
               ],
               [
                 1150.0,
-                1730.0
+                1270.0
               ],
               [
                 1130.0,
-                1730.0
+                1270.0
               ],
               [
                 1110.0,
-                1730.0
+                1270.0
               ],
               [
                 1090.0,
-                1730.0
+                1270.0
               ],
               [
                 1070.0,
-                1730.0
+                1270.0
               ],
               [
                 1050.0,
-                1730.0
+                1270.0
               ],
               [
                 1030.0,
-                1730.0
+                1270.0
               ],
               [
                 1010.0,
-                1730.0
+                1290.0
               ],
               [
                 990.0,
-                1730.0
+                1290.0
               ],
               [
                 970.0,
-                1710.0
+                1310.0
               ],
               [
                 950.0,
-                1710.0
+                1310.0
               ],
               [
                 930.0,
-                1710.0
+                1310.0
               ],
               [
                 910.0,
-                1690.0
+                1330.0
               ],
               [
                 890.0,
-                1690.0
+                1330.0
               ],
               [
                 870.0,
-                1670.0
+                1350.0
               ],
               [
                 850.0,
-                1670.0
+                1350.0
               ],
               [
                 830.0,
-                1650.0
+                1370.0
               ],
               [
                 810.0,
-                1650.0
+                1370.0
               ],
               [
                 790.0,
-                1630.0
+                1390.0
               ],
               [
                 770.0,
-                1630.0
+                1390.0
               ],
               [
                 750.0,
-                1610.0
+                1410.0
               ],
               [
                 730.0,
-                1610.0
+                1410.0
               ],
               [
                 710.0,
-                1610.0
+                1410.0
               ],
               [
                 690.0,
-                1590.0
+                1430.0
               ],
               [
                 670.0,
-                1590.0
+                1430.0
               ],
               [
                 650.0,
-                1570.0
+                1450.0
               ],
               [
                 630.0,
-                1570.0
+                1450.0
               ],
               [
                 610.0,
-                1550.0
+                1470.0
               ],
               [
                 590.0,
-                1550.0
+                1470.0
               ],
               [
                 570.0,
-                1530.0
+                1490.0
               ],
               [
                 550.0,
-                1530.0
+                1490.0
               ],
               [
                 530.0,
-                1530.0
+                1510.0
               ],
               [
                 510.0,
                 1510.0
               ]
             ],
-            "distanceM": 1264.2640687119285,
-            "ascentM": 27.7490234375,
-            "maxSlopeDeg": 5.607832079436974,
-            "meanSlopeDeg": 2.7204137697621245,
+            "distanceM": 1265.685424949238,
+            "ascentM": 19.412353515625,
+            "maxSlopeDeg": 4.212884869526172,
+            "meanSlopeDeg": 2.3074024326142473,
             "profile": [
               {
                 "distanceM": 0.0,
-                "elevationM": -2567.99267578125,
-                "slopeDeg": 2.754880224939734
+                "elevationM": -2568.560546875,
+                "slopeDeg": 1.026216859617201
               },
               {
                 "distanceM": 28.284271247461902,
-                "elevationM": -2566.530517578125,
-                "slopeDeg": 3.4441468954092618
+                "elevationM": -2568.34375,
+                "slopeDeg": 0.5838547741112721
               },
               {
                 "distanceM": 56.568542494923804,
-                "elevationM": -2565.026123046875,
-                "slopeDeg": 2.813228660348323
+                "elevationM": -2567.9384765625,
+                "slopeDeg": 1.0422567189384857
               },
               {
                 "distanceM": 84.8528137423857,
-                "elevationM": -2564.3134765625,
-                "slopeDeg": 0.8854102738891938
+                "elevationM": -2567.433837890625,
+                "slopeDeg": 1.2226159724052854
               },
               {
                 "distanceM": 113.13708498984761,
-                "elevationM": -2564.581787109375,
-                "slopeDeg": 1.2287136592868855
+                "elevationM": -2566.947021484375,
+                "slopeDeg": 1.0123430319938285
               },
               {
-                "distanceM": 133.1370849898476,
-                "elevationM": -2564.862548828125,
-                "slopeDeg": 1.8051278566513365
+                "distanceM": 141.4213562373095,
+                "elevationM": -2567.0,
+                "slopeDeg": 1.2018079416152618
               },
               {
-                "distanceM": 153.1370849898476,
-                "elevationM": -2565.267822265625,
-                "slopeDeg": 2.2791658889579596
+                "distanceM": 169.7056274847714,
+                "elevationM": -2567.525634765625,
+                "slopeDeg": 1.596204830739498
               },
               {
-                "distanceM": 173.1370849898476,
-                "elevationM": -2565.74072265625,
-                "slopeDeg": 2.7765796726062
+                "distanceM": 197.9898987322333,
+                "elevationM": -2568.0703125,
+                "slopeDeg": 1.0086618282982613
               },
               {
-                "distanceM": 193.1370849898476,
-                "elevationM": -2566.372802734375,
-                "slopeDeg": 3.2883858528368655
+                "distanceM": 226.27416997969522,
+                "elevationM": -2568.2626953125,
+                "slopeDeg": 0.7087141007083747
               },
               {
-                "distanceM": 213.1370849898476,
-                "elevationM": -2567.11474609375,
-                "slopeDeg": 3.5590790578920197
+                "distanceM": 246.27416997969522,
+                "elevationM": -2568.472900390625,
+                "slopeDeg": 0.629796418057651
               },
               {
-                "distanceM": 233.1370849898476,
-                "elevationM": -2567.8798828125,
-                "slopeDeg": 3.611880699553012
+                "distanceM": 266.2741699796952,
+                "elevationM": -2568.3994140625,
+                "slopeDeg": 0.9396001869012692
               },
               {
-                "distanceM": 253.1370849898476,
-                "elevationM": -2568.362060546875,
-                "slopeDeg": 3.5668451244175174
+                "distanceM": 286.2741699796952,
+                "elevationM": -2568.142333984375,
+                "slopeDeg": 1.520842353961811
               },
               {
-                "distanceM": 273.1370849898476,
-                "elevationM": -2569.45849609375,
-                "slopeDeg": 2.916258763935769
+                "distanceM": 306.2741699796952,
+                "elevationM": -2567.603515625,
+                "slopeDeg": 2.1653187552140594
               },
               {
-                "distanceM": 293.1370849898476,
-                "elevationM": -2570.1875,
-                "slopeDeg": 1.8001706265863109
+                "distanceM": 326.2741699796952,
+                "elevationM": -2566.8525390625,
+                "slopeDeg": 2.4759338039181262
               },
               {
-                "distanceM": 313.1370849898476,
-                "elevationM": -2570.487548828125,
-                "slopeDeg": 0.9919303668189653
+                "distanceM": 346.2741699796952,
+                "elevationM": -2566.04345703125,
+                "slopeDeg": 2.3674501584537078
               },
               {
-                "distanceM": 333.1370849898476,
-                "elevationM": -2570.569580078125,
-                "slopeDeg": 0.7057536398484894
+                "distanceM": 366.2741699796952,
+                "elevationM": -2565.298828125,
+                "slopeDeg": 1.9073345408378528
               },
               {
-                "distanceM": 353.1370849898476,
-                "elevationM": -2570.58544921875,
-                "slopeDeg": 0.6237352258065892
+                "distanceM": 386.2741699796952,
+                "elevationM": -2564.743408203125,
+                "slopeDeg": 1.344321961047652
               },
               {
-                "distanceM": 373.1370849898476,
-                "elevationM": -2570.5380859375,
-                "slopeDeg": 0.6449245768142614
+                "distanceM": 406.2741699796952,
+                "elevationM": -2564.366943359375,
+                "slopeDeg": 1.1711140434784955
               },
               {
-                "distanceM": 393.1370849898476,
-                "elevationM": -2570.434814453125,
-                "slopeDeg": 0.616346359350313
+                "distanceM": 426.2741699796952,
+                "elevationM": -2564.14013671875,
+                "slopeDeg": 1.4417099567358627
               },
               {
-                "distanceM": 413.1370849898476,
-                "elevationM": -2570.273193359375,
-                "slopeDeg": 0.6676736944829724
+                "distanceM": 446.2741699796952,
+                "elevationM": -2564.058349609375,
+                "slopeDeg": 1.752389569488663
               },
               {
-                "distanceM": 433.1370849898476,
-                "elevationM": -2569.98828125,
-                "slopeDeg": 1.0894459325712498
+                "distanceM": 466.2741699796952,
+                "elevationM": -2564.07275390625,
+                "slopeDeg": 1.8111696388317235
               },
               {
-                "distanceM": 453.1370849898476,
-                "elevationM": -2569.520751953125,
-                "slopeDeg": 1.6442598512031237
+                "distanceM": 486.2741699796952,
+                "elevationM": -2564.191650390625,
+                "slopeDeg": 1.5830306205502396
               },
               {
-                "distanceM": 473.1370849898476,
-                "elevationM": -2568.895751953125,
-                "slopeDeg": 2.15585366470356
+                "distanceM": 506.2741699796952,
+                "elevationM": -2564.4560546875,
+                "slopeDeg": 1.1733855309449162
               },
               {
-                "distanceM": 493.1370849898476,
-                "elevationM": -2568.126953125,
-                "slopeDeg": 2.6001044537831635
+                "distanceM": 526.2741699796952,
+                "elevationM": -2564.708740234375,
+                "slopeDeg": 0.6002901931716386
               },
               {
-                "distanceM": 513.1370849898476,
-                "elevationM": -2567.2275390625,
-                "slopeDeg": 2.8853577871595752
+                "distanceM": 546.2741699796952,
+                "elevationM": -2564.83740234375,
+                "slopeDeg": 0.49218718503622144
               },
               {
-                "distanceM": 533.1370849898476,
-                "elevationM": -2566.259033203125,
-                "slopeDeg": 3.068501092969726
+                "distanceM": 566.2741699796952,
+                "elevationM": -2564.904052734375,
+                "slopeDeg": 0.8947815305111803
               },
               {
-                "distanceM": 553.1370849898476,
-                "elevationM": -2565.192138671875,
-                "slopeDeg": 3.6640188404401393
+                "distanceM": 586.2741699796952,
+                "elevationM": -2564.748779296875,
+                "slopeDeg": 1.5780271903095626
               },
               {
-                "distanceM": 573.1370849898476,
-                "elevationM": -2563.75927734375,
-                "slopeDeg": 4.647406697120415
+                "distanceM": 606.2741699796952,
+                "elevationM": -2564.130615234375,
+                "slopeDeg": 2.722941266814042
               },
               {
-                "distanceM": 593.1370849898476,
-                "elevationM": -2561.974609375,
-                "slopeDeg": 5.3344000349003995
+                "distanceM": 626.2741699796952,
+                "elevationM": -2563.03173828125,
+                "slopeDeg": 3.70066548770872
               },
               {
-                "distanceM": 613.1370849898476,
-                "elevationM": -2560.039306640625,
-                "slopeDeg": 5.607832079436974
+                "distanceM": 646.2741699796952,
+                "elevationM": -2561.6318359375,
+                "slopeDeg": 4.205015526225663
               },
               {
-                "distanceM": 633.1370849898476,
-                "elevationM": -2558.05517578125,
-                "slopeDeg": 5.34461225989013
+                "distanceM": 674.5584412271571,
+                "elevationM": -2560.25634765625,
+                "slopeDeg": 3.5228708154353563
               },
               {
-                "distanceM": 653.1370849898476,
-                "elevationM": -2556.3017578125,
-                "slopeDeg": 4.278047155960778
+                "distanceM": 694.5584412271571,
+                "elevationM": -2559.099365234375,
+                "slopeDeg": 3.1477526521524513
               },
               {
-                "distanceM": 673.1370849898476,
-                "elevationM": -2555.063720703125,
-                "slopeDeg": 2.9663077757868863
+                "distanceM": 722.842712474619,
+                "elevationM": -2558.9521484375,
+                "slopeDeg": 2.4681459864052506
               },
               {
-                "distanceM": 693.1370849898476,
-                "elevationM": -2554.282958984375,
-                "slopeDeg": 2.2570276455203784
+                "distanceM": 742.842712474619,
+                "elevationM": -2558.434326171875,
+                "slopeDeg": 1.262432971064459
               },
               {
-                "distanceM": 721.4213562373095,
-                "elevationM": -2553.0751953125,
-                "slopeDeg": 2.7803433692478223
+                "distanceM": 762.842712474619,
+                "elevationM": -2558.1826171875,
+                "slopeDeg": 1.1251272869160145
               },
               {
-                "distanceM": 741.4213562373095,
-                "elevationM": -2552.552734375,
-                "slopeDeg": 2.6370569245281814
+                "distanceM": 791.1269837220809,
+                "elevationM": -2557.115234375,
+                "slopeDeg": 3.308043713339131
               },
               {
-                "distanceM": 761.4213562373095,
-                "elevationM": -2552.071533203125,
-                "slopeDeg": 2.469621689467253
+                "distanceM": 811.1269837220809,
+                "elevationM": -2556.944091796875,
+                "slopeDeg": 4.212884869526172
               },
               {
-                "distanceM": 789.7056274847714,
-                "elevationM": -2550.846923828125,
-                "slopeDeg": 2.5471555385385085
+                "distanceM": 839.4112549695428,
+                "elevationM": -2555.830078125,
+                "slopeDeg": 3.724815559338912
               },
               {
-                "distanceM": 809.7056274847714,
-                "elevationM": -2550.545654296875,
-                "slopeDeg": 2.636669206279322
+                "distanceM": 859.4112549695428,
+                "elevationM": -2556.365234375,
+                "slopeDeg": 3.8531911769321403
               },
               {
-                "distanceM": 837.9898987322333,
-                "elevationM": -2549.24462890625,
-                "slopeDeg": 2.9033729741808187
+                "distanceM": 887.6955262170047,
+                "elevationM": -2555.74267578125,
+                "slopeDeg": 3.346672414268638
               },
               {
-                "distanceM": 857.9898987322333,
-                "elevationM": -2548.97900390625,
-                "slopeDeg": 2.8625375685926833
+                "distanceM": 907.6955262170047,
+                "elevationM": -2556.25537109375,
+                "slopeDeg": 3.5257649186684232
               },
               {
-                "distanceM": 886.2741699796952,
-                "elevationM": -2547.85205078125,
-                "slopeDeg": 2.805490317670087
+                "distanceM": 935.9797974644666,
+                "elevationM": -2555.680419921875,
+                "slopeDeg": 3.1695625897507216
               },
               {
-                "distanceM": 906.2741699796952,
-                "elevationM": -2547.69921875,
-                "slopeDeg": 2.4333018530157
+                "distanceM": 955.9797974644666,
+                "elevationM": -2556.00341796875,
+                "slopeDeg": 3.4512112253897556
               },
               {
-                "distanceM": 934.5584412271571,
-                "elevationM": -2547.27392578125,
-                "slopeDeg": 1.5668682877433084
+                "distanceM": 984.2640687119285,
+                "elevationM": -2555.072021484375,
+                "slopeDeg": 3.1267740572910725
               },
               {
-                "distanceM": 954.5584412271571,
-                "elevationM": -2547.515869140625,
-                "slopeDeg": 1.5009676559151768
+                "distanceM": 1004.2640687119285,
+                "elevationM": -2555.25048828125,
+                "slopeDeg": 3.186124769541903
               },
               {
-                "distanceM": 982.842712474619,
-                "elevationM": -2547.098876953125,
-                "slopeDeg": 1.5186397354752226
+                "distanceM": 1024.2640687119285,
+                "elevationM": -2555.5185546875,
+                "slopeDeg": 3.3051552635540435
               },
               {
-                "distanceM": 1002.842712474619,
-                "elevationM": -2546.93701171875,
-                "slopeDeg": 1.5659091304698536
+                "distanceM": 1052.5483399593904,
+                "elevationM": -2554.857177734375,
+                "slopeDeg": 2.886644672887229
               },
               {
-                "distanceM": 1022.842712474619,
-                "elevationM": -2546.83447265625,
-                "slopeDeg": 1.298121457822907
+                "distanceM": 1072.5483399593904,
+                "elevationM": -2555.173583984375,
+                "slopeDeg": 2.8141730408641097
               },
               {
-                "distanceM": 1051.126983722081,
-                "elevationM": -2547.16943359375,
-                "slopeDeg": 2.0579346199546276
+                "distanceM": 1100.8326112068523,
+                "elevationM": -2554.552490234375,
+                "slopeDeg": 2.3676386031000938
               },
               {
-                "distanceM": 1071.126983722081,
-                "elevationM": -2547.938232421875,
-                "slopeDeg": 2.8721780003404116
+                "distanceM": 1120.8326112068523,
+                "elevationM": -2554.814697265625,
+                "slopeDeg": 2.1168721794958123
               },
               {
-                "distanceM": 1099.4112549695428,
-                "elevationM": -2549.66650390625,
-                "slopeDeg": 3.741922584116646
+                "distanceM": 1149.1168824543142,
+                "elevationM": -2554.68310546875,
+                "slopeDeg": 1.8478931180401246
               },
               {
-                "distanceM": 1119.4112549695428,
-                "elevationM": -2550.73291015625,
-                "slopeDeg": 3.6227971552238962
+                "distanceM": 1169.1168824543142,
+                "elevationM": -2555.1181640625,
+                "slopeDeg": 1.619463688232485
               },
               {
-                "distanceM": 1147.6955262170047,
-                "elevationM": -2552.36767578125,
-                "slopeDeg": 2.8040114130753375
+                "distanceM": 1197.4011537017761,
+                "elevationM": -2555.03271484375,
+                "slopeDeg": 1.497902695950309
               },
               {
-                "distanceM": 1167.6955262170047,
-                "elevationM": -2552.963134765625,
-                "slopeDeg": 2.081230658173273
+                "distanceM": 1217.4011537017761,
+                "elevationM": -2555.238525390625,
+                "slopeDeg": 1.4747244187004278
               },
               {
-                "distanceM": 1195.9797974644666,
-                "elevationM": -2553.86572265625,
-                "slopeDeg": 1.9954508445396795
+                "distanceM": 1245.685424949238,
+                "elevationM": -2554.67578125,
+                "slopeDeg": 2.0780548749625876
               },
               {
-                "distanceM": 1215.9797974644666,
-                "elevationM": -2553.94482421875,
-                "slopeDeg": 2.0714552832380253
-              },
-              {
-                "distanceM": 1235.9797974644666,
-                "elevationM": -2553.867919921875,
-                "slopeDeg": 2.131333253507547
-              },
-              {
-                "distanceM": 1264.2640687119285,
+                "distanceM": 1265.685424949238,
                 "elevationM": -2554.556640625,
                 "slopeDeg": 2.202645069127041
               }
             ],
-            "cost": 1264.2640687119285,
+            "cost": 1265.685424949238,
             "requestedStartXY": [
-              1510,
-              1510
+              1581.2,
+              1456.7
             ],
             "requestedGoalXY": [
               510,
               1510
             ],
             "effectiveStartXY": [
-              1510.0,
-              1510.0
+              1590.0,
+              1450.0
             ],
             "effectiveGoalXY": [
               510.0,
               1510.0
             ],
-            "travelMin": 42.14213562373095
+            "travelMin": 42.189514164974604
           }
         }
       }
@@ -3246,12 +3462,12 @@
       "name": "closure-no-path",
       "request": {
         "schemaVersion": 1,
-        "datasetVersion": "4492c9ffb6cf016a",
+        "datasetVersion": "9a4cd252af07db1a",
         "baseXY": [
           510,
           1510
         ],
-        "targetId": "terrain-observation-a",
+        "targetId": "m20-sid",
         "maxSlopeDeg": 15,
         "speedMPerMin": 30,
         "reserveMin": 20,
@@ -3278,7 +3494,7 @@
         "requestId": "real-disconnected",
         "selectedRouteMode": "shortest",
         "currentXY": [
-          1010.0,
+          1050.0,
           1510.0
         ],
         "elapsedMin": 130,
@@ -3304,7 +3520,7 @@
             "profile": null,
             "cost": null,
             "requestedStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "requestedGoalXY": [
@@ -3326,14 +3542,6 @@
           "currentToTarget": {
             "status": "ok",
             "pathXY": [
-              [
-                1010.0,
-                1510.0
-              ],
-              [
-                1030.0,
-                1510.0
-              ],
               [
                 1050.0,
                 1510.0
@@ -3424,167 +3632,193 @@
               ],
               [
                 1490.0,
-                1510.0
+                1490.0
               ],
               [
                 1510.0,
-                1510.0
+                1490.0
+              ],
+              [
+                1530.0,
+                1470.0
+              ],
+              [
+                1550.0,
+                1470.0
+              ],
+              [
+                1570.0,
+                1470.0
+              ],
+              [
+                1590.0,
+                1450.0
               ]
             ],
-            "distanceM": 500.0,
-            "ascentM": 4.577880859375,
+            "distanceM": 564.8528137423857,
+            "ascentM": 5.009521484375,
             "maxSlopeDeg": 5.822439975391289,
-            "meanSlopeDeg": 3.02611943407633,
+            "meanSlopeDeg": 2.6168182068933845,
             "profile": [
               {
                 "distanceM": 0.0,
-                "elevationM": -2557.7138671875,
-                "slopeDeg": 4.189231925911758
-              },
-              {
-                "distanceM": 20.0,
-                "elevationM": -2559.116943359375,
-                "slopeDeg": 4.899466985497111
-              },
-              {
-                "distanceM": 40.0,
                 "elevationM": -2560.87060546875,
                 "slopeDeg": 5.632699978379958
               },
               {
-                "distanceM": 60.0,
+                "distanceM": 20.0,
                 "elevationM": -2562.88818359375,
                 "slopeDeg": 5.822439975391289
               },
               {
-                "distanceM": 80.0,
+                "distanceM": 40.0,
                 "elevationM": -2564.822021484375,
                 "slopeDeg": 5.140016298015429
               },
               {
-                "distanceM": 100.0,
+                "distanceM": 60.0,
                 "elevationM": -2566.3662109375,
                 "slopeDeg": 3.964613922671871
               },
               {
-                "distanceM": 120.0,
+                "distanceM": 80.0,
                 "elevationM": -2567.490478515625,
                 "slopeDeg": 2.8330239986170764
               },
               {
-                "distanceM": 140.0,
+                "distanceM": 100.0,
                 "elevationM": -2568.2451171875,
                 "slopeDeg": 2.096154011819999
               },
               {
-                "distanceM": 160.0,
+                "distanceM": 120.0,
                 "elevationM": -2568.79150390625,
                 "slopeDeg": 1.7806249226185902
               },
               {
-                "distanceM": 180.0,
+                "distanceM": 140.0,
                 "elevationM": -2569.259521484375,
                 "slopeDeg": 1.6056563806534605
               },
               {
-                "distanceM": 200.0,
+                "distanceM": 160.0,
                 "elevationM": -2569.681396484375,
                 "slopeDeg": 1.3443487320266945
               },
               {
-                "distanceM": 220.0,
+                "distanceM": 180.0,
                 "elevationM": -2569.99658203125,
                 "slopeDeg": 0.8827112321806712
               },
               {
-                "distanceM": 240.0,
+                "distanceM": 200.0,
                 "elevationM": -2570.085205078125,
                 "slopeDeg": 0.5186913190506935
               },
               {
-                "distanceM": 260.0,
+                "distanceM": 220.0,
                 "elevationM": -2569.828125,
                 "slopeDeg": 1.2818412866879927
               },
               {
-                "distanceM": 280.0,
+                "distanceM": 240.0,
                 "elevationM": -2569.202392578125,
                 "slopeDeg": 2.1983746501577337
               },
               {
-                "distanceM": 300.0,
+                "distanceM": 260.0,
                 "elevationM": -2568.2958984375,
                 "slopeDeg": 2.7450206238834793
               },
               {
-                "distanceM": 320.0,
+                "distanceM": 280.0,
                 "elevationM": -2567.308349609375,
                 "slopeDeg": 2.806096425962
               },
               {
-                "distanceM": 340.0,
+                "distanceM": 300.0,
                 "elevationM": -2566.450927734375,
                 "slopeDeg": 2.6021593779988037
               },
               {
-                "distanceM": 360.0,
+                "distanceM": 320.0,
                 "elevationM": -2565.847900390625,
                 "slopeDeg": 2.507499227525388
               },
               {
-                "distanceM": 380.0,
+                "distanceM": 340.0,
                 "elevationM": -2565.533447265625,
                 "slopeDeg": 2.6511000108614025
               },
               {
-                "distanceM": 400.0,
+                "distanceM": 360.0,
                 "elevationM": -2565.50732421875,
                 "slopeDeg": 2.869443065774504
               },
               {
-                "distanceM": 420.0,
+                "distanceM": 380.0,
                 "elevationM": -2565.64697265625,
                 "slopeDeg": 2.871196660232801
               },
               {
-                "distanceM": 440.0,
+                "distanceM": 400.0,
                 "elevationM": -2565.863037109375,
                 "slopeDeg": 2.6655929410621817
               },
               {
-                "distanceM": 460.0,
+                "distanceM": 420.0,
                 "elevationM": -2566.29248046875,
                 "slopeDeg": 2.575649491526711
               },
               {
-                "distanceM": 480.0,
-                "elevationM": -2567.05419921875,
-                "slopeDeg": 2.705791084889359
+                "distanceM": 448.2842712474619,
+                "elevationM": -2567.35693359375,
+                "slopeDeg": 1.8280672729791974
               },
               {
-                "distanceM": 500.0,
-                "elevationM": -2567.99267578125,
-                "slopeDeg": 2.754880224939734
+                "distanceM": 468.2842712474619,
+                "elevationM": -2568.046875,
+                "slopeDeg": 2.052291838768789
+              },
+              {
+                "distanceM": 496.5685424949238,
+                "elevationM": -2568.38916015625,
+                "slopeDeg": 1.6419428572234678
+              },
+              {
+                "distanceM": 516.5685424949238,
+                "elevationM": -2568.77685546875,
+                "slopeDeg": 1.6683167399657501
+              },
+              {
+                "distanceM": 536.5685424949238,
+                "elevationM": -2568.9921875,
+                "slopeDeg": 1.6347503165285393
+              },
+              {
+                "distanceM": 564.8528137423857,
+                "elevationM": -2568.560546875,
+                "slopeDeg": 1.026216859617201
               }
             ],
-            "cost": 500.0,
+            "cost": 564.8528137423857,
             "requestedStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "requestedGoalXY": [
-              1510,
-              1510
+              1581.2,
+              1456.7
             ],
             "effectiveStartXY": [
-              1010.0,
+              1050.0,
               1510.0
             ],
             "effectiveGoalXY": [
-              1510.0,
-              1510.0
+              1590.0,
+              1450.0
             ],
-            "travelMin": 16.666666666666668
+            "travelMin": 18.82842712474619
           },
           "targetToBase": {
             "status": "no_path",
@@ -3596,8 +3830,8 @@
             "profile": null,
             "cost": null,
             "requestedStartXY": [
-              1510,
-              1510
+              1581.2,
+              1456.7
             ],
             "requestedGoalXY": [
               510,
@@ -3612,7 +3846,8 @@
   ],
   "limitations": [
     "No independent three-landmark image/3D registration review completed",
-    "Targets and base are hypothetical, not registered sample locations",
+    "Base is hypothetical; targets are rover localizations at sampling sites, not drill-hole coordinates",
+    "Rover elevations and the CTX grid are compared, not independently surveyed truth",
     "Timing is one local run, not a service-level guarantee"
   ]
 }

@@ -81,6 +81,58 @@ def _point_in_polygon(p, poly):
     return inside
 
 
+def _search(slopes, h, w, size, blocked, start, goal, mode, max_slope_deg):
+    """Least-cost search from start. With goal=None it explores every reachable cell."""
+    moves = [(-1,0),(1,0),(0,-1),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)]
+    distances, previous = {start: 0.0}, {}
+    queue = [(0.0, start)]
+    while queue:
+        _, current = heapq.heappop(queue)
+        if current == goal: break
+        for dr, dc in moves:
+            nxt = (current[0]+dr, current[1]+dc)
+            r,c = nxt
+            if not (0 <= r < h and 0 <= c < w) or blocked(r,c): continue
+            if dr and dc and (blocked(current[0]+dr,current[1]) or blocked(current[0],current[1]+dc)): continue
+            length = size * (math.sqrt(2) if dr and dc else 1)
+            edge_slope = max(slopes[current[0]][current[1]], slopes[r][c])
+            weight = length * (1 + 4*(edge_slope/max_slope_deg)**2) if mode == "slope_penalized" else length
+            candidate = distances[current] + weight
+            if candidate < distances.get(nxt, math.inf):
+                distances[nxt], previous[nxt] = candidate, current
+                heuristic = size * math.hypot(goal[0]-r, goal[1]-c) if goal else 0.0
+                heapq.heappush(queue, (candidate+heuristic, nxt))
+    return distances, previous
+
+
+def return_field(region, origin_xy, mode="shortest", max_slope_deg=15, blocked_polygons=None):
+    """Walking distance from every cell to origin along its least-cost path; None where unreachable.
+
+    Edges are symmetric, so distance from the origin equals distance back to it.
+    """
+    if mode not in ("shortest", "slope_penalized") or not _number(max_slope_deg) or max_slope_deg <= 0:
+        raise ValueError("unsupported route mode or slope limit")
+    polygons = _validated_polygons(blocked_polygons)
+    manifest, slopes = region["manifest"], region["slope"]
+    h, w, size = manifest["height"], manifest["width"], manifest["cellSizeM"]
+    start = tuple(xy_to_pixel(*origin_xy, manifest))
+    cache = {}
+    def blocked(r, c):
+        if (r, c) not in cache:
+            cache[(r, c)] = _cell_blocked(r, c, region, polygons) or slopes[r][c] > max_slope_deg
+        return cache[(r, c)]
+    if blocked(*start):
+        raise ValueError("base position is blocked, over the slope limit, or has unavailable terrain data")
+    costs, previous = _search(slopes, h, w, size, blocked, start, None, mode, max_slope_deg)
+    grid = [[None] * w for _ in range(h)]
+    grid[start[0]][start[1]] = 0.0
+    for cell in sorted(previous, key=costs.get):  # parents always cost less, so they are filled first
+        parent = previous[cell]
+        step = size * (math.sqrt(2) if cell[0] != parent[0] and cell[1] != parent[1] else 1)
+        grid[cell[0]][cell[1]] = grid[parent[0]][parent[1]] + step
+    return grid
+
+
 def route(region, start_xy, goal_xy, mode="shortest", max_slope_deg=15, blocked_polygons=None):
     """Find a cell-center path; endpoint cells are never silently snapped."""
     empty = {"status": "invalid_input", "pathXY": None, "distanceM": None, "ascentM": None, "maxSlopeDeg": None, "meanSlopeDeg": None, "profile": None, "cost": None,
@@ -113,25 +165,7 @@ def route(region, start_xy, goal_xy, mode="shortest", max_slope_deg=15, blocked_
         return {"status":"ok","pathXY":coords,"distanceM":0.0,"ascentM":0.0,"maxSlopeDeg":slopes[start[0]][start[1]],"meanSlopeDeg":slopes[start[0]][start[1]],"profile":[{"distanceM":0.0,"elevationM":elev[start[0]][start[1]],"slopeDeg":slopes[start[0]][start[1]]}],"cost":0.0,
                 "requestedStartXY":start_xy,"requestedGoalXY":goal_xy,"effectiveStartXY":start_xy_effective,"effectiveGoalXY":goal_xy_effective}
     size = manifest["cellSizeM"]
-    moves = [(-1,0),(1,0),(0,-1),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)]
-    distances, previous = {start: 0.0}, {}
-    queue = [(0.0, start)]
-    while queue:
-        _, current = heapq.heappop(queue)
-        if current == goal: break
-        for dr, dc in moves:
-            nxt = (current[0]+dr, current[1]+dc)
-            r,c = nxt
-            if not (0 <= r < h and 0 <= c < w) or blocked(r,c): continue
-            if dr and dc and (blocked(current[0]+dr,current[1]) or blocked(current[0],current[1]+dc)): continue
-            length = size * (math.sqrt(2) if dr and dc else 1)
-            edge_slope = max(slopes[current[0]][current[1]], slopes[r][c])
-            weight = length * (1 + 4*(edge_slope/max_slope_deg)**2) if mode == "slope_penalized" else length
-            candidate = distances[current] + weight
-            if candidate < distances.get(nxt, math.inf):
-                distances[nxt], previous[nxt] = candidate, current
-                heuristic = size * math.hypot(goal[0]-r, goal[1]-c)
-                heapq.heappush(queue, (candidate+heuristic, nxt))
+    distances, previous = _search(slopes, h, w, size, blocked, start, goal, mode, max_slope_deg)
     if goal not in distances:
         return {**empty, "status":"no_path"}
     cells = [goal]

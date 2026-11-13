@@ -34,3 +34,4 @@ build/
 /data/packages/
 # Local code-graph output
 /graphify-out/
+!/data/region/rover-traverse.json

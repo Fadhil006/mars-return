@@ -148,6 +148,32 @@
       "acquisitionDate": "Bundle coverage 2021-02-18 through 2026-06-21 (sols 0\u20131897)",
       "attribution": "NASA Planetary Data System Geosciences Node / Washington University in St. Louis; Mars 2020 mission",
       "limitations": "Official archive documents rover localizations and mechanism positions and links to product collections and SIS; this index does not promise GeoJSON. Coordinate frames, localization fields, product structure, and suitability for a surface traverse must be checked against the SIS and release notes before extracting or interpreting route points."
+    },
+    {
+      "sourceId": "nasa-m20-waypoints",
+      "title": "Mars 2020 Perseverance rover waypoints (end-of-drive localizations)",
+      "url": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Rover localization (site/drive RMC frames) published for NASA's rover location map",
+      "productId": "M20_waypoints.json",
+      "publicationDate": null,
+      "acquisitionDate": "Retrieved 2026-11-14; file then covered sols 13-2022. Crop uses sols 13-404.",
+      "sha256AtRetrieval": "bd143ee69241229926abd373e6305b8bbb326d6b5a7b4a8d6935262696f93dc4",
+      "attribution": "NASA/JPL-Caltech",
+      "limitations": "Live file that grows with each drive, so the checksum is of the retrieved copy, not a fixed release. Positions are rover localizations in the Jezero equirectangular frame, not surveyed ground control; no positional uncertainty is published in the file."
+    },
+    {
+      "sourceId": "nasa-m20-traverse",
+      "title": "Mars 2020 Perseverance rover traverse path",
+      "url": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_traverse.json",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Rover localization (site/drive RMC frames) published for NASA's rover location map",
+      "productId": "M20_traverse.json",
+      "publicationDate": null,
+      "acquisitionDate": "Retrieved 2026-11-14; file then covered sols 13-2022. Crop uses sols 13-404.",
+      "sha256AtRetrieval": "6ddd0ece913d75b45d105946082f95ed84e68f4718b68d32a4421dc30877e7e6",
+      "attribution": "NASA/JPL-Caltech",
+      "limitations": "Live file that grows with each drive, so the checksum is of the retrieved copy, not a fixed release. Positions are rover localizations in the Jezero equirectangular frame, not surveyed ground control; no positional uncertainty is published in the file."
     }
   ],
   "layers": {
@@ -199,7 +225,8 @@
     "slope.json": "42fe4f0672ea247e27bff188dbaf25d76e2403c5ff9c3d0b49f9f155d706e106",
     "mask.json": "83386efe01b0f5099d0c51701b6c6f2c21730c8f55b7e95cd838668dd0329be3",
     "imagery.webp": "1deab2f6cf474044220058fc08d9896ba06b10deb8d6ce5f59731703afe9c811",
-    "science-stops.json": "0b38b005172a361332c4655ed4efbb89e65530875aea90a3b1f56c13ae1fa54c"
+    "science-stops.json": "cabad53c7c494ff93b5ea4074c0fca9fe6ce2812e1db7ca736c731a87fd6e453",
+    "rover-traverse.json": "cda01f5ec00f13e2df07f6ccb3c827fe5488f8ed3ee12f73b2db66676fae901c"
   },
   "slopeMethod": "Centered finite differences; degrees; null unless full 3x3 elevation neighborhood exists.",
   "maskMeaning": "true means elevation, slope, and imagery are valid; false means at least one is missing.",
@@ -208,12 +235,12 @@
       510,
       1510
     ],
-    "defaultTargetId": "terrain-observation-a",
-    "label": "Hypothetical base and observation points on real CTX terrain"
+    "defaultTargetId": "m20-sid",
+    "label": "Hypothetical base; destinations are real Perseverance sampling sites on real CTX terrain"
   },
   "warnings": [
-    "Base and observation points are hypothetical, not registered rover sample sites.",
+    "The base is hypothetical. Destinations are rover localizations at real sampling sites, not drill-hole coordinates.",
     "Three-landmark 2D/3D alignment review remains outstanding."
   ],
-  "datasetVersion": "4492c9ffb6cf016a"
+  "datasetVersion": "9a4cd252af07db1a"
 }

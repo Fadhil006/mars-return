@@ -2,7 +2,7 @@
 
 A Mars mission rehearsal project for the NASA Space Apps Martian Map challenge: explore real terrain, compare routes, and ask **“Can we still get back?”** when a scenario changes.
 
-**Status:** Group A backend implemented: terrain preparation, two route objectives, round-trip/rehearsal calculations, versioned API, NASA/USGS evidence, and tests. The web application and assistant remain Group B work. See [backend setup](server/README.md), [data processing](docs/data-method.md), and [validation](docs/validation.md) for verified results and outstanding limits.
+**Status:** Group A backend implemented: terrain preparation, real Perseverance sampling sites and traverse, two route objectives, round-trip/rehearsal calculations, a return envelope, a closure stress test, versioned API, NASA/USGS evidence, and tests. The web application and assistant remain Group B work. See [backend setup](server/README.md), [data processing](docs/data-method.md), and [validation](docs/validation.md) for verified results and outstanding limits.
 
 ## Start here
 

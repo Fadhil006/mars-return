@@ -28,8 +28,9 @@ def package_region(region_dir, output):
         temporary_path = Path(temporary.name)
     try:
         with tarfile.open(temporary_path, "w:gz") as archive:
-            for name in FILES:
-                archive.add(region_dir / name, arcname=name, recursive=False)
+            for name in FILES + ("rover-traverse.json",):
+                if (region_dir / name).is_file():  # the traverse layer is optional
+                    archive.add(region_dir / name, arcname=name, recursive=False)
         digest = hashlib.sha256(temporary_path.read_bytes()).hexdigest()
         # Hard-link publication is atomic and fails rather than replacing a concurrent output.
         os.link(temporary_path, output)

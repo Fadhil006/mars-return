@@ -21,6 +21,7 @@ python -m venv .venv
 .venv/bin/python -m pytest server/tests -k "name"          # one test
 .venv/bin/python -m server.export_schema --check           # shared/schema.json matches runtime models
 
+.venv/bin/python -m scripts.build_science      # real sampling-site stops + rover traverse from NASA waypoints
 .venv/bin/python -m scripts.prepare_demo       # first run downloads ~450 MB of USGS CTX data
 .venv/bin/python -m uvicorn server.api:app --host 127.0.0.1 --port 8000   # Swagger UI at /docs
 .venv/bin/python -m scripts.validate_demo      # needs the raw DEM; rewrites docs/validation-results.json
@@ -36,15 +37,15 @@ There is no linter or formatter configured. `.editorconfig` sets 4 spaces for Py
   - `preprocess.py`, `region.py` — prepare and load the terrain bundle
   - `coordinates.py` — projection and pixel↔map conversion
   - `routing.py` — grid routing with two route objectives
-  - `mission.py` — round-trip and rehearsal arithmetic
+  - `mission.py` — round-trip, rehearsal, return-envelope (`reach`) and closure stress arithmetic
   - `evidence.py` — source citations and `trusted_context` (server-calculated metrics by plan ID)
   - `models.py` — request/response models; `export_schema.py` writes `shared/schema.json` from them
   - `api.py` — the versioned API
   - `tests/` — pytest suite
 - `scripts/` — data preparation, validation, fixture generation, packaging.
 - `shared/` — `api-contract.md`, `schema.json`, and synthetic fixtures. This is the interface between the two groups.
-- `data/sources/` — tracked source and acquisition records. `data/region/` — prepared bundle; only `manifest.json` and `science-stops.json` are tracked. `data/raw/` — downloads, ignored by Git.
-- `docs/` — architecture, data method, validation, demo script, submission checklist. `docs/plans/` holds the authoritative team plans.
+- `data/sources/` — tracked source and acquisition records. `data/region/` — prepared bundle; only `manifest.json`, `science-stops.json` and `rover-traverse.json` are tracked. `data/raw/` — downloads, ignored by Git.
+- `docs/` — architecture, data method, validation, demo script, submission checklist. `docs/plans/` holds the authoritative team plans; `03-group-a-winning-plan.md` is the current Group A plan.
 - `web/` — planned React/TypeScript/Vite + Three.js frontend. Not started.
 
 ## Rules that are easy to break

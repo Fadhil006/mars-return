@@ -11,11 +11,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 
 from server.evidence import PlanStore
-from server.models import PlanRequest, PlanResponse, RehearsalRequest, RehearsalResponse, RegionResponse
+from server.models import (PlanRequest, PlanResponse, ReachRequest, ReachResponse, RehearsalRequest,
+                           RehearsalResponse, RegionResponse, StressRequest, StressResponse)
 from server.region import load_region
 
 ROOT = Path(__file__).resolve().parents[1]
 LOGGER = logging.getLogger(__name__)
+ASSETS = ("imagery.webp", "elevation.json", "slope.json", "mask.json", "rover-traverse.json")
 WARNINGS = [
     "Illustrative scenario, not certified astronaut navigation or physiological safety guidance.",
     "Constant speed and horizontal grid distance do not model terrain-dependent fatigue or suit performance.",
@@ -75,8 +77,8 @@ def create_app(region_dir=None, *, region=None, store=None):
         return {"schemaVersion": 1, "datasetVersion": current["manifest"]["datasetVersion"],
                 "manifest": current["manifest"], "scienceStops": current["scienceStops"],
                 "sources": current.get("sources", []),
-                "layers": {name: f"/api/assets/{name}" for name in
-                           ("imagery.webp", "elevation.json", "slope.json", "mask.json")},
+                "layers": {name: f"/api/assets/{name}" for name in ASSETS
+                           if name != "rover-traverse.json" or "roverTraverse" in current},
                 "parameterBounds": {"maxSlopeDeg": [5, 30], "speedMPerMin": [0, 1000],
                                     "speedMinimumExclusive": True},
                 "warnings": WARNINGS + current["manifest"].get("warnings", [])}
@@ -86,7 +88,7 @@ def create_app(region_dir=None, *, region=None, store=None):
         current = active_region()
         if current is None:
             return error(503, "data_unavailable", "region_unavailable", "Region unavailable")
-        if name not in ("imagery.webp", "elevation.json", "slope.json", "mask.json"):
+        if name not in ASSETS:
             return error(404, "invalid_input", "asset_not_found", "Unknown region asset")
         path = Path(current.get("directory", app.state.region_dir)) / name
         if path.resolve().parent != path.parent.resolve():
@@ -95,20 +97,22 @@ def create_app(region_dir=None, *, region=None, store=None):
             return error(503, "data_unavailable", "asset_unavailable", "Prepared asset missing")
         return FileResponse(path)
 
-    def calculate(payload, rehearse=False):
+    def calculate(payload, kind, response_type):
         current = active_region()
         if current is None:
             return error(503, "data_unavailable", "region_unavailable", "Region unavailable", payload.requestId)
         if payload.datasetVersion != current["manifest"]["datasetVersion"]:
             return error(409, "invalid_input", "dataset_version_mismatch", "Reload the region and recalculate", payload.requestId)
-        from server.mission import evaluate_plan, evaluate_rehearsal
+        from server import mission
         inputs = payload.model_dump(mode="json")
         start = perf_counter()
         try:
-            result = (evaluate_rehearsal if rehearse else evaluate_plan)(current, inputs)
+            result = getattr(mission, f"evaluate_{kind}")(current, inputs)
         except ValueError as exc:
             return error(422, "invalid_input", "invalid_scenario", str(exc), payload.requestId)
-        assessments = [result["immediateReturn"], result["continueThenReturn"]] if rehearse else list(result["options"].values())
+        assessments = {"plan": lambda: list(result["options"].values()),
+                       "rehearsal": lambda: [result["immediateReturn"], result["continueThenReturn"]],
+                       "reach": lambda: [result], "stress": lambda: [result["baseline"]]}[kind]()
         invalid = next((item for item in assessments if item["status"] == "invalid_input"), None)
         if invalid is not None:
             return error(422, "invalid_input", "invalid_scenario",
@@ -118,22 +122,29 @@ def create_app(region_dir=None, *, region=None, store=None):
         result.update(requestId=payload.requestId, schemaVersion=1, datasetVersion=payload.datasetVersion,
                       modelVersion="grid-constant-speed-v1", sourceIds=source_ids,
                       warnings=WARNINGS + current["manifest"].get("warnings", []))
-        if rehearse:
+        if kind != "plan":
             result["selectedRouteMode"] = payload.selectedRouteMode
         # Validate before persisting; B3 only sees trusted, serializable assessments.
-        response_type = RehearsalResponse if rehearse else PlanResponse
         response_type.model_validate({**result, "planId": "pending", "inputHash": "pending"})
         plan_id, input_hash = app.state.store.save(inputs, result)
-        LOGGER.info("mission evaluation kind=%s elapsed_ms=%.1f", "rehearse" if rehearse else "plan", (perf_counter()-start)*1000)
+        LOGGER.info("mission evaluation kind=%s elapsed_ms=%.1f", kind, (perf_counter()-start)*1000)
         return response_type.model_validate({**result, "planId": plan_id, "inputHash": input_hash})
 
     @app.post("/api/plan", response_model=PlanResponse, response_model_by_alias=True)
     def plan(payload: PlanRequest):
-        return calculate(payload)
+        return calculate(payload, "plan", PlanResponse)
 
     @app.post("/api/rehearse", response_model=RehearsalResponse, response_model_by_alias=True)
     def rehearse(payload: RehearsalRequest):
-        return calculate(payload, rehearse=True)
+        return calculate(payload, "rehearsal", RehearsalResponse)
+
+    @app.post("/api/reach", response_model=ReachResponse, response_model_by_alias=True)
+    def reach(payload: ReachRequest):
+        return calculate(payload, "reach", ReachResponse)
+
+    @app.post("/api/stress", response_model=StressResponse, response_model_by_alias=True)
+    def stress(payload: StressRequest):
+        return calculate(payload, "stress", StressResponse)
 
     return app
 

@@ -1,38 +1,194 @@
 [
   {
-    "id": "terrain-observation-a",
-    "name": "Hypothetical terrain observation A",
-    "positionXY": [1510, 1510],
-    "kind": "hypothetical_waypoint",
+    "id": "m20-roubion",
+    "name": "Roubion — Polygon Valley",
+    "positionXY": [
+      1537.0,
+      496.0
+    ],
+    "kind": "rover_sample_site",
     "locationUncertaintyM": null,
     "gridSpacingM": 20,
-    "sourceIds": ["usgs-m20-ctx-dem-20m", "nasa-perseverance-mars-rock-samples"],
-    "description": "A hypothetical observation point on the real CTX grid. Compare orbital relief with the regional context of Perseverance science; this is not an identified rock sample or a mapped geological contact.",
-    "scientificQuestion": "What local relief can orbital topography resolve, and what surface observations would still be required?",
-    "locationProvenance": "Scenario-selected analysis-cell center; no claim of a published sampling-site position. NASA sample evidence supplies regional context only."
+    "sourceIds": [
+      "nasa-m20-waypoints",
+      "nasa-perseverance-mars-rock-samples",
+      "usgs-m20-ctx-dem-20m"
+    ],
+    "samples": [
+      {
+        "number": 1,
+        "name": "Roubion",
+        "type": "Atmospheric",
+        "sealedDate": "2021-08-06",
+        "sol": 164,
+        "rockType": null
+      }
+    ],
+    "roverSol": 157,
+    "roverRMC": "6_0",
+    "roverElevationM": -2584.922,
+    "description": "Perseverance sampling site. NASA's inventory lists Roubion (sol 164) at Roubion, Polygon Valley.",
+    "scientificQuestion": "What would a crew observe and collect here that the rover's cores and instruments could not?",
+    "locationProvenance": "Rover end-of-drive localization on sol 157 (RMC 6_0), the last localization on or before the first sample was sealed on sol 164. This is the rover's position, not the drill target within arm's reach; no geodetic uncertainty is published."
   },
   {
-    "id": "terrain-observation-b",
-    "name": "Hypothetical terrain observation B",
-    "positionXY": [2310, 1810],
-    "kind": "hypothetical_waypoint",
+    "id": "m20-rochette",
+    "name": "Rochette — Artuby Ridge",
+    "positionXY": [
+      1127.5,
+      676.5
+    ],
+    "kind": "rover_sample_site",
     "locationUncertaintyM": null,
     "gridSpacingM": 20,
-    "sourceIds": ["usgs-m20-ctx-dem-20m", "usgs-m20-ctx-ortho-5m"],
-    "description": "A scenario-selected point for comparing elevation, slope and orbital imagery. No specific lithology, chemistry, sample identity or present surface condition is inferred.",
-    "scientificQuestion": "How does the chosen route's relief differ from its destination's local grid slope?",
-    "locationProvenance": "Scenario-selected analysis-cell center on the prepared 20 m grid, not a registered rover observation."
+    "sourceIds": [
+      "nasa-m20-waypoints",
+      "nasa-perseverance-mars-rock-samples",
+      "usgs-m20-ctx-dem-20m"
+    ],
+    "samples": [
+      {
+        "number": 2,
+        "name": "Montdenier",
+        "type": "Rock Core",
+        "sealedDate": "2021-09-06",
+        "sol": 194,
+        "rockType": "Igneous"
+      },
+      {
+        "number": 3,
+        "name": "Montagnac",
+        "type": "Rock Core",
+        "sealedDate": "2021-09-08",
+        "sol": 196,
+        "rockType": "Igneous"
+      }
+    ],
+    "roverSol": 180,
+    "roverRMC": "7_0",
+    "roverElevationM": -2574.524,
+    "description": "Perseverance sampling site. NASA's inventory lists Montdenier (sol 194), Montagnac (sol 196) at Rochette, Artuby Ridge.",
+    "scientificQuestion": "What would a crew observe and collect here that the rover's cores and instruments could not?",
+    "locationProvenance": "Rover end-of-drive localization on sol 180 (RMC 7_0), the last localization on or before the first sample was sealed on sol 194. This is the rover's position, not the drill target within arm's reach; no geodetic uncertainty is published."
   },
   {
-    "id": "terrain-observation-c",
-    "name": "Hypothetical terrain observation C",
-    "positionXY": [1910, 1010],
-    "kind": "hypothetical_waypoint",
+    "id": "m20-brac",
+    "name": "Brac — South Séítah",
+    "positionXY": [
+      1051.8,
+      867.6
+    ],
+    "kind": "rover_sample_site",
     "locationUncertaintyM": null,
     "gridSpacingM": 20,
-    "sourceIds": ["usgs-m20-ctx-dem-20m", "usgs-m20-ctx-ortho-5m"],
-    "description": "A hypothetical destination for investigating the tradeoff between distance and a slope-weighted route objective on real terrain.",
-    "scientificQuestion": "Do shortest and slope-penalized paths differ under the same terrain exclusions?",
-    "locationProvenance": "Scenario-selected analysis-cell center; grid spacing is not geodetic or vertical measurement accuracy."
+    "sourceIds": [
+      "nasa-m20-waypoints",
+      "nasa-perseverance-mars-rock-samples",
+      "usgs-m20-ctx-dem-20m"
+    ],
+    "samples": [
+      {
+        "number": 4,
+        "name": "Salette",
+        "type": "Rock Core",
+        "sealedDate": "2021-11-15",
+        "sol": 262,
+        "rockType": "Igneous"
+      },
+      {
+        "number": 5,
+        "name": "Coulettes",
+        "type": "Rock Core",
+        "sealedDate": "2021-11-24",
+        "sol": 271,
+        "rockType": "Igneous"
+      }
+    ],
+    "roverSol": 248,
+    "roverRMC": "8_0",
+    "roverElevationM": -2569.154,
+    "description": "Perseverance sampling site. NASA's inventory lists Salette (sol 262), Coulettes (sol 271) at Brac, South Séítah.",
+    "scientificQuestion": "What would a crew observe and collect here that the rover's cores and instruments could not?",
+    "locationProvenance": "Rover end-of-drive localization on sol 248 (RMC 8_0), the last localization on or before the first sample was sealed on sol 262. This is the rover's position, not the drill target within arm's reach; no geodetic uncertainty is published."
+  },
+  {
+    "id": "m20-issole",
+    "name": "Issole — South Séítah",
+    "positionXY": [
+      959.3,
+      790.4
+    ],
+    "kind": "rover_sample_site",
+    "locationUncertaintyM": null,
+    "gridSpacingM": 20,
+    "sourceIds": [
+      "nasa-m20-waypoints",
+      "nasa-perseverance-mars-rock-samples",
+      "usgs-m20-ctx-dem-20m"
+    ],
+    "samples": [
+      {
+        "number": 6,
+        "name": "Robine",
+        "type": "Rock Core",
+        "sealedDate": "2021-12-22",
+        "sol": 298,
+        "rockType": "Igneous"
+      },
+      {
+        "number": 7,
+        "name": "Malay",
+        "type": "Rock Core",
+        "sealedDate": "2022-01-31",
+        "sol": 337,
+        "rockType": "Igneous"
+      }
+    ],
+    "roverSol": 286,
+    "roverRMC": "9_0",
+    "roverElevationM": -2574.4375,
+    "description": "Perseverance sampling site. NASA's inventory lists Robine (sol 298), Malay (sol 337) at Issole, South Séítah.",
+    "scientificQuestion": "What would a crew observe and collect here that the rover's cores and instruments could not?",
+    "locationProvenance": "Rover end-of-drive localization on sol 286 (RMC 9_0), the last localization on or before the first sample was sealed on sol 298. This is the rover's position, not the drill target within arm's reach; no geodetic uncertainty is published."
+  },
+  {
+    "id": "m20-sid",
+    "name": "Sid — Octavia E. Butler Landing / Ch’ał outcrop",
+    "positionXY": [
+      1581.2,
+      1456.7
+    ],
+    "kind": "rover_sample_site",
+    "locationUncertaintyM": null,
+    "gridSpacingM": 20,
+    "sourceIds": [
+      "nasa-m20-waypoints",
+      "nasa-perseverance-mars-rock-samples",
+      "usgs-m20-ctx-dem-20m"
+    ],
+    "samples": [
+      {
+        "number": 8,
+        "name": "Ha'ahóni",
+        "type": "Rock Core",
+        "sealedDate": "2022-03-07",
+        "sol": 371,
+        "rockType": "Igneous"
+      },
+      {
+        "number": 9,
+        "name": "Atsá",
+        "type": "Rock Core",
+        "sealedDate": "2022-03-13",
+        "sol": 377,
+        "rockType": "Igneous"
+      }
+    ],
+    "roverSol": 362,
+    "roverRMC": "11_108",
+    "roverElevationM": -2568.722168,
+    "description": "Perseverance sampling site. NASA's inventory lists Ha'ahóni (sol 371), Atsá (sol 377) at Sid, Octavia E. Butler Landing / Ch’ał outcrop.",
+    "scientificQuestion": "What would a crew observe and collect here that the rover's cores and instruments could not?",
+    "locationProvenance": "Rover end-of-drive localization on sol 362 (RMC 11_108), the last localization on or before the first sample was sealed on sol 371. This is the rover's position, not the drill target within arm's reach; no geodetic uncertainty is published."
   }
 ]

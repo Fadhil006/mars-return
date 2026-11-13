@@ -52,10 +52,11 @@ def prepare_demo():
     manifest = prepare_region(paths, [4353000, 1091800, 4356000, 1094800], directory, 20)
     science = json.loads((ROOT / "data/sources/science.json").read_text())["sources"]
     manifest["sources"] = records + science
-    manifest["checksums"]["science-stops.json"] = hashlib.sha256((directory / "science-stops.json").read_bytes()).hexdigest()
-    manifest["scenario"] = {"baseXY": [510, 1510], "defaultTargetId": "terrain-observation-a",
-                            "label": "Hypothetical base and observation points on real CTX terrain"}
-    manifest["warnings"] = ["Base and observation points are hypothetical, not registered rover sample sites.",
+    for name in ("science-stops.json", "rover-traverse.json"):  # written by scripts.build_science
+        manifest["checksums"][name] = hashlib.sha256((directory / name).read_bytes()).hexdigest()
+    manifest["scenario"] = {"baseXY": [510, 1510], "defaultTargetId": "m20-sid",
+                            "label": "Hypothetical base; destinations are real Perseverance sampling sites on real CTX terrain"}
+    manifest["warnings"] = ["The base is hypothetical. Destinations are rover localizations at real sampling sites, not drill-hole coordinates.",
                             "Three-landmark 2D/3D alignment review remains outstanding."]
     # Version the source metadata and destinations too, not only the raster bytes.
     manifest.pop("datasetVersion", None)

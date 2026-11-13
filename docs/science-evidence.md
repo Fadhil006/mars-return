@@ -22,3 +22,11 @@ Direct Space Apps requests failed with an issuer-certificate error, so TLS verif
 ## Traverse-data follow-up
 
 No ready-to-use traverse GeoJSON was verified during this pass. PDS Rover PLACES is an official coordinate/localization-data lead; inspect its product collections and SIS before treating it as a geographic traverse. Keep real named sample sites unregistered until coordinate provenance, crop inclusion, uncertainty, and local XY conversion are documented.
+
+## Update, 14 November 2026: sampling sites are now located
+
+The traverse-data follow-up above is resolved. NASA's rover location map is backed by public GeoJSON: [M20_waypoints.json](https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json) and [M20_traverse.json](https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_traverse.json). Each waypoint carries a sol, a site/drive (RMC) identifier, longitude/latitude, an elevation, and easting/northing in the same Jezero equirectangular frame as the CTX DEM. `scripts/build_science.py` recomputes easting/northing from longitude/latitude and stops if they disagree by more than 1 m.
+
+Of 708 waypoints in the retrieved file, 125 (sols 13–404) lie inside the prepared crop. The NASA sample inventory (page last updated 2026-06-20) lists nine samples sealed in that period at five features: Roubion, Rochette, Brac, Issole and Sid. Each feature is placed at the rover's last end-of-drive localization on or before its first sample was sealed. `data/sources/m20-samples.json` holds the transcribed inventory rows; `data/region/science-stops.json` holds the result.
+
+Limits: these are rover positions, so the drill target is within arm's reach, not at the point. The waypoint file publishes no positional uncertainty. The file is live and grows with each drive, so its checksum is recorded per retrieval, not pinned. Rock type is given only as NASA writes it ("Igneous"); no mineralogy is inferred here. Roubion is an atmospheric sample: the page lists it that way and this project does not describe why.

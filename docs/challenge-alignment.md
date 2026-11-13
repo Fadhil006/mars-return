@@ -35,3 +35,7 @@ Consequences for this project:
 - The largest gap is breadth of mission data. This project routes on one orbital product (MRO/CTX) with Perseverance context as text. The challenge asks for several science missions combined. Adding one or two real layers that change a decision (for example MGS/MOLA regional context, MRO/CRISM minerals for choosing science stops, or Perseverance MEDA conditions) matters more than further backend hardening.
 - The science stops are still hypothetical grid points. Tying at least one to a real located Perseverance observation (PDS Rover PLACES is the recorded lead) would strengthen Relevance and Validity.
 - There is no frontend, hosted demo or video yet. Other teams already have live sites; Presentation cannot be scored without one.
+
+## Response, 14 November 2026
+
+Group A closed two of the gaps above: destinations are now five real Perseverance sampling sites located from NASA rover localizations, and Mars 2020 enters as data (traverse layer, plus a rover-versus-orbital elevation check) alongside MRO/CTX. Two calculations were added that neither competing README describes: a return envelope and a single-closure stress test. See [Group A plan, revision 2](plans/03-group-a-winning-plan.md) and [validation](validation.md). The entry still uses two missions, not many; a third decision-relevant layer remains open, as does everything on the Group B side.

@@ -26,6 +26,8 @@ Use the repository root as the working directory. `REGION_DATA_DIR` defaults to 
 
 Run **one worker**: saved plan/rehearsal evaluations are bounded to 128 entries for one hour in process memory. Restart/expiry/eviction requires recalculation. Bind locally by default; public deployments should apply request/rate limits at their reverse proxy. Bodies are limited to 256 KiB in the app.
 
+`POST /api/reach` returns the return-time map from base; `POST /api/stress` closes each stretch of the way home in turn. See `shared/api-contract.md`.
+
 ## Reproduce evidence and package
 
 ```sh
@@ -34,6 +36,6 @@ mkdir -p data/packages
 .venv/bin/python -m scripts.package_region --region-dir data/region --output data/packages/region.tar.gz
 ```
 
-Validation checks three real-terrain scenarios, geometry-derived distances, event reset, and a prepared elevation against the original source raster. It writes `docs/validation-results.json`; it requires the raw DEM. Packaging validates the bundle, rejects symlinks, and prints the archive SHA-256. It refuses to replace an existing archive. A recipient can extract the six fixed assets into `data/region/` and run the service without raw rasters or runtime network access.
+Validation checks three real-terrain scenarios, all five sampling sites with the stress test, the return envelope, rover elevations against the CTX grid, geometry-derived distances, event reset, and a prepared elevation against the original source raster. It writes `docs/validation-results.json`; it requires the raw DEM. Packaging validates the bundle, rejects symlinks, and prints the archive SHA-256. It refuses to replace an existing archive. A recipient can extract the fixed assets into `data/region/` and run the service without raw rasters or runtime network access.
 
 The assistant endpoint `/api/brief` is **not implemented** here; B3 can use `server.evidence.trusted_context` to retrieve server-calculated metrics by plan ID. No credentials are used or exposed by Group A.

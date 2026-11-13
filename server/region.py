@@ -78,5 +78,10 @@ def load_region(directory):
     referenced = set(manifest.get("sourceIds", [])) | {s for stop in region["scienceStops"] for s in stop.get("sourceIds", [])}
     if region["sources"] and not referenced <= known_sources:
         raise ValueError("Source reference missing from source records")
+    traverse = directory / "rover-traverse.json"
+    if traverse.is_file():  # optional layer; listed in checksums when the bundle was prepared with it
+        region["roverTraverse"] = json.loads(traverse.read_text())
+        if not isinstance(region["roverTraverse"].get("waypoints"), list) or not isinstance(region["roverTraverse"].get("pathXY"), list):
+            raise ValueError("rover-traverse.json requires waypoints and pathXY lists")
     region["directory"] = directory
     return region

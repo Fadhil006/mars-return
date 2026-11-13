@@ -2,7 +2,7 @@
 
 import math
 
-from server.routing import route
+from server.routing import return_field, route
 
 
 def _valid(value, positive=False):
@@ -94,3 +94,69 @@ def evaluate_rehearsal(region, request):
     continuation["currentToTarget"] = current_to_target
     continuation["targetToBase"] = target_to_base
     return {"immediateReturn": immediate, "continueThenReturn": continuation}
+
+
+def _mode(request):
+    if request.get("selectedRouteMode") not in ("shortest", "slope_penalized"):
+        raise ValueError("selectedRouteMode must be shortest or slope_penalized")
+    return request["selectedRouteMode"]
+
+
+def evaluate_reach(region, request):
+    """Minutes needed to walk back to base from every cell, and where that still fits the budget."""
+    _validate_request(request, ("maxSlopeDeg", "speedMPerMin", "remainingBudgetMin", "reserveMin"))
+    grid = return_field(region, request.get("baseXY"), _mode(request), request["maxSlopeDeg"],
+                        request.get("blockedPolygonsXY", []))
+    speed, allowance = request["speedMPerMin"], request["remainingBudgetMin"] - request["reserveMin"]
+    minutes = [[None if d is None else d / speed for d in row] for row in grid]
+    reachable = [m for row in minutes for m in row if m is not None]
+    if not all(math.isfinite(m) for m in reachable):
+        raise ValueError("speedMPerMin is too small to produce a finite travel time")
+    returnable = [m for m in reachable if m <= allowance]
+    cell_area = region["manifest"]["cellSizeM"] ** 2
+    return {"status": "ok" if returnable else "over_budget", "returnMin": minutes,
+            "allowanceMin": allowance, "reachableAreaM2": len(reachable) * cell_area,
+            "returnableAreaM2": len(returnable) * cell_area,
+            "farthestReturnableMin": max(returnable) if returnable else None}
+
+
+def _octagon(center, radius):
+    return [[center[0] + radius * math.cos(i * math.pi / 4), center[1] + radius * math.sin(i * math.pi / 4)]
+            for i in range(8)]
+
+
+def evaluate_stress(region, request):
+    """Close each stretch of the planned way home in turn and re-check the return from the target."""
+    _validate_request(request, ("maxSlopeDeg", "speedMPerMin", "totalBudgetMin", "reserveMin", "dwellMin", "closureRadiusM"))
+    mode, radius, count = _mode(request), request["closureRadiusM"], request["closureCount"]
+    stop = _stop(region, request)
+    base, target = request.get("baseXY"), stop.get("positionXY")
+    speed, budget, reserve, dwell = (request[k] for k in ("speedMPerMin", "totalBudgetMin", "reserveMin", "dwellMin"))
+    outbound = _leg(region, base, target, request, mode)
+    home = _leg(region, target, base, request, mode)
+    baseline = _assessment((outbound, home), speed, budget, reserve, dwell)
+    baseline["outbound"], baseline["return"] = outbound, home
+    result = {"baseline": baseline, "closures": [], "survivableCount": 0, "worstMarginMin": None,
+              "verdict": "unavailable", "closureRadiusM": radius}
+    if home["status"] != "ok" or outbound["status"] != "ok":
+        return result
+    path = home["pathXY"]
+    # A closure touching either endpoint cell is a different question (stranded, not rerouted).
+    clearance = radius + region["manifest"]["cellSizeM"]
+    candidates = [i for i, p in enumerate(path) if math.dist(p, path[0]) > clearance and math.dist(p, path[-1]) > clearance]
+    picked = [candidates[round(k * (len(candidates) - 1) / max(count - 1, 1))] for k in range(min(count, len(candidates)))]
+    for index in dict.fromkeys(picked):
+        closed = {**request, "blockedPolygonsXY": list(request.get("blockedPolygonsXY", [])) + [_octagon(path[index], radius)]}
+        detour = _leg(region, target, base, closed, mode)
+        check = _assessment((outbound, detour), speed, budget, reserve, dwell)
+        result["closures"].append({
+            "centerXY": path[index], "alongReturnM": home["profile"][index]["distanceM"], "status": check["status"],
+            "returnDistanceM": detour["distanceM"], "detourM": None if detour["distanceM"] is None else detour["distanceM"] - home["distanceM"],
+            "totalRequiredMin": check["totalRequiredMin"], "marginMin": check["marginMin"], "pathXY": detour["pathXY"]})
+    closures = result["closures"]
+    if closures:
+        result["survivableCount"] = sum(c["status"] == "ok" for c in closures)
+        if all(c["marginMin"] is not None for c in closures):
+            result["worstMarginMin"] = min(c["marginMin"] for c in closures)
+        result["verdict"] = "robust" if result["survivableCount"] == len(closures) else "fragile"
+    return result

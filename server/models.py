@@ -17,12 +17,11 @@ class Model(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
 
-class Constraints(Model):
+class Scenario(Model):
     requestId: Identifier
     schemaVersion: Literal[1]
     datasetVersion: Identifier
     baseXY: XY
-    targetId: Identifier
     maxSlopeDeg: Annotated[Finite, Field(ge=5, le=30)] = 15
     speedMPerMin: Annotated[Finite, Field(gt=0, le=1000)] = 30
     reserveMin: Nonnegative = 20
@@ -42,6 +41,10 @@ class Constraints(Model):
         return self
 
 
+class Constraints(Scenario):
+    targetId: Identifier
+
+
 class PlanRequest(Constraints):
     totalBudgetMin: Nonnegative = 180
     dwellMin: Nonnegative = 10
@@ -59,6 +62,17 @@ class RehearsalRequest(Constraints):
     elapsedMin: Nonnegative
     remainingBudgetMin: Nonnegative
     remainingDwellMin: Nonnegative = 10
+
+
+class ReachRequest(Scenario):
+    selectedRouteMode: Mode
+    remainingBudgetMin: Nonnegative
+
+
+class StressRequest(PlanRequest):
+    selectedRouteMode: Mode
+    closureRadiusM: Annotated[Finite, Field(ge=20, le=300)] = 60
+    closureCount: Annotated[int, Field(ge=1, le=12)] = 8
 
 
 class ProfileSample(Model):
@@ -123,6 +137,37 @@ class RehearsalResponse(Envelope):
     selectedRouteMode: Mode
     immediateReturn: Assessment
     continueThenReturn: Assessment
+
+
+class ReachResponse(Envelope):
+    selectedRouteMode: Mode
+    status: Status
+    returnMin: list[list[Finite | None]]
+    allowanceMin: Finite
+    reachableAreaM2: Finite
+    returnableAreaM2: Finite
+    farthestReturnableMin: Finite | None
+
+
+class Closure(Model):
+    centerXY: XY
+    alongReturnM: Finite
+    status: Status
+    returnDistanceM: Finite | None
+    detourM: Finite | None
+    totalRequiredMin: Finite | None
+    marginMin: Finite | None
+    pathXY: list[XY] | None
+
+
+class StressResponse(Envelope):
+    selectedRouteMode: Mode
+    baseline: Assessment
+    closures: list[Closure]
+    closureRadiusM: Finite
+    survivableCount: int
+    worstMarginMin: Finite | None
+    verdict: Literal["robust", "fragile", "unavailable"]
 
 
 class RegionManifest(BaseModel):
