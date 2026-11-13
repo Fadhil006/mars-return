@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from server.models import RegionManifest, ScienceStop, SourceRecord
+from server.coordinates import xy_to_pixel
 
 
 def load_region(directory):
@@ -64,6 +65,9 @@ def load_region(directory):
         xy = stop["positionXY"]
         if len(xy) != 2 or not all(math.isfinite(v) for v in xy):
             raise ValueError("Science stop requires finite positionXY")
+        row, col = xy_to_pixel(*xy, manifest)
+        if not region["mask"][row][col]:
+            raise ValueError("Science stop must be inside valid terrain coverage")
         source_ids(stop.get("sourceIds", []))
     region["sources"] = manifest.get("sources", [])
     if not isinstance(region["sources"], list):

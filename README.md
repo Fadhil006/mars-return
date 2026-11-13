@@ -2,7 +2,7 @@
 
 A Mars mission rehearsal project for the NASA Space Apps Martian Map challenge: explore real terrain, compare routes, and ask **“Can we still get back?”** when a scenario changes.
 
-**Status:** folder structure and planning documents only. No runnable frontend/backend, dependency installation, scientific datasets or application tests have been added yet.
+**Status:** Group A backend implemented: terrain preparation, two route objectives, round-trip/rehearsal calculations, versioned API, NASA/USGS evidence, and tests. The web application and assistant remain Group B work. See [backend setup](server/README.md), [data processing](docs/data-method.md), and [validation](docs/validation.md) for verified results and outstanding limits.
 
 ## Start here
 
@@ -28,8 +28,8 @@ mars-return/
 │   ├── public/             # Small attributed static assets
 │   └── tests/              # User-flow and cross-view checks
 ├── shared/
-│   ├── api-contract.md     # Draft interface; A3 + B1 own changes
-│   └── fixtures/           # Synthetic development responses, still to create
+│   ├── api-contract.md     # Version-one interface; A3 + B1 own changes
+│   └── fixtures/           # Explicitly synthetic development responses
 ├── data/
 │   ├── raw/                # Local source downloads, ignored by Git
 │   ├── region/             # Prepared region bundle; products still to create
@@ -37,7 +37,7 @@ mars-return/
 ├── docs/
 │   ├── plans/              # Shared plan and both detailed group plans
 │   └── ...                 # Architecture, validation, demo and submission guides
-└── scripts/                # Future preparation, validation and packaging tools
+└── scripts/                # Terrain preparation, validation and packaging tools
 ```
 
 ## Team ownership
@@ -53,9 +53,19 @@ mars-return/
 
 ## Development status
 
-The suggested stack is React/TypeScript/Vite + Three.js and Python/FastAPI + NumPy/Rasterio. A3 initializes the Python environment; B1 initializes the web application. They will add real setup commands and compatible dependency locks when those projects exist. There is no install or run command for this structural scaffold.
+The backend uses Python/FastAPI + NumPy/Rasterio with a tested dependency lock. React/TypeScript/Vite + Three.js remains the proposed Group B stack. There is no runnable frontend yet.
 
-Keep downloaded rasters and generated bulk data out of ordinary Git commits. Record sources and reproducible acquisition steps. Keep secrets in ignored local environment files. The starter environment file names are proposed settings and are not read by code yet.
+```sh
+python -m venv .venv
+.venv/bin/python -m pip install -r server/requirements.lock
+.venv/bin/python -m scripts.prepare_demo  # first run downloads ~450 MB of verified USGS inputs
+.venv/bin/python -m pytest server/tests
+.venv/bin/python -m uvicorn server.api:app --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000/docs` for the API. Fetch `/api/region` for the current dataset version and hypothetical demo base/targets. Never use synthetic fixtures as real terrain. Runtime is local/offline after data preparation; no model key is needed for Group A.
+
+Keep downloaded rasters and generated bulk data out of ordinary Git commits. Source records and reproducible acquisition steps are tracked. Keep secrets out of commits. `REGION_DATA_DIR` is read from the process environment; provider settings in `.env.example` are reserved for Group B and no `.env` file is loaded automatically.
 
 ## Scientific scope
 

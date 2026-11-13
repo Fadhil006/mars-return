@@ -1,3 +1,3 @@
 # Prepared region bundle — A1 and A3
 
-Planned products: manifest.json, imagery.webp, elevation.json, slope.json, mask.json and science-stops.json. No products exist yet. Bulk generated files are ignored; manifest.json and science-stops.json can be committed after review. Package runtime assets with checksums and document acquisition in docs/data-method.md.
+Runtime products: manifest.json, imagery.webp, elevation.json, slope.json, mask.json and science-stops.json. Reproduce the real Jezero bundle with `.venv/bin/python -m scripts.prepare_demo` from the repository root. Bulk generated layers are ignored; the manifest, source records and hypothetical observation points are tracked. Missing layers are not automatically replaced with synthetic data. See `docs/data-method.md` and `docs/validation.md` for processing, checksums, packaging and limits.

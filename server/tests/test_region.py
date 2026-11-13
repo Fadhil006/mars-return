@@ -38,3 +38,11 @@ def test_invalid_bundle(tmp_path, change):
     (tmp_path / "manifest.json").write_text(json.dumps(manifest))
     with pytest.raises(ValueError):
         load_region(tmp_path)
+
+
+@pytest.mark.parametrize("xy", [[-1, 30], [40, 30], [10, 10]])
+def test_stop_must_be_inside_valid_coverage(tmp_path, xy):
+    bundle(tmp_path)
+    (tmp_path / "science-stops.json").write_text(json.dumps([{"id": "s", "positionXY": xy}]))
+    with pytest.raises(ValueError):
+        load_region(tmp_path)
