@@ -14,7 +14,7 @@
 @media (max-width: 600px) { .report-scrim { padding: 0; } .report { border-radius: 0; padding: var(--s4); } .report .metrics { display: block; overflow-x: auto; } }
 
 /* Printed report: light theme whatever the screen shows (design 13.9). */
-@page { size: auto; margin: 18mm; }
+@page { size: auto; margin: 18mm; @top-left { content: var(--rp-header, ""); font: 9pt system-ui, sans-serif; color: #5a636b; } }
 @media print {
   html, body { height: auto; background: #fff; }
   body:has(> .report-scrim) > #root, .rp-actions { display: none; }

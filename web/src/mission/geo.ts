@@ -45,16 +45,25 @@ export const returnRetraces = (a: Assessment) =>
   samePath(a.outbound?.pathXY, a.return?.pathXY ? [...a.return.pathXY].reverse() : null);
 
 /**
- * Hypothetical blocked corridor: a square of `halfM` centred on the returned vertex midway along
- * the path still to be travelled. Null when too little path remains to place it clear of both ends.
+ * Hypothetical blocked corridor: a square of `halfM` centred on a returned vertex still to be
+ * travelled, as near the middle of the remaining return as possible while clear of the current
+ * position, the target and the base (the service rejects a blocked target or base rather than
+ * testing it). Null when no remaining vertex is clear of all three.
  */
 export function corridorPolygon(points: RoutePoint[], posIndex: number, halfM = 60): XY[] | null {
-  const mid = Math.floor((posIndex + points.length - 1) / 2);
-  if (!points.length || mid <= posIndex || mid >= points.length - 1) return null;
-  const [x, y] = points[mid].xy;
-  const far = (p: XY) => Math.max(Math.abs(p[0] - x), Math.abs(p[1] - y)) > halfM * 1.5;
-  if (!far(points[posIndex].xy) || !far(points[points.length - 1].xy)) return null;
-  return [[x - halfM, y - halfM], [x + halfM, y - halfM], [x + halfM, y + halfM], [x - halfM, y + halfM]];
+  const last = points.length - 1, target = points.map((p) => p.leg).lastIndexOf("outbound");
+  if (target < 0) return null;
+  const clear = ([x, y]: XY) => [points[posIndex].xy, points[target].xy, points[last].xy]
+    .every((p) => Math.max(Math.abs(p[0] - x), Math.abs(p[1] - y)) > halfM * 1.5);
+  const mid = Math.floor((Math.max(posIndex, target) + last) / 2); // middle of the way home still ahead
+  for (let d = 0; mid - d > posIndex || mid + d < last; d++) {
+    for (const i of [mid - d, mid + d]) {
+      if (i <= posIndex || i >= last || !clear(points[i].xy)) continue;
+      const [x, y] = points[i].xy;
+      return [[x - halfM, y - halfM], [x + halfM, y - halfM], [x + halfM, y + halfM], [x - halfM, y + halfM]];
+    }
+  }
+  return null;
 }
 
 /** Development sample data is identified from the data itself, never from a setting. */

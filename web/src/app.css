@@ -4,6 +4,7 @@
 .product { font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
 .versions { display: flex; gap: var(--s4); color: var(--text-secondary); }
 .versions > summary { display: none; }
+.versions > span { margin-right: var(--s4); } /* flex gap does not reach <details> content in Chromium */
 .fresh { margin-left: auto; }
 .col { background: var(--surface-panel); padding: var(--s4); overflow-y: auto; min-height: 0; }
 .left { grid-area: left; border-right: 1px solid var(--border-subtle); }
@@ -37,6 +38,7 @@
 @media (max-width: 1199px) {
   .app { grid-template: "bar bar" 48px "view right" minmax(0, 1fr) "strip strip" auto / minmax(0, 1fr) 360px; }
   .drawer-toggle { display: inline-block; }
+  .product { display: none; } /* otherwise the bar clips the freshness status off its right end */
   .left { display: none; position: fixed; z-index: 10; top: 48px; bottom: 0; left: 0; width: 300px; }
   .drawer-open .left { display: block; }
 }
@@ -61,6 +63,10 @@
   .versions[open] { position: static; }
   .bar { overflow: visible; flex-wrap: wrap; height: auto; min-height: 48px; padding: var(--s1) var(--s3); gap: var(--s2); }
   .app { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+  /* The layers menu spans the toolbar instead of hanging off the Layers button past the screen edge. */
+  .toolbar { position: relative; }
+  .layers { position: static; }
+  .layers-menu { top: 100%; left: var(--s3); right: var(--s3); width: auto; }
 }
 @media (pointer: coarse) {
   .btn, .segments button, .tabs button, .field input, .field select { min-height: 44px; }

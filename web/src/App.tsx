@@ -19,6 +19,7 @@ const TABS: Tab[] = ["routes", "evidence", "assistant"];
 const TAB_LABEL: Record<Tab, string> = { routes: "Routes", evidence: "Evidence", assistant: "Assistant" };
 const NO_3D = "3D terrain is not available in this browser. The 2D map has the same route and controls.";
 const webgl = webglAvailable(); // checked once; creating contexts repeatedly exhausts the browser's limit
+const wide = window.matchMedia("(min-width: 900px)").matches; // small screens start with versions collapsed (design 12)
 
 function Layers({ m }: { m: Mission }) {
   const { state, dispatch } = m, b = state.bundle!;
@@ -68,6 +69,7 @@ export function App() {
   const b = state.bundle, region = b.region;
   const [freshText, freshClass] = FRESH[state.freshness];
   const no3d = !webgl || !b.elevation;
+  const noPath = m.assessment?.status === "no_path"; // design 10: no_path blocks Rehearse and Report
   const view = no3d ? "2d" : state.view;
   const warnings = region.warnings;
   const onTabKey = (e: KeyboardEvent) => {
@@ -85,7 +87,7 @@ export function App() {
         <span className="product">Mars Return / Excursion planner</span>
         {isSample(b) ? <span className="tag tag-sample">Development sample data</span>
           : <span className="tag">Real CTX terrain · Jezero Crater</span>}
-        <details className="versions" open>
+        <details className="versions" open={wide}>
           <summary>Versions</summary>
           <span className="mono">Dataset {region.datasetVersion}</span>
           <span className="mono" title={state.plan?.planId}>Plan {state.plan ? state.plan.planId.slice(0, 8) : "—"}</span>
@@ -134,8 +136,9 @@ export function App() {
           {state.tab === "routes" ? <RouteComparison m={m} /> : state.tab === "evidence" ? <EvidencePanel m={m} /> : <MissionAssistant m={m} />}
         </div>
         <div className="report-open">
-          <button className="btn" disabled={!m.current} onClick={() => dispatch({ type: "setReport", open: true })}>Open mission report</button>
-          {!m.current && <p className="reason">Request routes to enable. The report never exports an outdated result.</p>}
+          <button className="btn" disabled={!m.current || noPath} onClick={() => dispatch({ type: "setReport", open: true })}>Open mission report</button>
+          {!m.current ? <p className="reason">Request routes to enable. The report never exports an outdated result.</p>
+            : noPath && <p className="reason">The selected mode found no route, so there is nothing to report.</p>}
         </div>
       </aside>
 

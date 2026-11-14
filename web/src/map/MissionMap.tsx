@@ -141,7 +141,8 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
           {stress?.closures.filter((c) => c.status !== "ok").map((c, i) => (
             <span key={i} className="mm-fail" style={at(c.centerXY)} aria-hidden="true">✕</span>
           ))}
-          {m.corridor && <span className="mm-label mm-label-hyp" style={at(m.corridor[3])}>Hypothetical</span>}
+          {/* Below the corridor's south edge so it never sits under the current-position label above the route. */}
+          {m.corridor && <span className="mm-label mm-label-hyp mm-below" style={at([(m.corridor[0][0] + m.corridor[1][0]) / 2, m.corridor[0][1]])}>Hypothetical</span>}
           {outdated && out && <span className="mm-label mm-label-outdated" style={at(out[Math.floor(out.length / 2)])}>Outdated</span>}
 
           {m.baseXY && <span className="mm-mark mm-base" style={at(m.baseXY)}><span className="mm-label">Base · Hypothetical</span></span>}

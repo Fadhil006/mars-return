@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Line2 } from "three/examples/jsm/lines/Line2.js";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { layerCanvas } from "../map/layers";
 import { extentM, returnRetraces } from "../mission/geo";
 import type { Mission } from "../mission/state";
@@ -8,7 +11,7 @@ import type { XY } from "../mission/types";
 import { heightfield, surfacePoint } from "./scene";
 import "./terrain.css";
 
-const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, BACKGROUND = 0x14171a;
+const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, BACKGROUND = 0x14171a, CASING = 0x0b1114;
 const LIFT_M = 3; // display-only offset that keeps lines from flickering against the surface
 
 let webgl: boolean | undefined;
@@ -65,15 +68,18 @@ export function TerrainView({ m }: { m: Mission }) {
     const p = ctxRef.current && surfacePoint(bundle!, xy, ctxRef.current.origin, lift);
     return p ? new THREE.Vector3(...p) : null;
   };
-  // shortcut: THREE.Line draws 1 px lines with no dark casing, switch to Line2 fat lines if routes read poorly over the imagery.
+  // Design 13.7: a 3 px line over a 6 px dark casing so it holds contrast over the imagery (screen-space widths).
   const addLine = (group: THREE.Group, path: XY[] | null | undefined, color: number, opacity = 1, dashed = false) => {
     const points = (path ?? []).map((xy) => point(xy)).filter((p) => p !== null);
     if (points.length < 2) return;
-    const options = { color, opacity, transparent: opacity < 1 };
-    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),
-      dashed ? new THREE.LineDashedMaterial({ ...options, dashSize: 40, gapSize: 30 }) : new THREE.LineBasicMaterial(options));
-    line.computeLineDistances();
-    group.add(line);
+    const flat = points.flatMap((p) => [p.x, p.y, p.z]);
+    for (const [c, linewidth, dash, order] of [[CASING, 6, false, 1], [color, 3, dashed, 2]] as const) {
+      const line = new Line2(new LineGeometry().setPositions(flat), new LineMaterial({ color: c, linewidth, opacity,
+        transparent: opacity < 1, dashed: dash, dashSize: 40, gapSize: 30 }));
+      line.computeLineDistances();
+      line.renderOrder = order;
+      group.add(line);
+    }
   };
   const addMark = (group: THREE.Group, geometry: THREE.BufferGeometry, xy: XY, color: number, lift: number, onTop = false) => {
     const position = point(xy, lift);

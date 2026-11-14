@@ -104,6 +104,7 @@ describe("geometry", () => {
     const inside = (xy: XY) => xy[0] >= Math.min(...xs) && xy[0] <= Math.max(...xs);
     expect(inside(pts[0].xy)).toBe(false);
     expect(inside(pts[pts.length - 1].xy)).toBe(false);
+    expect(inside(pts[pts.map((p) => p.leg).lastIndexOf("outbound")].xy)).toBe(false); // the target stays reachable
     expect(corridorPolygon(pts, pts.length - 3, 20)).toBeNull();
   });
 

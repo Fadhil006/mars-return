@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./mission.css";
 import { diff, num, STATUS_TEXT } from "./format";
 import { routesIdentical } from "./geo";
@@ -60,7 +61,7 @@ function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: stri
 
 function Scenario({ m }: { m: Mission }) {
   const { ret, reach } = m.state;
-  const blocked = ret.error?.message.includes("position is blocked");
+  const blocked = ret.error?.message.startsWith("current position is blocked");
   return (
     <section aria-live="polite">
       <h3 className="section-label">Return options · <span className="tag tag-hyp">Hypothetical scenario</span></h3>
@@ -134,6 +135,12 @@ function Stress({ m }: { m: Mission }) {
 
 export function RouteComparison({ m }: { m: Mission }) {
   const { state, dispatch } = m, plan = state.plan;
+  // A cited metric may sit below the fold of the panel; bring it into view (same as cited sources in Evidence).
+  useEffect(() => {
+    if (!state.highlight) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById(`metric-${state.highlight}`)?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+  }, [state.highlight]);
   if (!plan || !state.planInputs) {
     return <p className="reason">{state.freshness === "requesting" ? "Requesting routes from the planning service…"
       : state.freshness === "failed" ? "No route is shown because the last request did not succeed."
@@ -163,7 +170,9 @@ export function RouteComparison({ m }: { m: Mission }) {
             </tr>
           </thead>
           <tbody>
-            <tr><td>Status</td>{MODES.map((mode) => <td key={mode} className="status-cell"><Status status={plan.options[mode].status} /></td>)}<td /></tr>
+            <tr className={MODES.some((mode) => state.highlight === `${mode}.status`) ? "highlight" : undefined}>
+              <td>Status</td>{MODES.map((mode) => <td key={mode} id={`metric-${mode}.status`} className="status-cell"><Status status={plan.options[mode].status} /></td>)}<td />
+            </tr>
             {ROWS.map(([id, label, unit, digits, get]) => (
               <tr key={id} className={MODES.some((mode) => state.highlight === `${mode}.${id}`) ? "highlight" : undefined}>
                 <td>{label}</td>

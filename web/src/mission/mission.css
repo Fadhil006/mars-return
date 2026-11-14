@@ -1,7 +1,8 @@
 .controls .field label .tag { margin-left: var(--s1); }
 .modes { border: 0; padding: 0; min-width: 0; }
 .modes legend { font-size: 12px; line-height: 16px; color: var(--text-secondary); padding: 0; margin-bottom: var(--s1); }
-.modes label { display: block; font-size: 14px; color: var(--text-primary); padding: 2px 0; }
+.modes label { display: flex; align-items: center; gap: var(--s2); font-size: 14px; color: var(--text-primary); padding: 2px 0; }
+.modes label input { width: auto; height: auto; margin: 0; } /* undo the text-input sizing from .field input */
 .assumptions { margin: var(--s5) 0; }
 .assumptions summary { cursor: pointer; margin-bottom: var(--s3); color: var(--text-secondary); }
 .base { margin: 0 0 var(--s5); }
@@ -11,11 +12,13 @@
 .indeterminate { flex-basis: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--status-updating), transparent) 0 0 / 50% 100% no-repeat var(--border-subtle); animation: sweep 1.2s linear 3; }
 @keyframes sweep { from { background-position: -100% 0; } to { background-position: 200% 0; } }
 
-.routes { display: grid; gap: var(--s4); }
+.routes { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
 .routes p { margin: 0 0 var(--s2); }
 .routes .outdated { opacity: 0.55; }
 .routes .metrics thead th { white-space: normal; padding: var(--s1) var(--s2); height: auto; }
 .routes .metrics td { font-size: 14px; white-space: nowrap; }
+.routes .metrics th, .routes .metrics td { padding: 0 var(--s1); }
+.routes .metrics td:first-child { white-space: normal; } /* labels wrap so four columns fit the 360 px panel */
 .routes .metrics .status-cell { font-size: 12px; white-space: normal; }
 .routes .closures td { font-size: 12px; }
 .option-title { margin: 0 0 var(--s1); font-size: 14px; }

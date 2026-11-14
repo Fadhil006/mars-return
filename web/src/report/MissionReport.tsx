@@ -50,13 +50,26 @@ export function MissionReport({ m }: { m: Mission }) {
   const { state, dispatch } = m;
   const open = state.reportOpen;
   const dialog = useRef<HTMLDivElement>(null);
+  const { plan: p, bundle: b } = state;
+  const header = p && b ? `${isSample(b) ? "Development sample data" : "Real terrain data"} · Dataset ${p.datasetVersion} · Model ${p.modelVersion} · Plan ${p.planId}` : "";
+
+  // Design 13.9: identity on every printed page, drawn by the @page margin box in report.css.
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement.style;
+    root.setProperty("--rp-header", JSON.stringify(header));
+    return () => { root.removeProperty("--rp-header"); };
+  }, [open, header]);
 
   useEffect(() => {
     if (!open) return;
     const opener = document.activeElement as HTMLElement | null;
     dialog.current?.focus();
-    return () => opener?.focus();
-  }, [open]);
+    // On the document, so Escape still closes after a click on the scrim moves focus to <body>.
+    const onEscape = (e: KeyboardEvent) => { if (e.key === "Escape") dispatch({ type: "setReport", open: false }); };
+    document.addEventListener("keydown", onEscape);
+    return () => { document.removeEventListener("keydown", onEscape); opener?.focus(); };
+  }, [open, dispatch]);
 
   const { bundle, plan, planInputs: inputs, ret, stress, reach } = state;
   if (!open || !bundle || !plan || !inputs) return null;
@@ -73,7 +86,6 @@ export function MissionReport({ m }: { m: Mission }) {
   );
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") return close();
     if (e.key !== "Tab") return;
     const items = dialog.current!.querySelectorAll<HTMLElement>("button, a[href]");
     const first = items[0], last = items[items.length - 1], active = document.activeElement;
