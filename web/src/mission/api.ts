@@ -28,6 +28,21 @@ async function call<T>(path: string, body?: unknown): Promise<T> {
 export const post = <T>(endpoint: "plan" | "rehearse" | "reach" | "stress" | "brief", body: unknown) =>
   call<T>(`/api/${endpoint}`, body);
 
+/** An object URL for the image at `path`, or null when it is not listed, cannot be fetched or does not decode. */
+export async function loadImage(path: string | undefined): Promise<string | null> {
+  if (!path) return null;
+  try {
+    const response = await fetch(path);
+    if (!response.ok) return null;
+    const blob = await response.blob();
+    // Decode rather than trust the content type, which some servers send as application/octet-stream for .webp.
+    (await createImageBitmap(blob)).close();
+    return URL.createObjectURL(blob);
+  } catch {
+    return null;
+  }
+}
+
 export async function loadBundle(): Promise<RegionBundle> {
   const region = await call<RegionResponse>("/api/region");
   const names = ["elevation.json", "slope.json", "mask.json", "rover-traverse.json"] as const;
@@ -35,7 +50,8 @@ export async function loadBundle(): Promise<RegionBundle> {
   const get = <T>(i: number) => (loaded[i].status === "fulfilled" ? (loaded[i] as PromiseFulfilledResult<T>).value : null);
   // The traverse is optional in the contract, so its absence is not a missing layer.
   const missing = names.filter((n, i) => loaded[i].status === "rejected" && n !== "rover-traverse.json") as string[];
-  const imageryUrl = region.layers["imagery.webp"] ?? null;
+  // Fetch the image too: a listed layer whose file fails must read as missing, not as a blank map that claims imagery.
+  const imageryUrl = await loadImage(region.layers["imagery.webp"]);
   if (!imageryUrl) missing.push("imagery.webp");
   return {
     region,

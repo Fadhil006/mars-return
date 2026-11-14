@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import "./mission.css";
 import "./routes.css";
 import { diff, hm, num, STATUS_TEXT } from "./format";
@@ -70,8 +70,16 @@ function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: stri
 function Scenario({ m }: { m: Mission }) {
   const { ret, reach } = m.state;
   const blocked = ret.error?.message.startsWith("current position is blocked");
+  const ref = useRef<HTMLElement>(null);
+  // New return options land below the route comparison; bring them into view so they are not missed on short screens.
+  useEffect(() => {
+    if (ret.status !== "ok" && ret.status !== "error") return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // "start": the section can be taller than the panel, and "nearest" would then leave the second option below the fold.
+    ref.current?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+  }, [ret.status, ret.requestId]);
   return (
-    <section className="rc-section" aria-live="polite">
+    <section className="rc-section" aria-live="polite" ref={ref}>
       <h3 className="rc-h3">Return options <span className="tag tag-hyp">Hypothetical scenario</span></h3>
       {ret.status === "idle" && <p className="reason">Pause at a position, set the scenario, then request return options.</p>}
       {ret.status === "loading" && <p role="status">Requesting return options…</p>}

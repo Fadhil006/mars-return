@@ -17,6 +17,7 @@
 .mm-overlay > .mm-below { transform: translate(-50%, 6px); }
 .mm-label-hyp { color: var(--hypothetical); border: 1px solid currentColor; }
 .mm-label-outdated { color: var(--status-outdated); border: 1px solid currentColor; }
+.mm-label-warn { color: var(--status-outdated); border: 1px solid currentColor; max-width: 320px; }
 .mm-mark > .mm-label, .mm-stop > .mm-label { position: absolute; left: 50%; top: 100%; transform: translate(-50%, 2px); }
 
 /* Callouts: two-line box joined to its marker by a thin leader (22 px across, 38 px up or down). */

@@ -3,6 +3,7 @@ import "./mission.css";
 import "./rehearsal.css";
 import { ElevationProfile } from "./ElevationProfile";
 import { DASH, num } from "./format";
+import { checkNumber } from "./numberInput";
 import type { Mission } from "./state";
 
 const STEP_MS = 250; // presentation speed only; not a prediction of travel speed
@@ -17,6 +18,9 @@ const clock = (min: number | null | undefined) => {
 export function RehearsalStrip({ m }: { m: Mission }) {
   const { state, dispatch, points, posIndex, point } = m;
   const [speed, setSpeed] = useState(1);
+  const [remText, setRemText] = useState<string | null>(null); // exact text while the remaining-time field is edited
+  const remCheck = remText == null ? null : checkNumber(remText, { min: 0 });
+  const remError = remCheck && "error" in remCheck ? remCheck.error : null;
   const last = points.length - 1;
   const pos = useRef(posIndex);
   pos.current = posIndex;
@@ -83,13 +87,21 @@ export function RehearsalStrip({ m }: { m: Mission }) {
         <label className="rs-pill"><input type="checkbox" checked={state.scenario.blocked}
           onChange={(e) => dispatch({ type: "setScenario", blocked: e.target.checked })} /> Hypothetical corridor blocked</label>
         <label className="rs-pill">Remaining time
-          <input type="number" min={0} step="any" value={m.remainingMin} aria-describedby="remaining-note"
-            onChange={(e) => Number.isFinite(e.target.valueAsNumber) && dispatch({ type: "setScenario", remainingMin: e.target.valueAsNumber })} />
+          <input type="text" inputMode="decimal" autoComplete="off" value={remText ?? String(m.remainingMin)}
+            aria-invalid={remError ? true : undefined} aria-describedby={remError ? "remaining-error remaining-note" : "remaining-note"}
+            onFocus={(e) => { setRemText(String(m.remainingMin)); e.target.select(); }}
+            onBlur={() => setRemText(null)}
+            onChange={(e) => {
+              setRemText(e.target.value);
+              const r = checkNumber(e.target.value, { min: 0 });
+              if ("value" in r) dispatch({ type: "setScenario", remainingMin: r.value });
+            }} />
           <span className="unit">min</span>
         </label>
         <span className="caption" id="remaining-note">
           (initial budget: {num(budget)} min; the default follows the playback position)
         </span>
+        {remError && <p id="remaining-error" className="reason field-error" aria-live="polite">{remError} The last valid value is used.</p>}
         <span className="rs-actions">
           <button className="btn btn-primary" disabled={busy} onClick={m.requestReturn}>Request return options</button>
           <button className="btn" disabled={busy} onClick={m.requestReach}>Show return envelope</button>

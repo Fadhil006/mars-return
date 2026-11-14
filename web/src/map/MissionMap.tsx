@@ -202,7 +202,12 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
 
           <div className="mm-br">
             {retraces && !outdated && <span className="mm-label">Return follows the outbound path</span>}
-            {!bundle.imageryUrl && <span className="mm-label">Imagery is unavailable; marks are drawn on a plain background</span>}
+            {!bundle.imageryUrl && <span className="mm-label mm-label-warn" role="status">Imagery could not be loaded; marks are drawn on a plain background</span>}
+            {bundle.missing.includes("mask.json") && (
+              <span className="mm-label mm-label-warn" role="status">
+                The missing-data mask could not be loaded; gaps are shown only where elevation is missing
+              </span>
+            )}
             <div className="mm-scale" style={{ width: `${(barM / w) * 100}cqw` }}>
               {[0, barM / 2, barM].map((v, i) => (
                 <span key={i} style={{ left: `${i * 50}%` }}>{barM >= 1000 ? (i ? `${v / 1000}${i === 2 ? " km" : ""}` : "0") : `${v}${i === 2 ? " m" : ""}`}</span>

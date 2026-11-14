@@ -351,9 +351,9 @@ export function TerrainView({ m }: { m: Mission }) {
         {m.points.length > 0 && <li><span className="terrain-route">━</span> Outbound <span className="terrain-route">┅</span> Return{state.freshness !== "current" && " · Outdated"}</li>}
         {state.rehearsing && <li><span className="terrain-route">◆</span> Current position</li>}
         {(m.corridor || ret) && <li><span className="terrain-hyp">━</span> Hypothetical scenario</li>}
-        <li>Gaps: no elevation data</li>
+        <li>Gaps: no elevation data{bundle.missing.includes("mask.json") && " (missing-data mask unavailable; other gaps not shown)"}</li>
         {exag > 1 && <li>Relief drawn {exag}× taller than measured</li>}
-        <li>Greyscale CTX image, warm display tint</li>
+        <li>{bundle.imageryUrl ? "Greyscale CTX image, warm display tint" : "Imagery could not be loaded; plain surface"}</li>
       </ul>
       <button type="button" className="btn terrain-reset" onClick={() => ctxRef.current?.reset()}>Reset view</button>
     </div>

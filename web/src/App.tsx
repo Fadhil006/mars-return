@@ -61,6 +61,15 @@ export function App() {
   const [pane, setPane] = useState<"mission" | "map" | "results">("map"); // narrow screens
   const [drawer, setDrawer] = useState(false); // medium screens
   const viewRef = useRef<HTMLElement>(null);
+  const barRef = useRef<HTMLElement>(null);
+  // The plan drawer on medium screens starts under the header, whose height depends on wrapping.
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const observer = new ResizeObserver(() => document.documentElement.style.setProperty("--bar-h", `${bar.offsetHeight}px`));
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, [state.bundle]);
   const [full, setFull] = useState(false);
   useEffect(() => {
     const on = () => setFull(!!viewRef.current && document.fullscreenElement === viewRef.current);
@@ -109,7 +118,7 @@ export function App() {
 
   return (
     <div className={`app pane-${pane}${drawer ? " drawer-open" : ""}`}>
-      <header className="bar">
+      <header className="bar" ref={barRef}>
         <div className="bar-row">
           <button className="btn drawer-toggle" aria-expanded={drawer} onClick={() => setDrawer(!drawer)}>Plan panel</button>
           <h1 className="product"><b>Mars</b> <span className="slash">/</span> Excursion planner</h1>
