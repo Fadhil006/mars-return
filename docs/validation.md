@@ -4,7 +4,7 @@ Initial real-data validation on 12 November 2026; expanded on 13 November; re-ru
 
 ## Dataset and environment
 
-- Dataset: `9a4cd252af07db1a`; model: `grid-constant-speed-v1`.
+- Dataset: `7e08b277f6761b7c`; model: `grid-constant-speed-v1`.
 - Actual CTX elevation and matching orthoimage from the recorded USGS/PDS sources, source SHA-256 verified.
 - 3 km square, 150 × 150 cells at 20 m; 22,500 elevation cells, 21,904 cells with valid slope neighborhoods and combined coverage.
 - Exact installed dependencies: `server/requirements.lock`. Source/analysis CRS and transforms: `data/region/manifest.json`.
@@ -98,7 +98,7 @@ The process shut down cleanly. Runtime used packaged assets, not raw rasters or 
 - Independent three-landmark registration and Group B 2D/3D orientation/vertical-scale review remain outstanding.
 - No working browser UI, assistant endpoint/model adapter, hosted deployment, or independent-machine installation was verified.
 - Sampling-site positions are rover localizations; the drill targets lie within arm's reach of them and no positional uncertainty is published.
-- The 13 November portable-bundle and HTTP smoke test below was not repeated for dataset `9a4cd252af07db1a` or the two new endpoints.
+- The 13 November portable-bundle and HTTP smoke test below was not repeated for dataset `7e08b277f6761b7c` or the two new endpoints.
 - Direct challenge-page TLS validation failed; the official-domain indexed description was read, but current Resources-tab and submission requirements need confirmation.
 - Native DEM resolution only: preprocessing deliberately rejects up/downsampling until conservative coarsening is implemented and tested.
 - Grid slope, constant speed, and hypothetical events do not model small hazards, live conditions, suit performance, fatigue, physiological safety, or actual return capability.

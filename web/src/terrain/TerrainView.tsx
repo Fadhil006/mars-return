@@ -34,6 +34,7 @@ interface Ctx {
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
   material: THREE.MeshLambertMaterial;
+  mesh: THREE.Mesh;
   groups: Record<"route" | "marks" | "corridor" | "ret", THREE.Group>;
   origin: number;
   render: () => void;
@@ -62,11 +63,12 @@ export function TerrainView({ m }: { m: Mission }) {
   const northRef = useRef<HTMLSpanElement>(null);
   const ctxRef = useRef<Ctx | null>(null);
   const [lost, setLost] = useState(false);
+  const [exag, setExag] = useState(1); // display-only vertical exaggeration; always stated on the toggle and in the legend
   const usable = !!bundle?.elevation && webglAvailable() && !lost;
 
   const point = (xy: XY, lift = LIFT_M) => {
-    const p = ctxRef.current && surfacePoint(bundle!, xy, ctxRef.current.origin, lift);
-    return p ? new THREE.Vector3(...p) : null;
+    const p = ctxRef.current && surfacePoint(bundle!, xy, ctxRef.current.origin);
+    return p ? new THREE.Vector3(p[0], p[1] * exag + lift, p[2]) : null;
   };
   // Design 13.7: a 3 px line over a 6 px dark casing so it holds contrast over the imagery (screen-space widths).
   const addLine = (group: THREE.Group, path: XY[] | null | undefined, color: number, opacity = 1, dashed = false) => {
@@ -118,7 +120,8 @@ export function TerrainView({ m }: { m: Mission }) {
     geometry.computeVertexNormals();
     const material = new THREE.MeshLambertMaterial({ color: 0x8a8580, side: THREE.DoubleSide,
       polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
-    scene.add(new THREE.Mesh(geometry, material));
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
 
     const groups = { route: new THREE.Group(), marks: new THREE.Group(), corridor: new THREE.Group(), ret: new THREE.Group() };
     scene.add(...Object.values(groups));
@@ -154,7 +157,7 @@ export function TerrainView({ m }: { m: Mission }) {
     });
     observer.observe(canvas.parentElement!);
 
-    ctxRef.current = { renderer, scene, camera, controls, material, groups, origin: field.origin, render, reset };
+    ctxRef.current = { renderer, scene, camera, controls, material, mesh, groups, origin: field.origin, render, reset };
     reset();
     return () => {
       ctxRef.current = null;
@@ -165,6 +168,13 @@ export function TerrainView({ m }: { m: Mission }) {
       renderer.dispose();
     };
   }, [bundle, usable]);
+
+  useEffect(() => {
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+    ctx.mesh.scale.y = exag;
+    ctx.render();
+  }, [bundle, usable, exag]);
 
   // Surface texture: imagery plus the grid layers that are switched on.
   const reach = state.reach.data;
@@ -231,8 +241,14 @@ export function TerrainView({ m }: { m: Mission }) {
       }
     }
     if (split && m.point) addMark(ctx.groups.route, new THREE.OctahedronGeometry(22), m.point.xy, ROUTE, 30, true);
+    const at = split && state.playing && m.point ? point(m.point.xy, 0) : null;
+    if (at) { // while playing, the camera travels with the current position; orbit and zoom still work
+      ctx.camera.position.add(at.clone().sub(ctx.controls.target));
+      ctx.controls.target.copy(at);
+      ctx.controls.update();
+    }
     ctx.render();
-  }, [bundle, usable, m.assessment, state.freshness, state.rehearsing, m.posIndex]);
+  }, [bundle, usable, exag, m.assessment, state.freshness, state.rehearsing, state.playing, m.posIndex]);
 
   // Base, science stops and the rover traverse.
   useEffect(() => {
@@ -249,7 +265,7 @@ export function TerrainView({ m }: { m: Mission }) {
     }
     if (layers.traverse) addLine(group, bundle.traverse?.pathXY, 0xb3bcc4, 0.8);
     ctx.render();
-  }, [bundle, usable, layers.stops, layers.traverse, state.inputs.targetId, m.baseXY]);
+  }, [bundle, usable, exag, layers.stops, layers.traverse, state.inputs.targetId, m.baseXY]);
 
   // Hypothetical blocked corridor, draped by sampling each edge at cell spacing.
   const corridorKey = m.corridor ? m.corridor.flat().join() : "";
@@ -269,7 +285,7 @@ export function TerrainView({ m }: { m: Mission }) {
       addLine(ctx.groups.corridor, outline, HYPOTHETICAL);
     }
     ctx.render();
-  }, [bundle, usable, corridorKey]);
+  }, [bundle, usable, exag, corridorKey]);
 
   // Return options from the matching rehearsal result only.
   const ret = state.ret.data;
@@ -283,7 +299,7 @@ export function TerrainView({ m }: { m: Mission }) {
       addLine(ctx.groups.ret, ret.continueThenReturn.targetToBase?.pathXY, HYPOTHETICAL, 1, true);
     }
     ctx.render();
-  }, [bundle, usable, ret]);
+  }, [bundle, usable, exag, ret]);
 
   if (!usable) {
     return (
@@ -322,9 +338,11 @@ export function TerrainView({ m }: { m: Mission }) {
   return (
     <div className="terrain">
       <canvas ref={canvasRef} tabIndex={0} onKeyDown={onKeyDown}
-        aria-label="3D terrain from elevation data at true vertical scale, with the same route and markers as the 2D map. Arrow keys orbit, plus and minus zoom." />
+        aria-label={`3D terrain from elevation data at ${exag === 1 ? "true vertical scale" : `${exag}× exaggerated vertical scale`}, with the same route and markers as the 2D map. Arrow keys orbit, plus and minus zoom.`} />
       <div className="terrain-info">
-        <span className="terrain-plate">Vertical scale 1×</span>
+        <button type="button" className="terrain-plate terrain-exag" aria-pressed={exag > 1}
+          title="Switch between true scale and 3× exaggerated relief. Display only; no route value changes."
+          onClick={() => setExag(exag === 1 ? 3 : 1)}>Vertical scale {exag}×{exag > 1 && " · exaggerated"}</button>
         <span className="terrain-plate terrain-north"><span ref={northRef} aria-hidden="true">↑</span> N</span>
       </div>
       <ul className="terrain-legend terrain-plate" aria-label="3D marks">
@@ -334,6 +352,7 @@ export function TerrainView({ m }: { m: Mission }) {
         {state.rehearsing && <li><span className="terrain-route">◆</span> Current position</li>}
         {(m.corridor || ret) && <li><span className="terrain-hyp">━</span> Hypothetical scenario</li>}
         <li>Gaps: no elevation data</li>
+        {exag > 1 && <li>Relief drawn {exag}× taller than measured</li>}
         <li>Greyscale CTX image, warm display tint</li>
       </ul>
       <button type="button" className="btn terrain-reset" onClick={() => ctxRef.current?.reset()}>Reset view</button>

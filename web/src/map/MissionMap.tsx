@@ -208,7 +208,7 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
                 <span key={i} style={{ left: `${i * 50}%` }}>{barM >= 1000 ? (i ? `${v / 1000}${i === 2 ? " km" : ""}` : "0") : `${v}${i === 2 ? " m" : ""}`}</span>
               ))}
             </div>
-            {layers.imagery && bundle.imageryUrl && <span className="mm-caption">Imagery and terrain: {num(manifest.cellSizeM)} m cells<br />Greyscale CTX image, warm display tint</span>}
+            {layers.imagery && bundle.imageryUrl && <span className="mm-caption">Imagery: {num(manifest.layerInfo?.imagery?.resolutionM ?? manifest.cellSizeM)} m pixels · terrain: {num(manifest.cellSizeM)} m cells<br />Greyscale CTX image, warm display tint</span>}
           </div>
 
           <details className="mm-legend" key={state.rehearsing ? "r" : "p"} open={!state.rehearsing}>

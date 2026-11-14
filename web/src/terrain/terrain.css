@@ -4,6 +4,8 @@
 .terrain-plate { background: rgb(11 17 20 / 85%); color: var(--text-primary); font-size: 12px; line-height: 16px; padding: var(--s1) var(--s2); border-radius: 4px; }
 .terrain-info { position: absolute; top: var(--s2); right: var(--s2); display: flex; gap: var(--s2); pointer-events: none; }
 .terrain-north span { display: inline-block; }
+.terrain-exag { pointer-events: auto; border: 1px solid var(--border-control); font: inherit; font-size: 12px; cursor: pointer; }
+.terrain-exag[aria-pressed="true"] { border-color: var(--status-outdated); color: var(--status-outdated); }
 .terrain-legend { position: absolute; left: var(--s2); bottom: var(--s2); margin: 0; list-style: none; pointer-events: none; }
 .terrain-route { color: var(--route); }
 .terrain-hyp { color: var(--hypothetical); }

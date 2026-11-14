@@ -50,7 +50,10 @@ def test_prepare_region_plane_nodata_and_aligned_layers(tmp_path):
         assert hashlib.sha256((out / filename).read_bytes()).hexdigest() == manifest["checksums"][filename]
     assert manifest["coverage"]["imageryValidCells"] < 100
     assert mask[0][0] is False
-    assert Image.open(out / "imagery.webp").getpixel((0, 0))[3] == 0
+    preview = Image.open(out / "imagery.webp")
+    assert preview.getpixel((0, 0))[3] == 0
+    assert preview.size == (20, 20)  # 5 m source pixels kept on a 10 m grid
+    assert manifest["layerInfo"]["imagery"]["resolutionM"] == 5
 
 
 def test_half_cell_shift_preserves_nodata_interpolation_support(tmp_path):

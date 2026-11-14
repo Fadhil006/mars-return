@@ -210,7 +210,7 @@
       "units": "boolean"
     },
     "imagery": {
-      "resolutionM": 20,
+      "resolutionM": 5.0,
       "sourcePixelSpacingM": [
         5.002064681102627,
         5.002262971613293
@@ -224,7 +224,7 @@
     "elevation.json": "000b1ee1a04436ed480da204c957a7f97639c26fb06292fff67e931b3266005c",
     "slope.json": "42fe4f0672ea247e27bff188dbaf25d76e2403c5ff9c3d0b49f9f155d706e106",
     "mask.json": "83386efe01b0f5099d0c51701b6c6f2c21730c8f55b7e95cd838668dd0329be3",
-    "imagery.webp": "1deab2f6cf474044220058fc08d9896ba06b10deb8d6ce5f59731703afe9c811",
+    "imagery.webp": "5a7b8d28b40abe1608b0987a0d309ded1b3c0295caf61f57c6b3fd148fa6cc9e",
     "science-stops.json": "cabad53c7c494ff93b5ea4074c0fca9fe6ce2812e1db7ca736c731a87fd6e453",
     "rover-traverse.json": "cda01f5ec00f13e2df07f6ccb3c827fe5488f8ed3ee12f73b2db66676fae901c"
   },
@@ -242,5 +242,5 @@
     "The base is hypothetical. Destinations are rover localizations at real sampling sites, not drill-hole coordinates.",
     "Three-landmark 2D/3D alignment review remains outstanding."
   ],
-  "datasetVersion": "9a4cd252af07db1a"
+  "datasetVersion": "7e08b277f6761b7c"
 }

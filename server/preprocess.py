@@ -133,9 +133,22 @@ def prepare_region(source_paths, crop_bounds, output_dir, cell_size_m=20):
             rgb[..., band] = np.clip((band_data - low) * 255 / max(high - low, 1), 0, 255)
         if channels == 1:
             rgb[..., 1:] = rgb[..., :1]
-    Image.fromarray(np.dstack((rgb, image_valid.astype("uint8") * 255))).save(
-        out / "imagery.webp", quality=85
-    )
+        # The display image keeps the source's finer pixels (up to 8 per cell side); the analysis
+        # grid, mask and dataset version above still come from the cell-sized `rgb`.
+        zoom = max(1, min(8, round(cell_size_m / max(imagery_resolution))))
+        display = np.zeros((height * zoom, width * zoom, 3), dtype="uint8")
+        for band in range(channels):
+            band_data = np.zeros(display.shape[:2], dtype="float32")
+            reproject(rasterio.band(image, band + 1), band_data,
+                      src_transform=image.transform, src_crs=image.crs,
+                      dst_transform=from_origin(west, north, cell_size_m / zoom, cell_size_m / zoom),
+                      dst_crs=rasterio.crs.CRS.from_wkt(crs_wkt), dst_nodata=0, resampling=Resampling.average)
+            low, high = np.percentile(band_data[band_data > 0], [1, 99]) if np.any(band_data > 0) else (0, 1)
+            display[..., band] = np.clip((band_data - low) * 255 / max(high - low, 1), 0, 255)
+        if channels == 1:
+            display[..., 1:] = display[..., :1]
+    alpha = np.kron(image_valid, np.ones((zoom, zoom), dtype=bool)).astype("uint8") * 255
+    Image.fromarray(np.dstack((display, alpha))).save(out / "imagery.webp", quality=85)
 
     def write_grid(name, values):
         rows = [[None if v is None or (not isinstance(v, (bool, np.bool_)) and not math.isfinite(float(v)))
@@ -199,7 +212,7 @@ def prepare_region(source_paths, crop_bounds, output_dir, cell_size_m=20):
                           "validCells": int(elevation_valid.sum()), "units": "m"},
             "slope": {"resolutionM": cell_size_m, "validCells": int(valid.sum()), "units": "degrees"},
             "mask": {"resolutionM": cell_size_m, "validCells": int(mask.sum()), "units": "boolean"},
-            "imagery": {"resolutionM": cell_size_m, "sourcePixelSpacingM": imagery_resolution,
+            "imagery": {"resolutionM": cell_size_m / zoom, "sourcePixelSpacingM": imagery_resolution,
                         "channels": channels, "validCells": int(image_valid.sum()),
                         "format": "grayscale preview" if channels == 1 else "RGB preview"},
         },

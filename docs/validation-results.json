@@ -1,5 +1,5 @@
 {
-  "datasetVersion": "9a4cd252af07db1a",
+  "datasetVersion": "7e08b277f6761b7c",
   "modelVersion": "grid-constant-speed-v1",
   "synthetic": false,
   "scenarioInputsAreHypothetical": true,
@@ -95,15 +95,15 @@
   },
   "geometryCheck": "Each valid leg distance independently summed from returned XY segments",
   "timing": {
-    "planMs": 19.93,
-    "validationTotalMs": 1049.99
+    "planMs": 18.08,
+    "validationTotalMs": 925.05
   },
   "scenarios": [
     {
       "name": "default-plan",
       "request": {
         "schemaVersion": 1,
-        "datasetVersion": "9a4cd252af07db1a",
+        "datasetVersion": "7e08b277f6761b7c",
         "baseXY": [
           510,
           1510
@@ -2240,7 +2240,7 @@
       "name": "closure-return-only",
       "request": {
         "schemaVersion": 1,
-        "datasetVersion": "9a4cd252af07db1a",
+        "datasetVersion": "7e08b277f6761b7c",
         "baseXY": [
           510,
           1510
@@ -3462,7 +3462,7 @@
       "name": "closure-no-path",
       "request": {
         "schemaVersion": 1,
-        "datasetVersion": "9a4cd252af07db1a",
+        "datasetVersion": "7e08b277f6761b7c",
         "baseXY": [
           510,
           1510
