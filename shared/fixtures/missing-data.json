@@ -1,0 +1,25 @@
+{
+  "synthetic": true,
+  "description": "Development-only invented grid, not NASA terrain or a scientific result.",
+  "endpoint": "/api/plan",
+  "request": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "datasetVersion": "synthetic-development-v1",
+    "baseXY": [
+      5,
+      25
+    ],
+    "targetId": "synthetic-stop"
+  },
+  "httpStatus": 503,
+  "response": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "status": "data_unavailable",
+    "error": {
+      "code": "region_unavailable",
+      "message": "Region unavailable"
+    }
+  }
+}

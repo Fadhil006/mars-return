@@ -1,0 +1,14 @@
+.assistant p { margin: 0 0 var(--s2); }
+.as-starters { display: grid; gap: var(--s2); margin: var(--s3) 0; }
+.as-starters .btn { text-align: left; }
+.as-ask { display: flex; gap: var(--s2); }
+.as-ask input { flex: 1; min-width: 0; }
+.as-answer { margin-top: var(--s3); }
+.as-unsupported { border-left: 3px solid var(--status-outdated); }
+.as-question { font-weight: 600; }
+.as-mode { font-size: 12px; line-height: 16px; color: var(--text-secondary); }
+.as-text { white-space: pre-wrap; }
+.as-chips { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s2); }
+.as-chip { background: transparent; font: inherit; font-size: 12px; cursor: pointer; height: auto; min-height: 24px; white-space: normal; text-align: left; gap: var(--s1); }
+.as-chip:hover { color: var(--text-primary); }
+@media (pointer: coarse) { .as-chip, .as-starters .btn, .as-ask .btn, .as-ask input { min-height: 44px; } }

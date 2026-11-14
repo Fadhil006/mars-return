@@ -1,5 +1,7 @@
 # Group A — Data, Routing, and Mission Calculations
 
+> Implementation checkpoint: the backend and real CTX region are now implemented. See [validation evidence](../validation.md) and the current [API contract](../../shared/api-contract.md) for verified behavior and remaining gates. The original planning checklists below are not a claim that all team acceptance checks are complete.
+
 Three-person implementation plan • Planning draft, 12 November 2026
 
 > For agentic workers: Use superpowers:executing-plans if later authorized to implement. This document currently assigns work to the six human teammates; it does not authorize automatic implementation or delegation. Checkboxes track work still to be done.

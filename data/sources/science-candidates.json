@@ -1,0 +1,23 @@
+{
+  "scienceStops": [],
+  "geographicCandidates": [
+    {
+      "id": "octavia-e-butler-landing-chal-outcrop-region",
+      "name": "Octavia E. Butler Landing / Ch’ał outcrop",
+      "location": null,
+      "locationUncertaintyM": null,
+      "kind": "documented_sampling_region_candidate",
+      "sourceIds": ["nasa-perseverance-mars-rock-samples"],
+      "description": "NASA lists Ha’ahóni (Sol 371) and Atsá (Sol 377) as rock-core samples collected at this named sampling location. The public inventory provides no geographic coordinates for the region or its individual sample sites. Candidate only; not a registered route waypoint and not a claim that either sample lies within the eventual crop."
+    }
+  ],
+  "coordinateStatus": {
+    "localOrigin": "Not yet defined; no local positionXY values assigned.",
+    "cropReference": {
+      "latitude": 18.4446,
+      "longitude": 77.4509,
+      "provenance": "Planning reference for crop discovery; not independently established here as the exact rover landing coordinate.",
+      "scope": "Approximate ~3 km crop reference only; not a candidate-site coordinate."
+    }
+  }
+}

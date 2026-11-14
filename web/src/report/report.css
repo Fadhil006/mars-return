@@ -1,0 +1,30 @@
+.report-scrim { position: fixed; inset: 0; z-index: 100; background: rgb(11 17 20 / 0.8); overflow: auto; padding: var(--s5) var(--s4); }
+.report { max-width: 880px; margin: 0 auto; background: var(--surface-panel); border-radius: 6px; padding: var(--s5); }
+.report:focus { outline: none; }
+.report h1 { font: 600 18px/24px inherit; font-family: inherit; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 var(--s2); }
+.report h2 { font: 600 16px/24px inherit; font-family: inherit; margin: var(--s5) 0 var(--s2); display: flex; gap: var(--s2); align-items: center; }
+.report p { margin: 0 0 var(--s2); max-width: 80ch; }
+.report ul { margin: 0; padding-left: var(--s4); }
+.report li { margin-bottom: var(--s1); }
+.report .metrics td { font-size: 14px; }
+.report .metrics { margin-bottom: var(--s2); }
+.rp-actions { display: flex; gap: var(--s2); justify-content: flex-end; flex-wrap: wrap; margin-bottom: var(--s3); }
+.rp-identity { overflow-wrap: anywhere; }
+.rp-limit { display: block; color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+@media (max-width: 600px) { .report-scrim { padding: 0; } .report { border-radius: 0; padding: var(--s4); } .report .metrics { display: block; overflow-x: auto; } }
+
+/* Printed report: light theme whatever the screen shows (design 13.9). */
+@page { size: auto; margin: 18mm; @top-left { content: var(--rp-header, ""); font: 9pt system-ui, sans-serif; color: #5a636b; } }
+@media print {
+  html, body { height: auto; background: #fff; }
+  body:has(> .report-scrim) > #root, .rp-actions { display: none; }
+  .report-scrim { position: static; background: none; padding: 0; overflow: visible; }
+  .report { max-width: none; background: #fff; color: #1a1d20; padding: 0; font-size: 11pt; line-height: 1.4;
+    --text-secondary: #5a636b; --text-muted: #5a636b; --hypothetical: #6b3fb5; --border-subtle: #c9ced2; --surface-raised: #fff; }
+  .report .caption, .report .unit, .report .mono, .report .tag, .rp-limit, .report .metrics thead th { font-size: 9pt; }
+  .report .metrics td { font-size: 11pt; color: #1a1d20; }
+  .report a { color: #006d7a; }
+  .report .tag-sample { background: #1a1d20; color: #fff; border-color: #1a1d20; }
+  .report .metrics, .report li { break-inside: avoid; }
+  .report h2 { break-after: avoid; }
+}

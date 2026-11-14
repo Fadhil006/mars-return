@@ -1,0 +1,26 @@
+{
+  "synthetic": true,
+  "description": "Development-only invented grid, not NASA terrain or a scientific result.",
+  "endpoint": "/api/plan",
+  "request": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "datasetVersion": "synthetic-development-v1",
+    "baseXY": [
+      5,
+      25
+    ],
+    "targetId": "synthetic-stop",
+    "speedMPerMin": 0
+  },
+  "httpStatus": 422,
+  "response": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "status": "invalid_input",
+    "error": {
+      "code": "validation_error",
+      "message": "body.speedMPerMin: Input should be greater than 0"
+    }
+  }
+}

@@ -31,3 +31,7 @@ build/
 !/data/region/README.md
 !/data/region/manifest.json
 !/data/region/science-stops.json
+/data/packages/
+# Local code-graph output
+/graphify-out/
+!/data/region/rover-traverse.json
