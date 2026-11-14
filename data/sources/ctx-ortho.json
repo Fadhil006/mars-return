@@ -1,0 +1,18 @@
+{
+  "sourceId": "usgs-m20-ctx-ortho-5m",
+  "title": "M20 Jezero Crater CTX orthorectified mosaic 5 m",
+  "url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXortho_mosaic_5m.tif",
+  "catalogueUrl": "https://astrogeology.usgs.gov/search/map/mars_2020_science_investigation_ctx_dem_mosaic",
+  "mission": "Mars Reconnaissance Orbiter",
+  "instrument": "Context Camera (CTX)",
+  "productId": "M20_JezeroCrater_CTXortho_mosaic_5m.tif",
+  "downloaded": "2026-11-12",
+  "published": "Not established from the product metadata checked",
+  "resolution": "Nominal 5 m pixel spacing",
+  "data": "Single-band UInt8 grayscale image",
+  "crs": "Mars equirectangular on sphere radius 3396190 m, standard parallel 18.4663 degrees; reprojected to DEM CRS",
+  "sha256": "cd9f4b2154fdd43e8c17abfbae63210b72507db2209d1d7db63f6f855b18d2df",
+  "attribution": "USGS Astrogeology Science Center; Mars Reconnaissance Orbiter CTX data",
+  "terms": "Publicly accessible USGS/PDS product; consult linked product documentation for current reuse/citation requirements.",
+  "limitations": "Image spacing does not establish terrain resolution or positional accuracy; the preview remains grayscale."
+}

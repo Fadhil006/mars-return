@@ -1,0 +1,347 @@
+{
+  "synthetic": true,
+  "description": "Development-only invented grid, not NASA terrain or a scientific result.",
+  "endpoint": "/api/rehearse",
+  "request": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "datasetVersion": "synthetic-development-v1",
+    "baseXY": [
+      5,
+      25
+    ],
+    "targetId": "synthetic-stop",
+    "currentXY": [
+      45,
+      25
+    ],
+    "selectedRouteMode": "shortest",
+    "speedMPerMin": 10,
+    "elapsedMin": 100,
+    "remainingBudgetMin": 20,
+    "remainingDwellMin": 5,
+    "reserveMin": 5
+  },
+  "httpStatus": 200,
+  "response": {
+    "requestId": "fixture",
+    "schemaVersion": 1,
+    "datasetVersion": "synthetic-development-v1",
+    "modelVersion": "grid-constant-speed-v1",
+    "planId": "synthetic-fixture-return-only",
+    "inputHash": "b120b4790e1400bccfa9dc4281f82d2a5c1774eb3187d7750d817f0424741185",
+    "sourceIds": [
+      "synthetic-not-mars"
+    ],
+    "warnings": [
+      "Illustrative scenario, not certified astronaut navigation or physiological safety guidance.",
+      "Constant speed and horizontal grid distance do not model terrain-dependent fatigue or suit performance.",
+      "Endpoints are represented by containing-cell centers; paths are not smoothed."
+    ],
+    "selectedRouteMode": "shortest",
+    "immediateReturn": {
+      "status": "ok",
+      "outbound": null,
+      "return": {
+        "status": "ok",
+        "pathXY": [
+          [
+            45.0,
+            25.0
+          ],
+          [
+            35.0,
+            25.0
+          ],
+          [
+            25.0,
+            25.0
+          ],
+          [
+            15.0,
+            25.0
+          ],
+          [
+            5.0,
+            25.0
+          ]
+        ],
+        "distanceM": 40.0,
+        "ascentM": 0.0,
+        "maxSlopeDeg": 0.0,
+        "meanSlopeDeg": 0.0,
+        "profile": [
+          {
+            "distanceM": 0.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 10.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 20.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 30.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 40.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          }
+        ],
+        "travelMin": 4.0,
+        "cost": 40.0,
+        "requestedStartXY": [
+          45.0,
+          25.0
+        ],
+        "requestedGoalXY": [
+          5.0,
+          25.0
+        ],
+        "effectiveStartXY": [
+          45.0,
+          25.0
+        ],
+        "effectiveGoalXY": [
+          5.0,
+          25.0
+        ],
+        "message": null
+      },
+      "currentToTarget": null,
+      "targetToBase": null,
+      "totalDistanceM": 40.0,
+      "travelMin": 4.0,
+      "dwellMin": 0.0,
+      "reserveMin": 5.0,
+      "totalRequiredMin": 9.0,
+      "marginMin": 11.0,
+      "message": null
+    },
+    "continueThenReturn": {
+      "status": "over_budget",
+      "outbound": null,
+      "return": null,
+      "currentToTarget": {
+        "status": "ok",
+        "pathXY": [
+          [
+            45.0,
+            25.0
+          ],
+          [
+            55.0,
+            25.0
+          ],
+          [
+            65.0,
+            25.0
+          ],
+          [
+            75.0,
+            25.0
+          ],
+          [
+            85.0,
+            25.0
+          ],
+          [
+            95.0,
+            25.0
+          ]
+        ],
+        "distanceM": 50.0,
+        "ascentM": 0.0,
+        "maxSlopeDeg": 0.0,
+        "meanSlopeDeg": 0.0,
+        "profile": [
+          {
+            "distanceM": 0.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 10.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 20.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 30.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 40.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 50.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          }
+        ],
+        "travelMin": 5.0,
+        "cost": 50.0,
+        "requestedStartXY": [
+          45.0,
+          25.0
+        ],
+        "requestedGoalXY": [
+          95.0,
+          25.0
+        ],
+        "effectiveStartXY": [
+          45.0,
+          25.0
+        ],
+        "effectiveGoalXY": [
+          95.0,
+          25.0
+        ],
+        "message": null
+      },
+      "targetToBase": {
+        "status": "ok",
+        "pathXY": [
+          [
+            95.0,
+            25.0
+          ],
+          [
+            85.0,
+            25.0
+          ],
+          [
+            75.0,
+            25.0
+          ],
+          [
+            65.0,
+            25.0
+          ],
+          [
+            55.0,
+            25.0
+          ],
+          [
+            45.0,
+            25.0
+          ],
+          [
+            35.0,
+            25.0
+          ],
+          [
+            25.0,
+            25.0
+          ],
+          [
+            15.0,
+            25.0
+          ],
+          [
+            5.0,
+            25.0
+          ]
+        ],
+        "distanceM": 90.0,
+        "ascentM": 0.0,
+        "maxSlopeDeg": 0.0,
+        "meanSlopeDeg": 0.0,
+        "profile": [
+          {
+            "distanceM": 0.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 10.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 20.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 30.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 40.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 50.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 60.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 70.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 80.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          },
+          {
+            "distanceM": 90.0,
+            "elevationM": 0.0,
+            "slopeDeg": 0.0
+          }
+        ],
+        "travelMin": 9.0,
+        "cost": 90.0,
+        "requestedStartXY": [
+          95.0,
+          25.0
+        ],
+        "requestedGoalXY": [
+          5.0,
+          25.0
+        ],
+        "effectiveStartXY": [
+          95.0,
+          25.0
+        ],
+        "effectiveGoalXY": [
+          5.0,
+          25.0
+        ],
+        "message": null
+      },
+      "totalDistanceM": 140.0,
+      "travelMin": 14.0,
+      "dwellMin": 5.0,
+      "reserveMin": 5.0,
+      "totalRequiredMin": 24.0,
+      "marginMin": -4.0,
+      "message": null
+    }
+  }
+}

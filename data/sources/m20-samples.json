@@ -1,0 +1,23 @@
+{
+  "sourceId": "nasa-perseverance-mars-rock-samples",
+  "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+  "pageLastUpdated": "2026-06-20",
+  "transcribed": "2026-11-14",
+  "note": "Fields are transcribed as the NASA page states them. Only samples whose sealing sol falls inside the prepared crop's rover coverage (sols 13-404) are listed. The page gives no coordinates; positions are derived separately from rover localizations by scripts/build_science.py.",
+  "sites": [
+    {"id": "m20-roubion", "feature": "Roubion", "samplingLocation": "Polygon Valley", "samples": [
+      {"number": 1, "name": "Roubion", "type": "Atmospheric", "sealedDate": "2021-08-06", "sol": 164, "rockType": null}]},
+    {"id": "m20-rochette", "feature": "Rochette", "samplingLocation": "Artuby Ridge", "samples": [
+      {"number": 2, "name": "Montdenier", "type": "Rock Core", "sealedDate": "2021-09-06", "sol": 194, "rockType": "Igneous"},
+      {"number": 3, "name": "Montagnac", "type": "Rock Core", "sealedDate": "2021-09-08", "sol": 196, "rockType": "Igneous"}]},
+    {"id": "m20-brac", "feature": "Brac", "samplingLocation": "South Séítah", "samples": [
+      {"number": 4, "name": "Salette", "type": "Rock Core", "sealedDate": "2021-11-15", "sol": 262, "rockType": "Igneous"},
+      {"number": 5, "name": "Coulettes", "type": "Rock Core", "sealedDate": "2021-11-24", "sol": 271, "rockType": "Igneous"}]},
+    {"id": "m20-issole", "feature": "Issole", "samplingLocation": "South Séítah", "samples": [
+      {"number": 6, "name": "Robine", "type": "Rock Core", "sealedDate": "2021-12-22", "sol": 298, "rockType": "Igneous"},
+      {"number": 7, "name": "Malay", "type": "Rock Core", "sealedDate": "2022-01-31", "sol": 337, "rockType": "Igneous"}]},
+    {"id": "m20-sid", "feature": "Sid", "samplingLocation": "Octavia E. Butler Landing / Ch’ał outcrop", "samples": [
+      {"number": 8, "name": "Ha'ahóni", "type": "Rock Core", "sealedDate": "2022-03-07", "sol": 371, "rockType": "Igneous"},
+      {"number": 9, "name": "Atsá", "type": "Rock Core", "sealedDate": "2022-03-13", "sol": 377, "rockType": "Igneous"}]}
+  ]
+}

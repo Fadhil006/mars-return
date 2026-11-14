@@ -1,0 +1,30 @@
+/* Plain backdrop behind the transparent canvas: a gradient, never a sky, horizon or texture that could read as terrain. */
+.terrain { position: relative; width: 100%; height: 100%; min-height: 240px; overflow: hidden; container-type: size;
+  background: radial-gradient(120% 90% at 50% 35%, #2a2421 0%, #171312 55%, #0e0c0b 100%); }
+.terrain canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.terrain-unavailable { display: grid; place-items: center; padding: var(--s5); color: var(--text-secondary); }
+.terrain-plate { background: rgb(11 17 20 / 85%); color: var(--text-primary); font-size: 12px; line-height: 16px; padding: var(--s1) var(--s2); border-radius: 4px; }
+.terrain-info { position: absolute; top: var(--s2); right: var(--s2); display: flex; gap: var(--s2); pointer-events: none; }
+.terrain-north span { display: inline-block; }
+.terrain-exag { pointer-events: auto; display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--border-control); }
+.terrain-exag-label { padding: 0 var(--s1); color: var(--text-secondary); }
+.terrain-exag button, .terrain-toggle { min-width: 32px; min-height: 24px; padding: 0 var(--s1); border: 0; border-radius: 3px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }
+.terrain-exag button[aria-pressed="true"] { background: var(--surface-raised); color: var(--text-primary); }
+.terrain-exag.is-exag { border-color: var(--status-outdated); }
+.terrain-exag.is-exag .terrain-exag-label, .terrain-exag.is-exag button[aria-pressed="true"], .terrain-warn { color: var(--status-outdated); }
+.terrain-toggle { pointer-events: auto; border: 1px solid var(--border-control); }
+.terrain-toggle[aria-pressed="true"] { color: var(--text-primary); }
+.terrain-legend { position: absolute; left: var(--s2); bottom: var(--s2); margin: 0; }
+.terrain-legend summary { cursor: pointer; color: var(--text-secondary); }
+.terrain-legend ul { margin: var(--s1) 0 0; padding: 0; list-style: none; }
+/* The exaggeration warning stays on screen even with the legend collapsed. */
+.terrain-exag-note { position: absolute; top: calc(var(--s2) + 40px); right: var(--s2); color: var(--status-outdated); border: 1px solid currentColor; }
+.terrain-route { color: var(--route); }
+.terrain-hyp { color: var(--hypothetical); }
+.terrain-reset { position: absolute; right: var(--s2); bottom: var(--s2); background: var(--surface-panel); }
+@media (pointer: coarse) { .terrain-reset { min-height: 44px; } }
+/* Narrow 3D view: the scale controls sit below the 2D/3D toolbar instead of under it. */
+@container (max-width: 640px) {
+  .terrain-info { top: 60px; flex-wrap: wrap; justify-content: flex-end; }
+  .terrain-exag-note { top: 100px; }
+}

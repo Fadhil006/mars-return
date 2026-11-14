@@ -1,0 +1,77 @@
+/* Right-panel route comparison, matched to the mission-control mockup. */
+.routes { gap: var(--s3); font-size: 15px; line-height: 22px; }
+.rc-h2 { font: 600 20px/28px var(--heading); margin: 0; color: var(--text-primary); }
+.rc-title { padding-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
+.rc-sub { font: 400 14px/20px var(--heading); color: var(--text-muted); }
+.rc-h3 { font: 600 15px/22px var(--heading); margin: 0 0 var(--s2); display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; color: var(--text-primary); }
+.rc-num { font-family: var(--mono); font-size: 0.93em; }
+
+/* Headline: the selected route's margin, then how the budget divides. */
+.rc-hero { margin: var(--s3) 0 var(--s3); padding: var(--s4); border-radius: var(--radius-card); background: var(--panel-grad), var(--surface-raised);
+  box-shadow: var(--shadow-card); border: 1px solid var(--hairline); animation: rc-rise 400ms cubic-bezier(0.33, 1, 0.68, 1) both; }
+.rc-hero.outdated { opacity: 0.55; }
+.rc-hero-top { display: flex; justify-content: space-between; align-items: center; gap: var(--s2); }
+.rc-hero-top .section-label { margin: 0; }
+.rc-hero-top .status { white-space: nowrap; font-size: 13px; font-weight: 600; }
+.rc-hero-num { margin: var(--s1) 0 0; font: 600 40px/44px var(--heading); letter-spacing: -0.02em; color: var(--status-current); }
+.rc-hero.is-over .rc-hero-num { color: var(--status-outdated); }
+.rc-hero .caption { margin: var(--s1) 0 var(--s3); }
+.rc-budget-bar { position: relative; display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--surface-app); gap: 2px; }
+.rc-budget-bar .seg { height: 100%; min-width: 2px; }
+.seg-travel { background: var(--route); }
+.seg-dwell { background: var(--text-secondary); }
+.seg-reserve { background: var(--border-control); }
+.seg-margin { background: var(--status-current); }
+.rc-budget-line { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--status-error); }
+.rc-budget-key { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: var(--s2) 0 0; padding: 0; list-style: none; font-size: 12px; line-height: 16px; color: var(--text-secondary); }
+.rc-budget-key b { font-weight: 600; color: var(--text-primary); }
+.rc-budget-key .dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+@keyframes rc-rise { from { opacity: 0; transform: translateY(6px); } }
+
+.rc-modes { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: var(--s2); }
+.rc-modes.outdated { opacity: 0.55; }
+.rc-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s3); align-items: start; padding: var(--s3); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card); transition: border-color 150ms ease-out, background-color 150ms ease-out; }
+.rc-row:hover { border-color: var(--border-control); }
+.rc-row.is-selected { border-color: rgb(210 96 42 / 0.6); background: rgb(210 96 42 / 0.06); }
+/* Narrower results panel (900–1199 px wide windows): figures sit under the route name instead of beside it. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .rc-row { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+  .rc-figs { padding-left: calc(18px + var(--s3)); }
+}
+.rc-name { display: flex; gap: var(--s3); align-items: flex-start; font: 600 16px/22px var(--heading); cursor: pointer; }
+.rc-name input { appearance: none; flex: none; width: 18px; height: 18px; margin: 2px 0 0; border: 2px solid var(--text-secondary); border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+.rc-name input::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--action); transform: scale(0); }
+.rc-name input:checked { border-color: var(--action); }
+.rc-name input:checked::before { transform: scale(1); }
+.rc-name input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.rc-modes:disabled .rc-name { cursor: not-allowed; opacity: 0.6; }
+.rc-figs { margin: 0; display: grid; gap: 2px; }
+.rc-figs div { display: grid; grid-template-columns: 76px 9ch; gap: var(--s3); }
+.rc-figs dt { font-size: 13px; line-height: 20px; color: var(--text-secondary); }
+.rc-figs dd { margin: 0; font: 400 14px/20px var(--mono); white-space: nowrap; }
+.rc-figs .rc-status { display: block; }
+.rc-figs .rc-status dd { font-family: inherit; font-size: 13px; font-weight: 600; }
+
+.rc-prompt { font-size: 14px; margin: 0; }
+.rc-summary { color: var(--text-secondary); }
+.rc-full { margin-top: var(--s2); }
+.rc-full summary { cursor: pointer; color: var(--text-secondary); font: 600 14px/20px var(--heading); padding: var(--s1) 0; }
+.rc-full[open] summary { margin-bottom: var(--s2); }
+
+.rc-section { padding-top: var(--s4); border-top: 1px solid var(--border-subtle); }
+.rc-why .rc-h2 { padding-bottom: var(--s3); margin-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
+.rc-why p { max-width: 70ch; color: var(--text-primary); }
+.rc-why .rc-h3 { margin-top: var(--s3); }
+
+/* Shared "Sources:" line style (also used by the Evidence tab). */
+.src-line { display: block; width: 100%; text-align: left; margin: var(--s3) 0 0; padding: 2px 0 2px var(--s3); border: 0; border-left: 3px solid var(--action);
+  background: none; color: var(--text-secondary); font-family: inherit; font-style: italic; font-size: 14px; line-height: 20px; }
+button.src-line { cursor: pointer; }
+button.src-line:hover { color: var(--text-primary); text-decoration: underline; }
+
+.routes .card { border-radius: 8px; background: var(--surface-raised); }
+.routes .option-metrics dd { font-family: var(--mono); font-weight: 400; }
+.routes .closures th, .routes .closures td { padding: 0 var(--s1); font-size: 12px; }
+.routes .closures th { letter-spacing: 0.02em; }
+.routes .btn { border-radius: 6px; }

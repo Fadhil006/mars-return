@@ -1,0 +1,246 @@
+{
+  "width": 150,
+  "height": 150,
+  "cellSizeM": 20,
+  "originXY": [
+    0,
+    0
+  ],
+  "sourceBoundsXY": [
+    4353000.0,
+    1091800.0,
+    4356000.0,
+    1094800.0
+  ],
+  "projectedOffsetXY": [
+    4353000.0,
+    1091800.0
+  ],
+  "pixelToLocalTransform": [
+    20,
+    0,
+    0,
+    0,
+    -20,
+    3000
+  ],
+  "analysisCRS": "PROJCS[\"Jezero_Crater_Projection\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.4663],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "sourceDatumWKT": "GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Longitude\",EAST],AXIS[\"Latitude\",NORTH]]",
+  "sourceElevationCRS": "PROJCS[\"Jezero_Crater_Projection\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.4663],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "sourceElevationTransform": [
+    20.0,
+    0.0,
+    4328999.999999998,
+    0.0,
+    -20.0,
+    1143420.0000000028
+  ],
+  "sourceElevationBoundsXY": [
+    4328999.999999998,
+    1042080.0000000028,
+    4418119.999999998,
+    1143420.0000000028
+  ],
+  "sourceElevationResolutionM": [
+    20.0,
+    20.0
+  ],
+  "sourceImageryCRS": "PROJCS[\"Equirectangular\",GEOGCS[\"GCS_Geographic_Coordinate_System\",DATUM[\"D_MARS\",SPHEROID[\"MARS\",3396190,0]],PRIMEM[\"Reference Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.4663],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "sourceImageryTransform": [
+    5.002064681102627,
+    0.0,
+    4329192.10812596,
+    0.0,
+    -5.002262971613293,
+    1143347.424174998
+  ],
+  "sourceImageryResolutionM": [
+    5.002064681102627,
+    5.002262971613293
+  ],
+  "sourceNoData": -3.4028234663852886e+38,
+  "sourceIds": [
+    "usgs-m20-ctx-dem-20m",
+    "usgs-m20-ctx-ortho-5m"
+  ],
+  "sources": [
+    {
+      "sourceId": "usgs-m20-ctx-dem-20m",
+      "title": "M20 Jezero Crater CTX DEM 20 m",
+      "url": "https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif",
+      "catalogueUrl": "https://astrogeology.usgs.gov/search/map/mars_2020_science_investigation_ctx_dem_mosaic",
+      "mission": "Mars Reconnaissance Orbiter",
+      "instrument": "Context Camera (CTX)",
+      "productId": "M20_JezeroCrater_CTXDEM_20m.tif",
+      "downloaded": "2026-11-12",
+      "publicationDate": "2021-10-14",
+      "acquisitionDate": null,
+      "resolution": "20 m pixel spacing",
+      "data": "Single-band Float32 elevation in meters; nodata -3.4028234663852886e+38",
+      "crs": "Jezero equirectangular, Mars 2000 sphere radius 3396190 m, standard parallel 18.4663 degrees",
+      "sha256": "ba7f706ea1b5d63a562f28a7dcf7a7f3c79bce7f048e6974b57e8a33c30d1ba2",
+      "attribution": "USGS Astrogeology Science Center; Mars Reconnaissance Orbiter CTX data",
+      "terms": "Publicly accessible USGS/PDS product; consult the linked catalogue and product documentation for current reuse/citation requirements.",
+      "limitations": "Pixel spacing is not vertical accuracy. Orbital DEM does not establish current surface conditions or certify traversability."
+    },
+    {
+      "sourceId": "usgs-m20-ctx-ortho-5m",
+      "title": "M20 Jezero Crater CTX orthorectified mosaic 5 m",
+      "url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXortho_mosaic_5m.tif",
+      "catalogueUrl": "https://astrogeology.usgs.gov/search/map/mars_2020_science_investigation_ctx_dem_mosaic",
+      "mission": "Mars Reconnaissance Orbiter",
+      "instrument": "Context Camera (CTX)",
+      "productId": "M20_JezeroCrater_CTXortho_mosaic_5m.tif",
+      "downloaded": "2026-11-12",
+      "published": "Not established from the product metadata checked",
+      "resolution": "Nominal 5 m pixel spacing",
+      "data": "Single-band UInt8 grayscale image",
+      "crs": "Mars equirectangular on sphere radius 3396190 m, standard parallel 18.4663 degrees; reprojected to DEM CRS",
+      "sha256": "cd9f4b2154fdd43e8c17abfbae63210b72507db2209d1d7db63f6f855b18d2df",
+      "attribution": "USGS Astrogeology Science Center; Mars Reconnaissance Orbiter CTX data",
+      "terms": "Publicly accessible USGS/PDS product; consult linked product documentation for current reuse/citation requirements.",
+      "limitations": "Image spacing does not establish terrain resolution or positional accuracy; the preview remains grayscale."
+    },
+    {
+      "sourceId": "nasa-perseverance-location-map",
+      "title": "Perseverance Rover Location Map",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/location-map/",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "HiRISE (MRO) high-resolution basemap; Mars Express HRSC regional basemap",
+      "productId": null,
+      "publicationDate": null,
+      "acquisitionDate": "Traverse represented by map; page describes latest rover location, accessed 2026-11-12",
+      "attribution": "NASA/JPL-Caltech; basemap imagery credited to NASA/HiRISE and ESA/DLR/FU Berlin (HRSC)",
+      "limitations": "Page text documents the map layers and drive-endpoint/sol symbology but does not expose machine-readable traverse coordinates. Color processing is applied; not a substitute for source rasters or coordinate-bearing mission data."
+    },
+    {
+      "sourceId": "nasa-perseverance-mars-rock-samples",
+      "title": "Mars Rock Samples",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Perseverance sampling system; sample site investigations used rover science instruments",
+      "productId": "NASA public sample inventory; links to Mars 2020 Sample Dossier PDFs",
+      "publicationDate": null,
+      "acquisitionDate": "Ha\u2019ah\u00f3ni sealed 2022-03-07 (Sol 371); Ats\u00e1 sealed 2022-03-13 (Sol 377)",
+      "attribution": "NASA/JPL-Caltech; sample dossier archive at NASA Planetary Data System Geosciences Node",
+      "limitations": "Inventory identifies sampling-location names and sample metadata, not site latitude/longitude. Do not infer exact coordinates or use the sample names as the identity of a hypothetical waypoint."
+    },
+    {
+      "sourceId": "pds-mars2020-geosciences",
+      "title": "PDS Geosciences Node: Mars 2020 Mission Data and Services",
+      "url": "https://pds-geosciences.wustl.edu/missions/mars2020/",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Mission archive index; links to instrument bundles, sample dossier, Three Forks depot, and rover PLACES bundle",
+      "productId": "Mars 2020 PDS Release 16 (sols 1740\u20131859; archive page dated 2026-08-11)",
+      "publicationDate": "2026-08-11 (Release 16 notice)",
+      "acquisitionDate": "Release 16 covers 2026-01-10 through 2026-05-13",
+      "attribution": "NASA Planetary Data System Geosciences Node / Washington University in St. Louis",
+      "limitations": "This is an archive index, not itself a traverse geometry file. It points to the Sample Dossier Bundle and PLACES bundle; their presence does not establish that either provides a ready-to-use geographic traverse GeoJSON."
+    },
+    {
+      "sourceId": "pds-mars2020-rover-places",
+      "title": "Mars 2020 Rover PLACES Bundle",
+      "url": "https://pds-geosciences.wustl.edu/missions/mars2020/places.htm",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Rover localization and mechanism-position archive (PLACES; operational position/localization data, not a science instrument)",
+      "productId": "Mars 2020 Rover PLACES Bundle, Release 16",
+      "publicationDate": "2026-08-11 (Release 16 notice)",
+      "acquisitionDate": "Bundle coverage 2021-02-18 through 2026-06-21 (sols 0\u20131897)",
+      "attribution": "NASA Planetary Data System Geosciences Node / Washington University in St. Louis; Mars 2020 mission",
+      "limitations": "Official archive documents rover localizations and mechanism positions and links to product collections and SIS; this index does not promise GeoJSON. Coordinate frames, localization fields, product structure, and suitability for a surface traverse must be checked against the SIS and release notes before extracting or interpreting route points."
+    },
+    {
+      "sourceId": "nasa-m20-waypoints",
+      "title": "Mars 2020 Perseverance rover waypoints (end-of-drive localizations)",
+      "url": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Rover localization (site/drive RMC frames) published for NASA's rover location map",
+      "productId": "M20_waypoints.json",
+      "publicationDate": null,
+      "acquisitionDate": "Retrieved 2026-11-14; file then covered sols 13-2022. Crop uses sols 13-404.",
+      "sha256AtRetrieval": "bd143ee69241229926abd373e6305b8bbb326d6b5a7b4a8d6935262696f93dc4",
+      "attribution": "NASA/JPL-Caltech",
+      "limitations": "Live file that grows with each drive, so the checksum is of the retrieved copy, not a fixed release. Positions are rover localizations in the Jezero equirectangular frame, not surveyed ground control; no positional uncertainty is published in the file."
+    },
+    {
+      "sourceId": "nasa-m20-traverse",
+      "title": "Mars 2020 Perseverance rover traverse path",
+      "url": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_traverse.json",
+      "mission": "Mars 2020 Perseverance",
+      "instrument": "Rover localization (site/drive RMC frames) published for NASA's rover location map",
+      "productId": "M20_traverse.json",
+      "publicationDate": null,
+      "acquisitionDate": "Retrieved 2026-11-14; file then covered sols 13-2022. Crop uses sols 13-404.",
+      "sha256AtRetrieval": "6ddd0ece913d75b45d105946082f95ed84e68f4718b68d32a4421dc30877e7e6",
+      "attribution": "NASA/JPL-Caltech",
+      "limitations": "Live file that grows with each drive, so the checksum is of the retrieved copy, not a fixed release. Positions are rover localizations in the Jezero equirectangular frame, not surveyed ground control; no positional uncertainty is published in the file."
+    }
+  ],
+  "layers": {
+    "elevation": "elevation.json",
+    "slope": "slope.json",
+    "mask": "mask.json",
+    "imagery": "imagery.webp"
+  },
+  "coverage": {
+    "elevationValidCells": 22500,
+    "slopeValidCells": 21904,
+    "imageryValidCells": 22500,
+    "traversableCells": 21904,
+    "totalCells": 22500
+  },
+  "layerInfo": {
+    "elevation": {
+      "resolutionM": 20,
+      "sourcePixelSpacingM": [
+        20.0,
+        20.0
+      ],
+      "validCells": 22500,
+      "units": "m"
+    },
+    "slope": {
+      "resolutionM": 20,
+      "validCells": 21904,
+      "units": "degrees"
+    },
+    "mask": {
+      "resolutionM": 20,
+      "validCells": 21904,
+      "units": "boolean"
+    },
+    "imagery": {
+      "resolutionM": 5.0,
+      "sourcePixelSpacingM": [
+        5.002064681102627,
+        5.002262971613293
+      ],
+      "channels": 1,
+      "validCells": 22500,
+      "format": "grayscale preview"
+    }
+  },
+  "checksums": {
+    "elevation.json": "000b1ee1a04436ed480da204c957a7f97639c26fb06292fff67e931b3266005c",
+    "slope.json": "42fe4f0672ea247e27bff188dbaf25d76e2403c5ff9c3d0b49f9f155d706e106",
+    "mask.json": "83386efe01b0f5099d0c51701b6c6f2c21730c8f55b7e95cd838668dd0329be3",
+    "imagery.webp": "5a7b8d28b40abe1608b0987a0d309ded1b3c0295caf61f57c6b3fd148fa6cc9e",
+    "science-stops.json": "cabad53c7c494ff93b5ea4074c0fca9fe6ce2812e1db7ca736c731a87fd6e453",
+    "rover-traverse.json": "cda01f5ec00f13e2df07f6ccb3c827fe5488f8ed3ee12f73b2db66676fae901c"
+  },
+  "slopeMethod": "Centered finite differences; degrees; null unless full 3x3 elevation neighborhood exists.",
+  "maskMeaning": "true means elevation, slope, and imagery are valid; false means at least one is missing.",
+  "scenario": {
+    "baseXY": [
+      510,
+      1510
+    ],
+    "defaultTargetId": "m20-sid",
+    "label": "Hypothetical base; destinations are real Perseverance sampling sites on real CTX terrain"
+  },
+  "warnings": [
+    "The base is hypothetical. Destinations are rover localizations at real sampling sites, not drill-hole coordinates.",
+    "Three-landmark 2D/3D alignment review remains outstanding."
+  ],
+  "datasetVersion": "7e08b277f6761b7c"
+}

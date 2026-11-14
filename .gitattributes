@@ -1,0 +1,6 @@
+# Keep text byte-identical on every OS: checksums and datasetVersion hash these files.
+* text=auto eol=lf
+*.tif binary
+*.webp binary
+*.png binary
+*.gz binary
