@@ -20,7 +20,8 @@
 .fresh.status-updating::before { animation: pulse 1s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: 0.25; } }
 .bar-row { display: flex; align-items: center; gap: var(--s4); min-height: 52px; white-space: nowrap; }
-.bar-row2 { border-top: 1px solid var(--border-subtle); min-height: 50px; gap: var(--s5); }
+/* Wraps (versions drop to their own line) rather than pushing the page wider than the window. */
+.bar-row2 { border-top: 1px solid var(--border-subtle); min-height: 50px; gap: 0 var(--s5); flex-wrap: wrap; }
 .product { margin: 0; font: 300 26px/32px var(--heading); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-primary); }
 .product b { font-weight: 700; }
 .slash { color: var(--action); font-weight: 400; }

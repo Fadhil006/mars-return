@@ -34,6 +34,11 @@
   border-radius: var(--radius-card); transition: border-color 150ms ease-out, background-color 150ms ease-out; }
 .rc-row:hover { border-color: var(--border-control); }
 .rc-row.is-selected { border-color: rgb(210 96 42 / 0.6); background: rgb(210 96 42 / 0.06); }
+/* Narrower results panel (900–1199 px wide windows): figures sit under the route name instead of beside it. */
+@media (min-width: 900px) and (max-width: 1199px) {
+  .rc-row { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+  .rc-figs { padding-left: calc(18px + var(--s3)); }
+}
 .rc-name { display: flex; gap: var(--s3); align-items: flex-start; font: 600 16px/22px var(--heading); cursor: pointer; }
 .rc-name input { appearance: none; flex: none; width: 18px; height: 18px; margin: 2px 0 0; border: 2px solid var(--text-secondary); border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
 .rc-name input::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--action); transform: scale(0); }
