@@ -3,15 +3,26 @@ import { num } from "../mission/format";
 import { extentM, returnRetraces, routesIdentical } from "../mission/geo";
 import type { Mission } from "../mission/state";
 import { MODE_LABEL, type Mode, type RegionBundle, type XY } from "../mission/types";
-import { cellMissing, layerCanvas, SLOPE_BREAKS, SLOPE_COLORS } from "./layers";
+import { arrowsAlong, calloutSide, cellMissing, layerCanvas, SLOPE_BREAKS, SLOPE_COLORS } from "./layers";
 import "./map.css";
 
 const VIOLET = "var(--hypothetical)";
 
-interface LineProps { pts: XY[] | null | undefined; toSvg: (p: XY) => string; color?: string; width?: number; dash?: string; casing?: boolean | string; opacity?: number }
+interface LineProps { pts: XY[] | null | undefined; toSvg: (p: XY) => string; color?: string; width?: number; dash?: string; casing?: boolean | string; opacity?: number; arrows?: ArrowSpec }
+interface ArrowSpec { size: number; offset: number; flipY: (p: XY) => [number, number] }
+
+/** Three display-only arrowheads along a leg, pointing the way of travel; `offset` staggers legs that share a path. */
+function Arrows({ pts, color = "var(--route)", spec }: { pts: XY[]; color?: string; spec: ArrowSpec }) {
+  const s = spec.size;
+  return arrowsAlong(pts, 3, spec.offset).map(({ at, heading }, i) => {
+    const [x, y] = spec.flipY(at);
+    return <polygon key={i} className="mm-arrow" points={`${s},0 ${-s},${0.8 * s} ${-0.4 * s},0 ${-s},${-0.8 * s}`}
+      transform={`translate(${x} ${y}) rotate(${(-heading * 180) / Math.PI})`} style={{ fill: color }} />;
+  });
+}
 
 /** A returned path drawn exactly as supplied: no smoothing, with a dark casing so it holds contrast over imagery. */
-function Line({ pts, toSvg, color = "var(--route)", width = 3, dash, casing = true, opacity = 1 }: LineProps) {
+function Line({ pts, toSvg, color = "var(--route)", width = 3, dash, casing = true, opacity = 1, arrows }: LineProps) {
   if (!pts || pts.length < 2) return null;
   const points = pts.map(toSvg).join(" ");
   return (
@@ -19,6 +30,7 @@ function Line({ pts, toSvg, color = "var(--route)", width = 3, dash, casing = tr
       {casing && <polyline className="mm-line" points={points} style={{ stroke: "var(--casing)", strokeWidth: width + 3 }}
         strokeDasharray={typeof casing === "string" ? casing : undefined} />}
       <polyline className="mm-line" points={points} style={{ stroke: color, strokeWidth: width }} strokeDasharray={dash} />
+      {arrows && <Arrows pts={pts} color={color} spec={arrows} />}
     </g>
   );
 }
@@ -41,6 +53,7 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
 
   // The single map transform: local metres, north up. Every mark goes through one of these two.
   const toSvg = (p: XY) => `${p[0]},${oy + h - p[1]}`;
+  const flipY = (p: XY): [number, number] => [p[0], oy + h - p[1]];
   const at = (p: XY): CSSProperties => ({ left: `${((p[0] - ox) / w) * 100}%`, top: `${((oy + h - p[1]) / h) * 100}%` });
 
   const reach = state.reach.data;
@@ -70,17 +83,34 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
   const barM = [5000, 2000, 1000, 500, 200, 100, 50].find((len) => len <= w / 4) ?? w / 4;
   const stopName = (id: string, name?: string) => name ?? id;
   const selectedStop = m.stop;
+  const arrowSize = w / 85; // about 6 px half-length on a 500 px map
+  const outArrows = { size: arrowSize, offset: 0.35, flipY }, backArrows = { size: arrowSize, offset: 0.65, flipY };
+
+  /** A two-line callout joined to its marker by a leader (22 px across, 38 px up or down). */
+  const frac = (p: XY): [number, number] => [(p[0] - ox) / w, (oy + h - p[1]) / h];
+  const callout = (p: XY, side: { left: boolean; up: boolean }, title: string, sub: string, hidden?: boolean) => (
+    <span className={`mm-callout ${side.left ? "mm-co-left" : "mm-co-right"} ${side.up ? "mm-co-up" : "mm-co-down"}`} style={at(p)} aria-hidden={hidden || undefined}>
+      <svg className="mm-leader" aria-hidden="true"><line x1={0} y1={0} x2={side.left ? -22 : 22} y2={side.up ? -38 : 38} /></svg>
+      <span className="mm-callout-box"><b>{title}</b><span>{sub}</span></span>
+    </span>
+  );
+  const stopXY = layers.stops ? selectedStop?.positionXY : undefined;
+  const baseSide = m.baseXY && calloutSide(frac(m.baseXY), stopXY && frac(stopXY));
+  let stopSide = stopXY && calloutSide(frac(stopXY), m.baseXY && frac(m.baseXY));
+  if (baseSide && stopSide && stopXY && m.baseXY && baseSide.left === stopSide.left && baseSide.up === stopSide.up
+    && Math.abs(frac(stopXY)[0] - frac(m.baseXY)[0]) < 0.3 && Math.abs(frac(stopXY)[1] - frac(m.baseXY)[1]) < 0.15)
+    stopSide = { ...stopSide, up: !stopSide.up }; // boxes would overlap: send the stop's the other way
 
   const legend: ReactNode[] = [];
-  if (out && !outdated) legend.push(<li key="sel"><Swatch color="var(--route)" />{MODE_LABEL[m.mode]} · outbound{retraces ? " and return" : ""}</li>);
-  if (out && !outdated && !retraces && back) legend.push(<li key="ret"><Swatch color="var(--route)" dash />{MODE_LABEL[m.mode]} · return</li>);
+  if (out && !outdated) legend.push(<li key="sel"><Swatch color="var(--route)" />Outbound · {MODE_LABEL[m.mode]}</li>);
+  if (out && !outdated && back) legend.push(<li key="ret"><Swatch color="var(--route)" dash />Return{retraces ? " (same path, arrows show direction)" : ""}</li>);
   if (outdated) legend.push(<li key="old"><Swatch color="var(--status-outdated)" dash />Outdated route</li>);
   if (other) legend.push(<li key="other"><Swatch color="rgba(61,214,232,0.5)" />{MODE_LABEL[otherMode]} (not selected)</li>);
   if (ret) legend.push(
     <li key="now"><Swatch color={VIOLET} />Return now <span className="tag tag-hyp">Hypothetical</span></li>,
     <li key="cont"><Swatch color={VIOLET} dash />Continue, then return <span className="tag tag-hyp">Hypothetical</span></li>);
   if (m.corridor) legend.push(<li key="cor"><span className="mm-swatch mm-swatch-hatch" aria-hidden="true" />Blocked corridor <span className="tag tag-hyp">Hypothetical</span></li>);
-  if (stress) legend.push(<li key="stress"><span className="mm-swatch mm-swatch-oct" aria-hidden="true" />Closure tested ({num(stress.closureRadiusM)} m radius; ✕ = return fails) <span className="tag tag-hyp">Hypothetical</span></li>);
+  if (stress) legend.push(<li key="stress"><span className="mm-swatch mm-swatch-oct" aria-hidden="true" />Closure tested, {num(stress.closureRadiusM)} m (✕ = return fails) <span className="tag tag-hyp">Hypothetical</span></li>);
   if (envelopeUrl) legend.push(<li key="env"><Swatch fill="rgba(61,214,232,0.35)" />Return envelope · Hypothetical scenario</li>);
   if (layers.traverse && bundle.traverse) legend.push(<li key="trav"><Swatch color="#eef1f3" />Perseverance traverse (real rover path)</li>);
   if (missingUrl) legend.push(<li key="miss"><span className="mm-swatch mm-swatch-missing" aria-hidden="true" />No elevation data</li>);
@@ -94,7 +124,7 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
               <line x1={0} y1={0} x2={0} y2={hatch} style={{ stroke: VIOLET, strokeWidth: hatch / 2 }} />
             </pattern>
           </defs>
-          {layers.imagery && bundle.imageryUrl && <image href={bundle.imageryUrl} x={ox} y={0} width={w} height={h} preserveAspectRatio="none" />}
+          {layers.imagery && bundle.imageryUrl && <image className="mm-imagery" href={bundle.imageryUrl} x={ox} y={0} width={w} height={h} preserveAspectRatio="none" />}
           {grid(slopeUrl, 0.6)}
           {grid(envelopeUrl)}
           {grid(missingUrl)}
@@ -119,8 +149,9 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
           {other && <Line pts={other.outbound?.pathXY} toSvg={toSvg} width={1.5} casing={false} opacity={0.4} />}
           {other && !returnRetraces(other) && <Line pts={other.return?.pathXY} toSvg={toSvg} width={1.5} casing={false} opacity={0.4} />}
 
-          <Line pts={out} toSvg={toSvg} opacity={routeOpacity} casing={outdated ? "6 4" : true} />
-          {!retraces && <Line pts={back} toSvg={toSvg} dash="8 6" opacity={routeOpacity} casing={outdated ? "6 4" : true} />}
+          <Line pts={out} toSvg={toSvg} opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : outArrows} />
+          {!retraces && <Line pts={back} toSvg={toSvg} dash="8 6" opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : backArrows} />}
+          {retraces && back && !outdated && <g opacity={routeOpacity}><Arrows pts={back} spec={backArrows} /></g>}
           <Line pts={travelled} toSvg={toSvg} />
 
           {m.corridor && (
@@ -145,7 +176,9 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
           {m.corridor && <span className="mm-label mm-label-hyp mm-below" style={at([(m.corridor[0][0] + m.corridor[1][0]) / 2, m.corridor[0][1]])}>Hypothetical</span>}
           {outdated && out && <span className="mm-label mm-label-outdated" style={at(out[Math.floor(out.length / 2)])}>Outdated</span>}
 
-          {m.baseXY && <span className="mm-mark mm-base" style={at(m.baseXY)}><span className="mm-label">Base · Hypothetical</span></span>}
+          {m.baseXY && <span className="mm-mark mm-base" style={at(m.baseXY)} aria-hidden="true" />}
+          {m.baseXY && baseSide && callout(m.baseXY, baseSide, "Base", "Hypothetical base")}
+          {selectedStop && stopXY && stopSide && callout(stopXY, stopSide, stopName(selectedStop.id, selectedStop.name).split(" — ")[0], "Perseverance sampling site", true)}
 
           {layers.stops && bundle.region.scienceStops.map((stop) => {
             const selected = stop.id === state.inputs.targetId;
@@ -163,21 +196,26 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
             <span className="mm-mark mm-pos" style={at(m.point.xy)}><span className="mm-label">Current position</span></span>
           )}
 
-          <div className="mm-north" aria-label="North is up"><span aria-hidden="true">↑</span>N</div>
-          <div className="mm-scale" style={{ width: `${(barM / w) * 100}%` }}>{barM >= 1000 ? `${barM / 1000} km` : `${barM} m`}</div>
-
-          <div className="mm-notes">
-            {retraces && !outdated && <span className="mm-label">Return follows the outbound path</span>}
-            {!bundle.imageryUrl && <span className="mm-label">Imagery is unavailable; marks are drawn on a plain background</span>}
-            {layers.imagery && bundle.imageryUrl && <span className="mm-label">Imagery and terrain: {num(manifest.cellSizeM)} m cells</span>}
+          <div className="mm-north" role="img" aria-label="North is up">
+            N<svg width="16" height="20" viewBox="0 0 16 20" aria-hidden="true"><path d="M8 1 L15 19 L8 14 L1 19 Z" /></svg>
           </div>
 
-          <details className="mm-legend" open>
+          <div className="mm-br">
+            {retraces && !outdated && <span className="mm-label">Return follows the outbound path</span>}
+            {!bundle.imageryUrl && <span className="mm-label">Imagery is unavailable; marks are drawn on a plain background</span>}
+            <div className="mm-scale" style={{ width: `${(barM / w) * 100}cqw` }}>
+              {[0, barM / 2, barM].map((v, i) => (
+                <span key={i} style={{ left: `${i * 50}%` }}>{barM >= 1000 ? (i ? `${v / 1000}${i === 2 ? " km" : ""}` : "0") : `${v}${i === 2 ? " m" : ""}`}</span>
+              ))}
+            </div>
+            {layers.imagery && bundle.imageryUrl && <span className="mm-caption">Imagery and terrain: {num(manifest.cellSizeM)} m cells<br />Greyscale CTX image, warm display tint</span>}
+          </div>
+
+          <details className="mm-legend" key={state.rehearsing ? "r" : "p"} open={!state.rehearsing}>
             <summary>Legend</summary>
             <ul>
-              <li><span className="mm-swatch mm-swatch-base" aria-hidden="true" />Base · Hypothetical</li>
-              {layers.stops && <li><span className="mm-swatch mm-swatch-stop" aria-hidden="true" />Science stop (ring = selected)</li>}
               {legend}
+              {layers.stops && <li><span className="mm-swatch mm-swatch-stop" aria-hidden="true" />Sampling site (filled = selected)</li>}
             </ul>
             {slopeUrl && (
               <div className="mm-slope">

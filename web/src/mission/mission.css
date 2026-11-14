@@ -1,12 +1,38 @@
-.controls .field label .tag { margin-left: var(--s1); }
-.modes { border: 0; padding: 0; min-width: 0; }
-.modes legend { font-size: 12px; line-height: 16px; color: var(--text-secondary); padding: 0; margin-bottom: var(--s1); }
-.modes label { display: flex; align-items: center; gap: var(--s2); font-size: 14px; color: var(--text-primary); padding: 2px 0; }
-.modes label input { width: auto; height: auto; margin: 0; } /* undo the text-input sizing from .field input */
-.assumptions { margin: var(--s5) 0; }
-.assumptions summary { cursor: pointer; margin-bottom: var(--s3); color: var(--text-secondary); }
-.base { margin: 0 0 var(--s5); }
+.controls { display: flex; flex-direction: column; }
+.controls .panel-heading { font: 600 22px/28px var(--heading); margin-bottom: var(--s3); }
+.sub-heading { font: 600 17px/24px var(--heading); color: var(--text-primary); margin: 0 0 var(--s2); display: flex; align-items: center; gap: var(--s2); }
+.ico { flex: none; color: var(--text-secondary); }
+.dest > label { font: 600 15px/22px var(--heading); color: var(--text-primary); }
+.dest select { height: 40px; font-size: 16px; padding: 0 var(--s3); border-radius: 6px; }
+.dest .caption { display: flex; align-items: center; gap: var(--s1); font-size: 13px; color: var(--text-secondary); }
+.dest .ico { width: 16px; height: 16px; }
+.controls > .field, .assumptions, .budget { padding-bottom: var(--s3); margin: 0 0 var(--s3); border-bottom: 1px solid var(--border-subtle); }
+.arow { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: var(--s3); padding: 4px 0; border-bottom: 1px solid var(--border-subtle); }
+.arow:last-child { border-bottom: 0; }
+.arow > label { font-size: 13px; color: var(--text-primary); }
+.aval { display: grid; grid-template-columns: auto auto; justify-content: end; align-items: baseline; column-gap: 4px; }
+.aval .unit { font: 600 13px/18px var(--mono); color: var(--text-primary); }
+.aval .derived { grid-column: 1 / -1; text-align: right; font-size: 11px; }
+/* The value reads as plain mono text and shows an underline when it can be edited. */
+.plain { width: 7ch; height: 26px; padding: 0 2px; border: 0; border-bottom: 1px solid transparent; background: transparent; color: var(--text-primary); font: 600 13px/18px var(--mono); text-align: right; -moz-appearance: textfield; appearance: textfield; }
+.plain::-webkit-inner-spin-button, .plain::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.plain:not([readonly]):hover, .plain:not([readonly]):focus { border-bottom-color: var(--action); background: var(--surface-raised); }
+.plain[readonly] { color: var(--text-secondary); cursor: not-allowed; }
+.aval .plain[type="text"] { width: 10ch; }
+.budget { display: grid; gap: 2px; }
+.budget .sub-heading { margin: 0; }
+.budget .plain { width: 100%; height: 34px; font: 500 24px/32px var(--mono); text-align: left; padding: 0; }
+.budget .caption { font-size: 13px; color: var(--text-secondary); }
+.base { margin: 0 0 var(--s2); }
+.advanced { margin: 0 0 var(--s3); padding-bottom: var(--s2); border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+.advanced summary { cursor: pointer; padding: var(--s1) 0; color: var(--text-primary); font-size: 15px; }
+.advanced p, .advanced h4 { margin: var(--s2) 0 0; font-weight: 600; }
+.advanced p { font-weight: 400; }
+.limits { padding-left: var(--s4); margin: var(--s1) 0 0; font-size: 12px; line-height: 16px; }
 .controls > .btn { width: 100%; }
+/* Stays in reach at the foot of the column when the plan scrolls. */
+.controls .btn-cta { position: sticky; bottom: var(--s3); box-shadow: 0 0 0 var(--s3) var(--surface-app); margin-bottom: var(--s3); display: inline-flex; align-items: center; justify-content: center; gap: var(--s3); min-height: 48px; border-radius: 6px; font: 600 18px/24px var(--heading); }
+.controls .btn-cta .ico { width: 24px; height: 24px; color: currentColor; }
 .controls .banner { margin-top: var(--s3); }
 /* Static label plus a thin bar; the sweep is dropped under reduced motion (styles.css). */
 .indeterminate { flex-basis: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--status-updating), transparent) 0 0 / 50% 100% no-repeat var(--border-subtle); animation: sweep 1.2s linear 3; }

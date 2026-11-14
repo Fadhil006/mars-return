@@ -1,8 +1,13 @@
 /* 2D map marks (design 13.7). The map is a square in local metres that fits whatever box the shell gives it. */
-.mm-wrap { container-type: size; width: 100%; height: 100%; min-height: 320px; display: grid; place-items: center; background: var(--surface-app); }
-.mm { position: relative; width: min(100cqw, 100cqh * var(--mm-ratio, 1)); aspect-ratio: var(--mm-ratio, 1); background: var(--surface-app); }
-.mm-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.mm-wrap { container-type: size; box-sizing: border-box; width: 100%; height: 100%; min-height: 320px; padding: 16px; display: grid; place-items: center; background: var(--surface-app); }
+/* inline-size container so the scale bar can be sized in cqw of the map itself. */
+.mm { container-type: inline-size; position: relative; width: min(100cqw, 100cqh * var(--mm-ratio, 1)); aspect-ratio: var(--mm-ratio, 1); }
+/* Plain dark warm ground when the imagery layer is off or unavailable. */
+.mm-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border-radius: 6px; overflow: hidden; background: #2a1c14; }
+/* Display tint only: the CTX source is greyscale (stated in the caption). Overlays are never tinted. */
+.mm-imagery { filter: var(--mars-tint); }
 .mm-line { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: butt; }
+.mm-arrow { stroke: var(--casing); stroke-width: 1.5px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .mm-grid { image-rendering: pixelated; }
 .mm-overlay { position: absolute; inset: 0; pointer-events: none; font-size: 12px; line-height: 16px; }
 .mm-overlay > * { position: absolute; }
@@ -14,37 +19,60 @@
 .mm-label-outdated { color: var(--status-outdated); border: 1px solid currentColor; }
 .mm-mark > .mm-label, .mm-stop > .mm-label { position: absolute; left: 50%; top: 100%; transform: translate(-50%, 2px); }
 
+/* Callouts: two-line box joined to its marker by a thin leader (22 px across, 38 px up or down). */
+.mm-callout { width: 0; height: 0; }
+.mm-leader { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; filter: drop-shadow(0 0 1px var(--casing)); }
+.mm-leader line { stroke: rgb(255 255 255 / 0.9); stroke-width: 1; }
+.mm-callout-box { position: absolute; display: grid; padding: 4px 10px 5px; border: 1px solid rgb(255 255 255 / 0.75); border-radius: 3px; background: rgb(11 17 20 / 0.78); color: var(--text-primary); white-space: nowrap; }
+.mm-callout-box b { font-size: 15px; line-height: 20px; font-weight: 600; }
+.mm-callout-box span { font-size: 13px; line-height: 17px; color: var(--text-secondary); }
+.mm-co-up .mm-callout-box { bottom: 38px; }
+.mm-co-down .mm-callout-box { top: 38px; }
+.mm-co-right .mm-callout-box { left: 8px; }
+.mm-co-left .mm-callout-box { right: 8px; }
+
 .mm-mark { width: 0; height: 0; }
 .mm-mark::before { content: ""; position: absolute; transform: translate(-50%, -50%); }
-.mm-base::before { width: 14px; height: 14px; background: #fff; border: 2px solid var(--casing); }
+.mm-base::before { box-sizing: border-box; width: 16px; height: 16px; background: var(--casing); border: 4px solid #fff; outline: 1.5px solid var(--casing); }
 .mm-pos::before { width: 12px; height: 12px; background: #fff; border: 3px solid var(--route); outline: 2px solid var(--casing); transform: translate(-50%, -50%) rotate(45deg); }
 .mm-pos > .mm-label { top: auto; bottom: 100%; transform: translate(-50%, -14px); }
 .mm-fail { transform: translate(-50%, -50%); color: var(--status-error); font-weight: 700; font-size: 14px; text-shadow: 0 0 2px var(--casing), 0 0 2px var(--casing); }
 
 .mm-stop { pointer-events: auto; width: 24px; height: 24px; margin: -12px 0 0 -12px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; font: inherit; }
-.mm-stop::before { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid var(--casing); transform: translate(-50%, -50%); }
-.mm-stop-selected::before { box-shadow: 0 0 0 3px var(--route), 0 0 0 5px var(--casing); }
+.mm-stop::before { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--casing); transform: translate(-50%, -50%); }
+.mm-stop-selected::before { width: 12px; height: 12px; background: var(--route); border: 3px solid #fff; box-shadow: 0 0 0 1.5px var(--casing); }
 .mm-stop > .mm-label { display: none; }
-.mm-stop-selected > .mm-label, .mm-stop:hover > .mm-label, .mm-stop:focus-visible > .mm-label { display: block; z-index: 1; }
+.mm-stop:not(.mm-stop-selected):hover > .mm-label, .mm-stop:not(.mm-stop-selected):focus-visible > .mm-label { display: block; z-index: 1; }
 .mm-stop:disabled { cursor: not-allowed; }
 .mm-stop:disabled:not(.mm-stop-selected)::before { opacity: 0.5; }
 @media (pointer: coarse) { .mm-stop { width: 44px; height: 44px; margin: -22px 0 0 -22px; } }
 
-.mm-north { right: 8px; top: 8px; display: grid; justify-items: center; padding: 2px 6px; border-radius: 4px; background: rgb(11 17 20 / 0.85); font-weight: 600; }
-.mm-scale { left: 8px; bottom: 8px; padding-bottom: 2px; text-align: center; color: var(--text-primary); border: 2px solid var(--text-primary); border-top: 0; background: rgb(11 17 20 / 0.85); }
-.mm-notes { right: 8px; bottom: 8px; display: grid; gap: 4px; justify-items: end; }
-.mm-notes .mm-label { white-space: normal; text-align: right; max-width: 260px; }
+.mm-north { right: 14px; top: 12px; display: grid; justify-items: center; gap: 2px; color: #fff; font-weight: 700; font-size: 16px; line-height: 18px; text-shadow: 0 0 3px var(--casing), 0 0 2px var(--casing); }
+.mm-north svg { display: block; filter: drop-shadow(0 0 1.5px var(--casing)); }
+.mm-north path { fill: #fff; }
 
-.mm-legend { pointer-events: auto; left: 8px; top: 8px; max-width: min(300px, 70%); padding: 4px 8px; border-radius: 4px; background: rgb(11 17 20 / 0.85); color: var(--text-primary); }
-.mm-legend summary { cursor: pointer; font-weight: 600; }
-.mm-legend ul, .mm-legend ol { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
-.mm-legend li { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+/* Bottom-right stack: notes, scale bar, then the resolution and tint caption. */
+.mm-br { right: 16px; bottom: 12px; display: grid; gap: 6px; justify-items: end; max-width: 42%; }
+.mm-br > .mm-label { white-space: normal; text-align: right; }
+.mm-scale { position: relative; height: 26px; margin-right: 12px; color: #fff; font-size: 13px; text-shadow: 0 0 3px var(--casing), 0 0 2px var(--casing);
+  background: linear-gradient(#fff, #fff) bottom / 100% 2px no-repeat, linear-gradient(#fff, #fff) left bottom / 2px 8px no-repeat,
+    linear-gradient(#fff, #fff) center bottom / 2px 6px no-repeat, linear-gradient(#fff, #fff) right bottom / 2px 8px no-repeat;
+  filter: drop-shadow(0 0 1px var(--casing)); }
+.mm-scale span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.mm-caption { padding: 1px 6px; border-radius: 4px; background: rgb(11 17 20 / 0.7); color: var(--text-secondary); font-size: 11px; line-height: 15px; text-align: right; }
+
+.mm-legend { pointer-events: auto; left: 12px; bottom: 12px; max-width: 62%; max-height: 55%; overflow: auto; padding: 6px 10px; border: 1px solid rgb(255 255 255 / 0.18); border-radius: 6px; background: rgb(11 17 20 / 0.8); color: var(--text-primary); }
+.mm-legend summary { cursor: pointer; font-weight: 600; color: var(--text-secondary); }
+.mm-legend ul, .mm-legend ol { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; }
+.mm-legend li { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.mm-legend .tag { height: 16px; padding: 0 5px; font-size: 10px; line-height: 14px; }
+/* Small map frames (short viewports, rehearsal): tighter legend so it covers less terrain. */
+@container (max-width: 520px) { .mm-legend { font-size: 11px; line-height: 14px; } .mm-legend ul { gap: 1px; } .mm-swatch { width: 20px; } }
 .mm-slope { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border-subtle); color: var(--text-secondary); }
 .mm-slope ol { grid-template-columns: repeat(2, auto); justify-content: start; column-gap: 12px; color: var(--text-primary); }
 
-.mm-swatch { flex: none; width: 18px; height: 10px; display: inline-block; }
-.mm-swatch-base { width: 10px; background: #fff; border: 2px solid var(--casing); outline: 1px solid var(--text-muted); margin: 0 4px; }
-.mm-swatch-stop { width: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--casing); outline: 1px solid var(--text-muted); margin: 0 4px; }
+.mm-swatch { flex: none; width: 26px; height: 10px; display: inline-block; }
+.mm-swatch-stop { width: 10px; border-radius: 50%; background: #fff; border: 2px solid var(--casing); outline: 1px solid var(--text-muted); margin: 0 8px; }
 .mm-swatch-hatch { border: 2px solid var(--hypothetical); background: repeating-linear-gradient(45deg, var(--hypothetical) 0 2px, transparent 2px 5px); }
 .mm-swatch-missing { background: repeating-linear-gradient(-45deg, var(--missing) 0 2px, transparent 2px 5px); }
-.mm-swatch-oct { width: 12px; height: 12px; border: 2px solid var(--hypothetical); border-radius: 4px; margin: 0 3px; }
+.mm-swatch-oct { width: 12px; height: 12px; border: 2px solid var(--hypothetical); border-radius: 4px; margin: 0 7px; }

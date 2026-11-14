@@ -1,13 +1,14 @@
 /* Design tokens from docs/design/design.md section 13. Component styles live beside each component. */
 :root {
-  --surface-app: #14171a; --surface-panel: #1b1f23; --surface-raised: #242a30;
-  --border-subtle: #333b43; --border-control: #6b7783;
-  --text-primary: #eef1f3; --text-secondary: #b3bcc4; --text-muted: #8d98a3;
-  --action: #d9622b; --action-hover: #e57a47; --action-text: #14171a; --focus: #ffd166;
+  --surface-app: #141110; --surface-panel: #1b1816; --surface-raised: #26211e;
+  --border-subtle: #3a332e; --border-control: #7a6e65;
+  --text-primary: #f3ede7; --text-secondary: #c9bfb5; --text-muted: #a0958b;
+  --action: #d2602a; --action-hover: #e2753f; --mars-tint: sepia(1) saturate(2.8) hue-rotate(-22deg) brightness(.72) contrast(1.15); --action-text: #14171a; --focus: #ffd166;
   --route: #3dd6e8; --casing: #0b1114;
   --status-current: #5cc98a; --status-updating: #7fb4ff; --status-outdated: #e3b341; --status-error: #ff7b72;
   --hypothetical: #c9a0ff; --missing: #7a858f;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  --heading: "Segoe UI", "Source Sans 3", "Noto Sans", system-ui, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color-scheme: dark;
 }

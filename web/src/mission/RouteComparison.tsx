@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "./mission.css";
-import { diff, num, STATUS_TEXT } from "./format";
+import "./routes.css";
+import { diff, hm, num, STATUS_TEXT } from "./format";
 import { routesIdentical } from "./geo";
 import type { Mission } from "./state";
 import { MODE_LABEL, type Assessment, type Mode } from "./types";
@@ -25,6 +26,13 @@ const ROWS: Row[] = [
 const Status = ({ status }: { status: string }) => <span className={`status status-${status}`}>{STATUS_TEXT[status] ?? status}</span>;
 const Val = ({ v, unit, digits = 1 }: { v: number | null | undefined; unit: string; digits?: number }) =>
   <>{num(v, digits)}{v != null && <>&thinsp;<span className="unit">{unit}</span></>}</>;
+const Hm = ({ v }: { v: number | null | undefined }) => <span className="rc-num">{hm(v)}</span>;
+const km = (m: number | null | undefined) => (m == null ? "—" : m >= 1000 ? `${num(m / 1000, 2)} km` : `${num(m)} m`);
+// Display only: the larger of the two returned leg maxima.
+const maxSlope = (a: Assessment) => {
+  const v = [a.outbound?.maxSlopeDeg, a.return?.maxSlopeDeg].filter((x): x is number => x != null);
+  return v.length ? `${num(Math.max(...v))}°` : "—";
+};
 
 /** One sentence from returned differences only; a property is named only for the mode it actually improves. */
 function summary(s: Assessment, l: Assessment): string | null {
@@ -51,9 +59,9 @@ function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: stri
       <p><Status status={a.status} /></p>
       {a.message && <p className="caption">{a.message}</p>}
       <dl className="option-metrics">
-        <dt>Travel time est.</dt><dd id={`metric-${id}.travelMin`} className={hl("travelMin")}><Val v={a.travelMin} unit="min" /></dd>
-        <dt>Total required</dt><dd id={`metric-${id}.totalRequiredMin`} className={hl("totalRequiredMin")}><Val v={a.totalRequiredMin} unit="min" /></dd>
-        <dt>Margin against remaining time</dt><dd id={`metric-${id}.marginMin`} className={hl("marginMin")}><Val v={a.marginMin} unit="min" /></dd>
+        <dt>Travel time est.</dt><dd id={`metric-${id}.travelMin`} className={hl("travelMin")}><Hm v={a.travelMin} /></dd>
+        <dt>Total required</dt><dd id={`metric-${id}.totalRequiredMin`} className={hl("totalRequiredMin")}><Hm v={a.totalRequiredMin} /></dd>
+        <dt>Margin against remaining time</dt><dd id={`metric-${id}.marginMin`} className={hl("marginMin")}><Hm v={a.marginMin} /></dd>
       </dl>
     </section>
   );
@@ -63,8 +71,8 @@ function Scenario({ m }: { m: Mission }) {
   const { ret, reach } = m.state;
   const blocked = ret.error?.message.startsWith("current position is blocked");
   return (
-    <section aria-live="polite">
-      <h3 className="section-label">Return options · <span className="tag tag-hyp">Hypothetical scenario</span></h3>
+    <section className="rc-section" aria-live="polite">
+      <h3 className="rc-h3">Return options <span className="tag tag-hyp">Hypothetical scenario</span></h3>
       {ret.status === "idle" && <p className="reason">Pause at a position, set the scenario, then request return options.</p>}
       {ret.status === "loading" && <p role="status">Requesting return options…</p>}
       {ret.error && (
@@ -74,7 +82,7 @@ function Scenario({ m }: { m: Mission }) {
       )}
       {ret.data && (
         <>
-          <p className="caption">From the paused position with {num(m.remainingMin, 1)} min remaining.</p>
+          <p className="caption">From the paused position with {hm(m.remainingMin)} remaining.</p>
           <ReturnOption m={m} id="immediateReturn" title="Return now" a={ret.data.immediateReturn} />
           <ReturnOption m={m} id="continueThenReturn" title="Continue, then return" a={ret.data.continueThenReturn} />
         </>
@@ -86,9 +94,9 @@ function Scenario({ m }: { m: Mission }) {
           <h4 className="option-title">Return envelope</h4>
           <p><Status status={reach.data.status} /></p>
           <dl className="option-metrics">
-            <dt>Walking allowance (remaining − reserve)</dt><dd><Val v={reach.data.allowanceMin} unit="min" /></dd>
-            <dt>Area still returnable</dt><dd><Val v={reach.data.returnableAreaM2 / 1e6} unit="km²" digits={2} /></dd>
-            <dt>Farthest returnable point</dt><dd><Val v={reach.data.farthestReturnableMin} unit="min from base" /></dd>
+            <dt>Walking allowance (remaining − reserve)</dt><dd><Hm v={reach.data.allowanceMin} /></dd>
+            <dt>Area still returnable</dt><dd className="rc-num"><Val v={reach.data.returnableAreaM2 / 1e6} unit="km²" digits={2} /></dd>
+            <dt>Farthest returnable point</dt><dd><Hm v={reach.data.farthestReturnableMin} /> <span className="unit">from base</span></dd>
           </dl>
           <p className="caption">Shown on the map as the “Return envelope” layer.</p>
         </section>
@@ -100,18 +108,18 @@ function Scenario({ m }: { m: Mission }) {
 function Stress({ m }: { m: Mission }) {
   const { stress } = m.state, d = stress.data;
   return (
-    <section aria-live="polite">
-      <h3 className="section-label">Closure stress test · <span className="tag tag-hyp">Hypothetical</span></h3>
+    <section className="rc-section" aria-live="polite">
+      <h3 className="rc-h3">Closure stress test <span className="tag tag-hyp">Hypothetical</span></h3>
       <button className="btn" disabled={!m.current || stress.status === "loading"} onClick={m.requestStress}>Stress-test the way home</button>
       {!m.current && <p className="reason">Request routes to enable.</p>}
       {stress.status === "loading" && <p role="status">Testing single closures along the return…</p>}
       {stress.error && <div className="banner banner-error" role="alert">{stress.error.message}</div>}
       {d && (
-        <>
+        <div className="card card-hyp">
           <p className={`verdict verdict-${d.verdict}`}>
             <strong>{{ robust: "Robust", fragile: "Fragile", unavailable: "Unavailable" }[d.verdict]}</strong>
             {d.verdict !== "unavailable" && <> — the return stays within budget for {d.survivableCount} of {d.closures.length} single closures
-              of radius {num(d.closureRadiusM)} m. Worst margin: {d.worstMarginMin == null ? "none, a closure leaves no path" : <Val v={d.worstMarginMin} unit="min" />}.</>}
+              of radius {num(d.closureRadiusM)} m. Worst margin: {d.worstMarginMin == null ? "none, a closure leaves no path" : <Hm v={d.worstMarginMin} />}.</>}
             {d.verdict === "unavailable" && " — there is no baseline round trip to test."}
           </p>
           {d.closures.length > 0 && (
@@ -119,15 +127,39 @@ function Stress({ m }: { m: Mission }) {
               <thead><tr><th>Along return</th><th>Status</th><th>Detour</th><th>Margin</th></tr></thead>
               <tbody>{d.closures.map((c) => (
                 <tr key={c.alongReturnM}>
-                  <td><Val v={c.alongReturnM} unit="m" digits={0} /></td>
+                  <td className="rc-num">{km(c.alongReturnM)}</td>
                   <td><Status status={c.status} /></td>
-                  <td><Val v={c.detourM} unit="m" digits={0} /></td>
-                  <td><Val v={c.marginMin} unit="min" /></td>
+                  <td className="rc-num">{km(c.detourM)}</td>
+                  <td><Hm v={c.marginMin} /></td>
                 </tr>
               ))}</tbody>
             </table>
           )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** Why this stop matters, from the stop's own record only; shown before any route is requested. */
+function WhyVisit({ m }: { m: Mission }) {
+  const stop = m.stop, sources = m.state.bundle?.region.sources ?? [];
+  if (!stop) return null;
+  const titles = stop.sourceIds.map((id) => sources.find((s) => s.sourceId === id)?.title ?? id);
+  return (
+    <section className="rc-section rc-why">
+      <h3 className="rc-h2">Why visit this stop?</h3>
+      {stop.description && <p>{stop.description}</p>}
+      {stop.scientificQuestion && (
+        <>
+          <p className="rc-h3">Excursion question <span className="tag tag-hyp">Hypothetical crew scenario</span></p>
+          <p>{stop.scientificQuestion}</p>
         </>
+      )}
+      {!!titles.length && (
+        <button type="button" className="src-line" onClick={() => m.dispatch({ type: "setTab", tab: "evidence" })}>
+          Sources: {titles.join("; ")}.
+        </button>
       )}
     </section>
   );
@@ -135,37 +167,93 @@ function Stress({ m }: { m: Mission }) {
 
 export function RouteComparison({ m }: { m: Mission }) {
   const { state, dispatch } = m, plan = state.plan;
-  // A cited metric may sit below the fold of the panel; bring it into view (same as cited sources in Evidence).
+  // A cited metric may sit below the fold or inside the collapsed full table; open it and bring it into view.
   useEffect(() => {
     if (!state.highlight) return;
+    const el = document.getElementById(`metric-${state.highlight}`);
+    const details = el?.closest("details");
+    if (details) details.open = true;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById(`metric-${state.highlight}`)?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+    el?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
   }, [state.highlight]);
-  if (!plan || !state.planInputs) {
-    return <p className="reason">{state.freshness === "requesting" ? "Requesting routes from the planning service…"
-      : state.freshness === "failed" ? "No route is shown because the last request did not succeed."
-      : "Request routes to compare the two route modes."}</p>;
-  }
+
+  const shown = plan && state.planInputs ? plan : null;
   const outdated = state.freshness !== "current";
-  const s = plan.options.shortest, l = plan.options.slope_penalized, selected = plan.options[m.mode];
-  const text = summary(s, l);
 
   return (
     <div className="routes">
-      <div className={outdated ? "outdated" : undefined}>
-        {outdated && <p><span className="tag tag-outdated">Outdated</span> <span className="caption">These values no longer match the inputs.</span></p>}
+      <h2 className="rc-h2 rc-title">Route comparison <span className="rc-sub">(model results)</span></h2>
+      {shown && outdated && <p><span className="tag tag-outdated">Outdated</span> <span className="caption">These values no longer match the inputs.</span></p>}
+
+      {/* The only route-mode selector; both modes are in one plan, so switching is not a new calculation. */}
+      <fieldset className={`rc-modes${shown && outdated ? " outdated" : ""}`} disabled={state.rehearsing}>
+        <legend className="sr-only">Route mode</legend>
+        {MODES.map((mode) => {
+          const a = shown?.options[mode];
+          return (
+            <div className="rc-row" key={mode}>
+              <label className="rc-name">
+                <input type="radio" name="table-mode" checked={state.inputs.mode === mode}
+                  onChange={() => dispatch({ type: "setInput", key: "mode", value: mode })} />
+                <span>{MODE_LABEL[mode]}</span>
+              </label>
+              {a && (
+                <dl className="rc-figs">
+                  {a.status !== "ok" && <div className="rc-status"><dt className="sr-only">Status</dt><dd><Status status={a.status} /></dd></div>}
+                  <div><dt>Distance</dt><dd>{km(a.totalDistanceM)}</dd></div>
+                  <div><dt>Total time</dt><dd>{hm(a.totalRequiredMin)}</dd></div>
+                  <div><dt>Max slope</dt><dd>{maxSlope(a)}</dd></div>
+                  <div><dt>Margin</dt><dd>{hm(a.marginMin)}</dd></div>
+                </dl>
+              )}
+            </div>
+          );
+        })}
+      </fieldset>
+
+      {shown ? <Compare m={m} plan={shown} outdated={outdated} /> : (
+        <p className="reason rc-prompt">{state.freshness === "requesting" ? "Requesting routes from the planning service…"
+          : state.freshness === "failed" ? "No route is shown because the last request did not succeed."
+          : "Compare routes to see options."}</p>
+      )}
+
+      <WhyVisit m={m} />
+
+      {shown && !state.rehearsing && (
+        <p>
+          <button className="btn" disabled={!m.current || !m.points.length} onClick={() => dispatch({ type: "rehearse", on: true })}>Rehearse selected route</button>
+          {!m.current ? <span className="reason"> Request routes to enable.</span>
+            : !m.points.length && <span className="reason"> The selected mode has no route to rehearse.</span>}
+        </p>
+      )}
+      {state.rehearsing && <Scenario m={m} />}
+      {shown && <Stress m={m} />}
+    </div>
+  );
+}
+
+function Compare({ m, plan, outdated }: { m: Mission; plan: NonNullable<Mission["state"]["plan"]>; outdated: boolean }) {
+  const { state } = m, s = plan.options.shortest, l = plan.options.slope_penalized, selected = plan.options[m.mode];
+  const text = summary(s, l);
+  return (
+    <div className={outdated ? "outdated" : undefined}>
+      {routesIdentical(plan) ? <p className="rc-summary">Both modes return the same route for these inputs.</p> : text && <p className="rc-summary">{text}</p>}
+      {selected.status === "over_budget" && selected.marginMin != null && (
+        <div className="banner banner-outdated" role="status">Exceeds the time budget by {hm(-selected.marginMin)}.</div>
+      )}
+      {selected.status === "no_path" && (
+        <div className="banner banner-error" role="status">No route was found within the slope ceiling of {num(state.planInputs?.maxSlopeDeg, 1)}°.</div>
+      )}
+      {selected.message && <p className="caption">{selected.message}</p>}
+
+      <details className="rc-full">
+        <summary>Full comparison</summary>
         <table className="metrics">
           <caption className="sr-only">Route comparison for the two modes, with the difference between them</caption>
           <thead>
             <tr>
               <th scope="col">Metric</th>
-              {MODES.map((mode) => (
-                <th scope="col" key={mode}>
-                  <label><input type="radio" name="table-mode" checked={m.mode === mode} disabled={outdated || state.rehearsing}
-                    onChange={() => dispatch({ type: "setInput", key: "mode", value: mode })} /> {MODE_LABEL[mode]}
-                    {m.mode === mode && <span className="sr-only"> (selected)</span>}</label>
-                </th>
-              ))}
+              {MODES.map((mode) => <th scope="col" key={mode}>{MODE_LABEL[mode]}{m.mode === mode && <span className="sr-only"> (selected)</span>}</th>)}
               <th scope="col">Diff</th>
             </tr>
           </thead>
@@ -183,26 +271,7 @@ export function RouteComparison({ m }: { m: Mission }) {
           </tbody>
         </table>
         <p className="caption">Diff is {MODE_LABEL.slope_penalized} minus {MODE_LABEL.shortest}, from the returned values. Values are rounded for display only.</p>
-
-        {routesIdentical(plan) ? <p>Both modes return the same route for these inputs.</p> : text && <p className="prose">{text}</p>}
-        {selected.status === "over_budget" && selected.marginMin != null && (
-          <div className="banner banner-outdated" role="status">Exceeds the time budget by {num(-selected.marginMin, 1)} min.</div>
-        )}
-        {selected.status === "no_path" && (
-          <div className="banner banner-error" role="status">No route was found within the slope ceiling of {num(state.planInputs.maxSlopeDeg, 1)}°.</div>
-        )}
-        {selected.message && <p className="caption">{selected.message}</p>}
-      </div>
-
-      {!state.rehearsing && (
-        <p>
-          <button className="btn" disabled={!m.current || !m.points.length} onClick={() => dispatch({ type: "rehearse", on: true })}>Rehearse selected route</button>
-          {!m.current ? <span className="reason"> Request routes to enable.</span>
-            : !m.points.length && <span className="reason"> The selected mode has no route to rehearse.</span>}
-        </p>
-      )}
-      {state.rehearsing && <Scenario m={m} />}
-      <Stress m={m} />
+      </details>
     </div>
   );
 }

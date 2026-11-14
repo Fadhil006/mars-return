@@ -16,3 +16,10 @@ export const STATUS_TEXT: Record<string, string> = {
   ok: "Within budget", over_budget: "Over budget", no_path: "No route found",
   invalid_input: "Invalid input", data_unavailable: "Data unavailable",
 };
+
+/** Minutes as "5 h 10 m" (or "45 m"), rounded to the minute for display only. */
+export function hm(min: number | null | undefined): string {
+  if (min == null) return DASH;
+  const t = Math.round(Math.abs(min)), h = Math.floor(t / 60), m = t % 60;
+  return `${min < 0 && t ? "−" : ""}${h ? `${h} h ${String(m).padStart(2, "0")} m` : `${m} min`}`;
+}

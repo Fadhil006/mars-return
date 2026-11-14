@@ -1,4 +1,4 @@
-import type { ReachResponse, RegionBundle } from "../mission/types";
+import type { ReachResponse, RegionBundle, XY } from "../mission/types";
 
 export type GridLayer = "slope" | "missing" | "envelope";
 
@@ -49,4 +49,35 @@ export function layerCanvas(kind: GridLayer, bundle: RegionBundle, reach?: Reach
     }
   }
   return canvas;
+}
+
+/**
+ * Points at fractions (i + offset) / n of a polyline's length, i = 0..n-1, each with its travel heading
+ * in radians in map axes (x east, y north). Used for display-only direction arrows on route legs.
+ */
+export function arrowsAlong(pts: XY[], n: number, offset = 0.5): { at: XY; heading: number }[] {
+  const seg = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]));
+  const total = seg.reduce((s, d) => s + d, 0);
+  if (!total) return [];
+  const out: { at: XY; heading: number }[] = [];
+  for (let k = 0, i = 0, run = 0; k < n; k++) {
+    const target = ((k + offset) / n) * total;
+    while (i < seg.length - 1 && run + seg[i] < target) run += seg[i++];
+    const t = seg[i] ? (target - run) / seg[i] : 0;
+    const [a, b] = [pts[i], pts[i + 1]];
+    out.push({ at: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], heading: Math.atan2(b[1] - a[1], b[0] - a[0]) });
+  }
+  return out;
+}
+
+/**
+ * Which way a map callout leans, from its marker's map fractions (x from west, y from north) and the other
+ * callout's marker. Boxes go up unless near the top (the legend and scale sit at the bottom), lean away from
+ * the other marker, and turn back from the side edges (a box needs about 40% of a small map's width).
+ */
+export function calloutSide(f: [number, number], other?: [number, number] | null): { left: boolean; up: boolean } {
+  let left = other ? f[0] < other[0] : f[0] > 0.5;
+  if (left && f[0] < 0.35) left = false;
+  else if (!left && f[0] > 0.6) left = true;
+  return { left, up: f[1] > 0.25 };
 }

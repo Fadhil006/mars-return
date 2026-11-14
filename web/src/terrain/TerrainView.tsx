@@ -182,7 +182,12 @@ export function TerrainView({ m }: { m: Mission }) {
       g.globalAlpha = 1;
       g.fillStyle = "#8a8580"; // neutral surface when imagery is off or unavailable
       g.fillRect(0, 0, canvas.width, canvas.height);
-      if (image) g.drawImage(image, 0, 0, canvas.width, canvas.height);
+      if (image) {
+        // Same warm display tint as the 2D map (styles.css --mars-tint); the CTX image itself is greyscale.
+        g.filter = getComputedStyle(document.documentElement).getPropertyValue("--mars-tint").trim() || "none";
+        g.drawImage(image, 0, 0, canvas.width, canvas.height);
+        g.filter = "none";
+      }
       const slope = layers.slope ? layerCanvas("slope", bundle) : null;
       const envelope = layers.envelope && reach ? layerCanvas("envelope", bundle, reach) : null;
       g.imageSmoothingEnabled = false;
@@ -329,6 +334,7 @@ export function TerrainView({ m }: { m: Mission }) {
         {state.rehearsing && <li><span className="terrain-route">◆</span> Current position</li>}
         {(m.corridor || ret) && <li><span className="terrain-hyp">━</span> Hypothetical scenario</li>}
         <li>Gaps: no elevation data</li>
+        <li>Greyscale CTX image, warm display tint</li>
       </ul>
       <button type="button" className="btn terrain-reset" onClick={() => ctxRef.current?.reset()}>Reset view</button>
     </div>

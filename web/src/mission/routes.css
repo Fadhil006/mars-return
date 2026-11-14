@@ -1,0 +1,47 @@
+/* Right-panel route comparison, matched to the mission-control mockup. */
+.routes { gap: var(--s3); font-size: 15px; line-height: 22px; }
+.rc-h2 { font: 600 20px/28px var(--heading); margin: 0; color: var(--text-primary); }
+.rc-title { padding-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
+.rc-sub { font: 400 14px/20px var(--heading); color: var(--text-muted); }
+.rc-h3 { font: 600 15px/22px var(--heading); margin: 0 0 var(--s2); display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; color: var(--text-primary); }
+.rc-num { font-family: var(--mono); font-size: 0.93em; }
+
+.rc-modes { border: 0; padding: 0; margin: 0; min-width: 0; }
+.rc-modes.outdated { opacity: 0.55; }
+.rc-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s3); align-items: start; padding: var(--s3) 0; border-bottom: 1px solid var(--border-subtle); }
+.rc-name { display: flex; gap: var(--s3); align-items: flex-start; font: 600 16px/22px var(--heading); cursor: pointer; }
+.rc-name input { appearance: none; flex: none; width: 18px; height: 18px; margin: 2px 0 0; border: 2px solid var(--text-secondary); border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
+.rc-name input::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--action); transform: scale(0); }
+.rc-name input:checked { border-color: var(--action); }
+.rc-name input:checked::before { transform: scale(1); }
+.rc-name input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.rc-modes:disabled .rc-name { cursor: not-allowed; opacity: 0.6; }
+.rc-figs { margin: 0; display: grid; gap: 2px; }
+.rc-figs div { display: grid; grid-template-columns: 76px 9ch; gap: var(--s3); }
+.rc-figs dt { font-size: 13px; line-height: 20px; color: var(--text-secondary); }
+.rc-figs dd { margin: 0; font: 400 14px/20px var(--mono); white-space: nowrap; }
+.rc-figs .rc-status { display: block; }
+.rc-figs .rc-status dd { font-family: inherit; font-size: 13px; font-weight: 600; }
+
+.rc-prompt { font-size: 14px; margin: 0; }
+.rc-summary { color: var(--text-secondary); }
+.rc-full { margin-top: var(--s2); }
+.rc-full summary { cursor: pointer; color: var(--text-secondary); font: 600 14px/20px var(--heading); padding: var(--s1) 0; }
+.rc-full[open] summary { margin-bottom: var(--s2); }
+
+.rc-section { padding-top: var(--s4); border-top: 1px solid var(--border-subtle); }
+.rc-why .rc-h2 { padding-bottom: var(--s3); margin-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
+.rc-why p { max-width: 70ch; color: var(--text-primary); }
+.rc-why .rc-h3 { margin-top: var(--s3); }
+
+/* Shared "Sources:" line style (also used by the Evidence tab). */
+.src-line { display: block; width: 100%; text-align: left; margin: var(--s3) 0 0; padding: 2px 0 2px var(--s3); border: 0; border-left: 3px solid var(--action);
+  background: none; color: var(--text-secondary); font-family: inherit; font-style: italic; font-size: 14px; line-height: 20px; }
+button.src-line { cursor: pointer; }
+button.src-line:hover { color: var(--text-primary); text-decoration: underline; }
+
+.routes .card { border-radius: 8px; background: var(--surface-raised); }
+.routes .option-metrics dd { font-family: var(--mono); font-weight: 400; }
+.routes .closures th, .routes .closures td { padding: 0 var(--s1); font-size: 12px; }
+.routes .closures th { letter-spacing: 0.02em; }
+.routes .btn { border-radius: 6px; }

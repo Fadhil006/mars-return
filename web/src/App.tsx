@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import "./app.css";
 import { MissionAssistant } from "./assistant/MissionAssistant";
 import { EvidencePanel } from "./evidence/EvidencePanel";
@@ -20,6 +20,15 @@ const TAB_LABEL: Record<Tab, string> = { routes: "Routes", evidence: "Evidence",
 const NO_3D = "3D terrain is not available in this browser. The 2D map has the same route and controls.";
 const webgl = webglAvailable(); // checked once; creating contexts repeatedly exhausts the browser's limit
 const wide = window.matchMedia("(min-width: 900px)").matches; // small screens start with versions collapsed (design 12)
+const TODAY = new Date();
+
+const icon = (d: ReactNode) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7"
+    strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>
+);
+const LAYERS_ICON = icon(<><path d="M12 4 3 9l9 5 9-5z" /><path d="m3 13 9 5 9-5" /></>);
+const FULL_ICON = icon(<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />);
+const EXIT_ICON = icon(<path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5" />);
 
 function Layers({ m }: { m: Mission }) {
   const { state, dispatch } = m, b = state.bundle!;
@@ -32,7 +41,7 @@ function Layers({ m }: { m: Mission }) {
   ];
   return (
     <details className="layers">
-      <summary className="btn">Layers</summary>
+      <summary className="icon-btn" aria-label="Layers" title="Layers">{LAYERS_ICON}</summary>
       <div className="layers-menu">
         {rows.map(([key, label, reason]) => (
           <div key={key}>
@@ -51,6 +60,13 @@ export function App() {
   const { state, dispatch } = m;
   const [pane, setPane] = useState<"mission" | "map" | "results">("map"); // narrow screens
   const [drawer, setDrawer] = useState(false); // medium screens
+  const viewRef = useRef<HTMLElement>(null);
+  const [full, setFull] = useState(false);
+  useEffect(() => {
+    const on = () => setFull(!!viewRef.current && document.fullscreenElement === viewRef.current);
+    document.addEventListener("fullscreenchange", on);
+    return () => document.removeEventListener("fullscreenchange", on);
+  }, []);
 
   if (!state.bundle) {
     return (
@@ -71,7 +87,18 @@ export function App() {
   const no3d = !webgl || !b.elevation;
   const noPath = m.assessment?.status === "no_path"; // design 10: no_path blocks Rehearse and Report
   const view = no3d ? "2d" : state.view;
-  const warnings = region.warnings;
+  const canRehearse = m.current && m.points.length > 0, canReport = m.current && !noPath;
+  const rehearseReason = "Compare routes to enable rehearsal.";
+  const reportReason = !m.current ? "Compare routes to enable. The report never exports an outdated result."
+    : "The selected mode found no route, so there is nothing to report.";
+  const phase = state.reportOpen ? "report" : state.rehearsing ? "rehearse" : "plan";
+  const toPlan = () => {
+    if (state.rehearsing) dispatch({ type: "rehearse", on: false });
+    setPane("mission");
+    if (window.matchMedia("(min-width: 900px) and (max-width: 1199px)").matches) setDrawer(true);
+    requestAnimationFrame(() => document.getElementById("in-target")?.focus());
+  };
+  const toggleFull = () => { (full ? document.exitFullscreen() : viewRef.current?.requestFullscreen())?.catch(() => {}); };
   const onTabKey = (e: KeyboardEvent) => {
     const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
     if (!step) return;
@@ -83,17 +110,37 @@ export function App() {
   return (
     <div className={`app pane-${pane}${drawer ? " drawer-open" : ""}`}>
       <header className="bar">
-        <button className="btn drawer-toggle" aria-expanded={drawer} onClick={() => setDrawer(!drawer)}>Plan</button>
-        <span className="product">Mars Return / Excursion planner</span>
-        {isSample(b) ? <span className="tag tag-sample">Development sample data</span>
-          : <span className="tag">Real CTX terrain · Jezero Crater</span>}
-        <details className="versions" open={wide}>
-          <summary>Versions</summary>
-          <span className="mono">Dataset {region.datasetVersion}</span>
-          <span className="mono" title={state.plan?.planId}>Plan {state.plan ? state.plan.planId.slice(0, 8) : "—"}</span>
-          <span className="mono">Model {state.plan?.modelVersion ?? "—"}</span>
-        </details>
-        <span className={`status ${freshClass} fresh`} aria-live="polite">{freshText}</span>
+        <div className="bar-row">
+          <button className="btn drawer-toggle" aria-expanded={drawer} onClick={() => setDrawer(!drawer)}>Plan panel</button>
+          <h1 className="product"><b>Mars</b> <span className="slash">/</span> Excursion planner</h1>
+          {isSample(b) ? <span className="tag tag-sample">Development sample data</span>
+            : <span className="tag tag-data">Real CTX terrain · Jezero Crater</span>}
+          <span className="bar-end">
+            <time className="today" dateTime={TODAY.toISOString().slice(0, 10)}>
+              {TODAY.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+            </time>
+            <span className={`status ${freshClass} fresh`} aria-live="polite">{freshText}</span>
+          </span>
+        </div>
+        <div className="bar-row bar-row2">
+          <h2 className="mc-title">Mission Control</h2>
+          <nav className="phase" aria-label="Mission phase">
+            <button aria-current={phase === "plan" ? "step" : undefined} onClick={toPlan}>Plan</button>
+            <button aria-current={phase === "rehearse" ? "step" : undefined} disabled={!canRehearse}
+              title={canRehearse ? undefined : rehearseReason} aria-description={canRehearse ? undefined : rehearseReason}
+              onClick={() => { dispatch({ type: "rehearse", on: true }); setPane("map"); }}>Rehearse</button>
+            <button aria-current={phase === "report" ? "step" : undefined} disabled={!canReport}
+              title={canReport ? undefined : reportReason} aria-description={canReport ? undefined : reportReason}
+              onClick={() => dispatch({ type: "setReport", open: true })}>Report</button>
+          </nav>
+          <span className="caption assume-note">Time estimates depend on selected assumptions.</span>
+          <details className="versions" open={wide}>
+            <summary>Versions</summary>
+            <span className="mono">Dataset {region.datasetVersion}</span>
+            <span className="mono" title={state.plan?.planId}>Plan {state.plan ? state.plan.planId.slice(0, 8) : "—"}</span>
+            <span className="mono">Model {state.plan?.modelVersion ?? "—"}</span>
+          </details>
+        </div>
       </header>
 
       <nav className="panes" aria-label="Sections">
@@ -106,20 +153,22 @@ export function App() {
 
       <aside className="col left" aria-label="Excursion plan">
         <MissionControls m={m} />
-        <details className="limits">
-          <summary>Model limits ({warnings.length})</summary>
-          <ul>{warnings.map((w) => <li key={w}>{w}</li>)}</ul>
-        </details>
       </aside>
 
-      <main className="view" aria-label="Viewing area">
+      <main className="view" aria-label="Viewing area" ref={viewRef}>
         <div className="toolbar">
-          <div className="segments" role="group" aria-label="View">
-            <button aria-pressed={view === "2d"} onClick={() => dispatch({ type: "setView", view: "2d" })}>2D map</button>
-            <button aria-pressed={view === "3d"} disabled={no3d} aria-describedby={no3d ? "no3d" : undefined}
-              onClick={() => dispatch({ type: "setView", view: "3d" })}>3D terrain</button>
+          <div className="tool-row">
+            <div className="segments" role="group" aria-label="View">
+              <button aria-pressed={view === "2d"} onClick={() => dispatch({ type: "setView", view: "2d" })}>2D<span className="sr-only"> map</span></button>
+              <button aria-pressed={view === "3d"} disabled={no3d} aria-describedby={no3d ? "no3d" : undefined}
+                onClick={() => dispatch({ type: "setView", view: "3d" })}>3D<span className="sr-only"> terrain</span></button>
+            </div>
+            <div className="tool-group">
+              <Layers m={m} />
+              <button className="icon-btn" aria-label={full ? "Exit full screen" : "Full screen"} title={full ? "Exit full screen" : "Full screen"}
+                onClick={toggleFull}>{full ? EXIT_ICON : FULL_ICON}</button>
+            </div>
           </div>
-          <Layers m={m} />
           {no3d && <p className="reason" id="no3d">{webgl ? "3D terrain needs the elevation layer, which could not be loaded." : NO_3D}</p>}
         </div>
         <div className="canvas">{view === "3d" ? <TerrainView m={m} /> : <MissionMap m={m} />}</div>
@@ -136,13 +185,12 @@ export function App() {
           {state.tab === "routes" ? <RouteComparison m={m} /> : state.tab === "evidence" ? <EvidencePanel m={m} /> : <MissionAssistant m={m} />}
         </div>
         <div className="report-open">
-          <button className="btn" disabled={!m.current || noPath} onClick={() => dispatch({ type: "setReport", open: true })}>Open mission report</button>
-          {!m.current ? <p className="reason">Request routes to enable. The report never exports an outdated result.</p>
-            : noPath && <p className="reason">The selected mode found no route, so there is nothing to report.</p>}
+          <button className="btn" disabled={!canReport} onClick={() => dispatch({ type: "setReport", open: true })}>Open mission report</button>
+          {!canReport && <p className="reason">{reportReason}</p>}
         </div>
       </aside>
 
-      {m.current && m.points.length > 0 && <footer className="strip"><RehearsalStrip m={m} /></footer>}
+      {canRehearse && <footer className="strip"><RehearsalStrip m={m} /></footer>}
       <MissionReport m={m} />
     </div>
   );
