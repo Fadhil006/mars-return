@@ -109,6 +109,9 @@ export function reducer(s: State, a: Action): State {
     case "setInput": {
       if (s.inputs[a.key] === a.value) return s;
       const inputs = { ...s.inputs, [a.key]: a.value } as Inputs;
+      // Both modes are already in the plan, so choosing between them is not a new calculation.
+      if (a.key === "mode" && s.freshness === "current" && s.planInputs)
+        return { ...s, ...clearAll, inputs, planInputs: { ...s.planInputs, mode: inputs.mode } };
       const tab = a.key === "targetId" ? "evidence" : s.tab;
       // Any input change makes a shown result outdated at once; an in-flight request is abandoned.
       const freshness: Freshness = s.plan ? "outdated" : "none";

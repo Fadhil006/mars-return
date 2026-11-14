@@ -135,6 +135,127 @@
       "title": "Assessment",
       "type": "object"
     },
+    "BriefRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requestid",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "planId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Planid",
+          "type": "string"
+        },
+        "selectedRouteMode": {
+          "enum": [
+            "shortest",
+            "slope_penalized"
+          ],
+          "title": "Selectedroutemode",
+          "type": "string"
+        },
+        "question": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        }
+      },
+      "required": [
+        "requestId",
+        "planId",
+        "selectedRouteMode",
+        "question"
+      ],
+      "title": "BriefRequest",
+      "type": "object"
+    },
+    "BriefResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "requestId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Requestid",
+          "type": "string"
+        },
+        "schemaVersion": {
+          "const": 1,
+          "default": 1,
+          "title": "Schemaversion",
+          "type": "integer"
+        },
+        "planId": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Planid",
+          "type": "string"
+        },
+        "datasetVersion": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Datasetversion",
+          "type": "string"
+        },
+        "modelVersion": {
+          "title": "Modelversion",
+          "type": "string"
+        },
+        "answer": {
+          "title": "Answer",
+          "type": "string"
+        },
+        "sourceIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourceids",
+          "type": "array"
+        },
+        "metricRefs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Metricrefs",
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "model",
+            "template"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "supported": {
+          "title": "Supported",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requestId",
+        "planId",
+        "datasetVersion",
+        "modelVersion",
+        "answer",
+        "sourceIds",
+        "metricRefs",
+        "mode",
+        "supported"
+      ],
+      "title": "BriefResponse",
+      "type": "object"
+    },
     "Closure": {
       "additionalProperties": false,
       "properties": {

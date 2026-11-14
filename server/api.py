@@ -9,9 +9,11 @@ from time import perf_counter
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
+from server.assistant import build_brief
 from server.evidence import PlanStore
-from server.models import (PlanRequest, PlanResponse, ReachRequest, ReachResponse, RehearsalRequest,
+from server.models import (BriefRequest, BriefResponse, PlanRequest, PlanResponse, ReachRequest, ReachResponse, RehearsalRequest,
                            RehearsalResponse, RegionResponse, StressRequest, StressResponse)
 from server.region import load_region
 
@@ -33,6 +35,7 @@ def error(status_code, status, code, message, request_id=None):
 def create_app(region_dir=None, *, region=None, store=None):
     app = FastAPI(title="Mars Return", version="1.0.0")
     app.state.store = store if store is not None else PlanStore()
+    app.state.brief_complete = None  # None: provider chosen from MODEL_* environment; tests inject a fake
     app.state.region = region
     app.state.load_attempted = region is not None
     app.state.load_lock = Lock()
@@ -145,6 +148,25 @@ def create_app(region_dir=None, *, region=None, store=None):
     @app.post("/api/stress", response_model=StressResponse, response_model_by_alias=True)
     def stress(payload: StressRequest):
         return calculate(payload, "stress", StressResponse)
+
+    @app.post("/api/brief", response_model=BriefResponse)
+    def brief(payload: BriefRequest):
+        current = active_region()
+        if current is None:
+            return error(503, "data_unavailable", "region_unavailable", "Region unavailable", payload.requestId)
+        try:
+            result = build_brief(current, app.state.store, payload.planId, payload.selectedRouteMode,
+                                 payload.question, app.state.brief_complete)
+        except KeyError:
+            return error(404, "invalid_input", "plan_expired", "Plan missing or expired; recalculate", payload.requestId)
+        except ValueError as exc:
+            return error(422, "invalid_input", "invalid_scenario", str(exc), payload.requestId)
+        return {**result, "requestId": payload.requestId, "schemaVersion": 1, "planId": payload.planId,
+                "datasetVersion": current["manifest"]["datasetVersion"]}
+
+    # One origin for the demo: the built browser app, registered last so it never shadows /api.
+    if (ROOT / "web" / "dist").is_dir():
+        app.mount("/", StaticFiles(directory=ROOT / "web" / "dist", html=True))
 
     return app
 

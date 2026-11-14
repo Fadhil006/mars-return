@@ -1,0 +1,12 @@
+.evidence .section-label { margin-top: var(--s5); display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; }
+.evidence p { margin: 0 0 var(--s2); }
+.ev-scroll { overflow-x: auto; }
+.ev-samples th, .ev-samples td { text-align: left; font-size: 14px; font-weight: 400; white-space: nowrap; }
+.ev-source h4 { margin: 0 0 var(--s2); font: 600 14px/20px inherit; font-family: inherit; }
+.ev-source dl { margin: 0 0 var(--s2); display: grid; gap: var(--s1); }
+.ev-source dl div { display: grid; grid-template-columns: 88px 1fr; gap: var(--s2); }
+.ev-source dt { font-size: 12px; line-height: 20px; color: var(--text-muted); }
+.ev-source dd { margin: 0; overflow-wrap: anywhere; }
+.ev-limit { color: var(--text-secondary); }
+.ev-warnings { margin: 0; padding-left: var(--s4); color: var(--text-secondary); }
+.ev-warnings li { margin-bottom: var(--s1); }

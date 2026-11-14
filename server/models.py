@@ -170,6 +170,27 @@ class StressResponse(Envelope):
     verdict: Literal["robust", "fragile", "unavailable"]
 
 
+class BriefRequest(Model):
+    requestId: Identifier
+    schemaVersion: Literal[1] = 1
+    planId: Identifier
+    selectedRouteMode: Mode
+    question: Annotated[str, Field(min_length=1, max_length=500)]
+
+
+class BriefResponse(Model):
+    requestId: Identifier
+    schemaVersion: Literal[1] = 1
+    planId: Identifier
+    datasetVersion: Identifier
+    modelVersion: str
+    answer: str
+    sourceIds: list[str]
+    metricRefs: list[str]
+    mode: Literal["model", "template"]
+    supported: bool
+
+
 class RegionManifest(BaseModel):
     model_config = ConfigDict(extra="allow", allow_inf_nan=False)
     width: Annotated[int, Field(ge=1, le=512)]

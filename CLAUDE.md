@@ -55,6 +55,6 @@ There is no linter or formatter configured. `.editorconfig` sets 4 spaces for Py
 - **Hypothetical stays labelled.** The base, blocked corridor, speed, time budget and slope ceiling are scenario inputs, not certified safety limits. Routes are model results. Keep missing-data masks and data resolution visible.
 - **Bulk data stays out of Git.** Raw rasters, generated region assets and `data/packages/` are ignored. Track source records, checksums and small metadata only. No API keys or `.env` files.
 - **One worker.** Saved plans and rehearsals live in process memory (128 entries, one hour). The region bundle loads once per process, so restart after data changes.
-- **The assistant must not recalculate.** `/api/brief` is not implemented. When it is built (`server/assistant.py`, owner B3), it reads metrics through `server.evidence.trusted_context` and cites evidence rather than computing route values in prompts.
+- **The assistant must not recalculate.** `/api/brief` (`server/assistant.py`, owner B3) reads metrics through `server.evidence.trusted_context` and cites evidence; it never computes route values. Answers are deterministic templates unless `MODEL_API_KEY` is set, and a model answer is kept only if its numbers and citations match the stored plan.
 - **Ownership.** A1 data and coordinates, A2 routing and mission arithmetic, A3 API and evidence, B1 map and mission state, B2 3D terrain, B3 assistant and report. See `CONTRIBUTING.md`.
 - **Record verification.** State the actual command run and its result in the change description.

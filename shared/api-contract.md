@@ -55,6 +55,7 @@ Total required time is all leg distances / speed + dwell + reserve. Immediate re
 | 200 | `over_budget` | Paths exist, negative time margin |
 | 200 | `no_path` | Valid endpoint cells disconnected under constraints |
 | 422 | `invalid_input` | Invalid fields, endpoint cells, destination or scenario |
+| 404 | `invalid_input` | `/api/brief` only, code `plan_expired`: plan missing, expired or evicted; recalculate |
 | 409 | `invalid_input` | Dataset version conflict; reload/recalculate |
 | 413 | `invalid_input` | Body limit exceeded |
 | 503 | `data_unavailable` | Prepared region/assets missing or invalid |
@@ -65,4 +66,11 @@ B1 discards responses whose request ID is not current. Any input change invalida
 
 ## B3 assistant boundary
 
-`POST /api/brief` remains B3's implementation: `requestId`, `planId`, `selectedRouteMode`, `question` → answer, source IDs, metric references, and model/template mode. A3 provides `server.evidence.trusted_context(store, planId, datasetVersion, selectedRouteMode)`. Only saved calculations are trusted; client-supplied metrics never override them. No model provider or credential is required to run Group A.
+`POST /api/brief` (`server/assistant.py`, owner B3) takes `requestId`, `planId`, `selectedRouteMode` and `question` (1–500 characters); unknown fields are rejected. It returns `requestId`, `schemaVersion`, `planId`, `datasetVersion`, `modelVersion`, `answer`, `sourceIds`, `metricRefs`, `mode` and `supported`.
+
+- The plan is read through `server.evidence.trusted_context(store, planId, datasetVersion, selectedRouteMode)` using the running region's dataset version. Only saved calculations are trusted; nothing in the question can change a metric. Both plan and rehearsal IDs are accepted; a rehearsal must be asked about with the route mode it was saved with.
+- `metricRefs` are `<assessment>.<field>`: the route mode for a plan (`shortest.marginMin`), or `immediateReturn` / `continueThenReturn` for a rehearsal. Every `sourceId` exists in the region's source records or the stop's `sourceIds`.
+- The question is sorted by keyword into route, return, evidence or unsupported. Unsupported questions (weather, medical, safety, anything unmatched) return `supported: false`, an answer beginning "The supplied evidence does not cover this." and no references; they never reach a model.
+- `mode: "template"` is a deterministic answer built from the stored values. `mode: "model"` appears only when `MODEL_API_KEY` is set and the optional `anthropic` package is installed, and only if the generated answer parses, cites only allowed IDs and repeats only numbers present in the stored facts. A timeout (8 s), refusal, outage or failed check returns the template.
+
+No model provider or credential is required to run the service or its tests.
