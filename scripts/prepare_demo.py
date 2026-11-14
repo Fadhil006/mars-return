@@ -6,10 +6,13 @@ import json
 import os
 from pathlib import Path
 import tempfile
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from server.preprocess import prepare_region
 from server.region import load_region
+
+# Some USGS mirrors refuse Python's default client name with HTTP 403.
+USER_AGENT = "mars-return-data-fetch/1.0"
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,7 +32,7 @@ def fetch_verified(url, destination, expected_sha256):
         with tempfile.NamedTemporaryFile(dir=destination.parent, delete=False) as output:
             temporary = Path(output.name)
             digest = hashlib.sha256()
-            with urlopen(url, timeout=120) as source:
+            with urlopen(Request(url, headers={"User-Agent": USER_AGENT}), timeout=120) as source:
                 while chunk := source.read(1024*1024):
                     digest.update(chunk)
                     output.write(chunk)
@@ -42,7 +45,7 @@ def fetch_verified(url, destination, expected_sha256):
 
 
 def prepare_demo():
-    records = [json.loads((ROOT / f"data/sources/{name}.json").read_text()) for name in ("ctx-dem", "ctx-ortho")]
+    records = [json.loads((ROOT / f"data/sources/{name}.json").read_text(encoding="utf-8")) for name in ("ctx-dem", "ctx-ortho")]
     paths = {}
     for layer, record in zip(("elevation", "imagery"), records):
         path = ROOT / "data/raw" / record["productId"]
@@ -50,7 +53,7 @@ def prepare_demo():
         paths[layer] = path
     directory = ROOT / "data/region"
     manifest = prepare_region(paths, [4353000, 1091800, 4356000, 1094800], directory, 20)
-    science = json.loads((ROOT / "data/sources/science.json").read_text())["sources"]
+    science = json.loads((ROOT / "data/sources/science.json").read_text(encoding="utf-8"))["sources"]
     manifest["sources"] = records + science
     for name in ("science-stops.json", "rover-traverse.json"):  # written by scripts.build_science
         manifest["checksums"][name] = hashlib.sha256((directory / name).read_bytes()).hexdigest()
@@ -61,7 +64,7 @@ def prepare_demo():
     # Version the source metadata and destinations too, not only the raster bytes.
     manifest.pop("datasetVersion", None)
     manifest["datasetVersion"] = hashlib.sha256(json.dumps(manifest, sort_keys=True, allow_nan=False).encode()).hexdigest()[:16]
-    (directory / "manifest.json").write_text(json.dumps(manifest, indent=2, allow_nan=False)+"\n")
+    (directory / "manifest.json").write_text(json.dumps(manifest, indent=2, allow_nan=False)+"\n", encoding="utf-8", newline="\n")
     load_region(directory)
     print(f"Prepared Jezero dataset {manifest['datasetVersion']} ({manifest['width']}×{manifest['height']})")
 

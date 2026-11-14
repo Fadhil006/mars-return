@@ -119,7 +119,7 @@ def validate_demo():
                               "Base is hypothetical; targets are rover localizations at sampling sites, not drill-hole coordinates",
                               "Rover elevations and the CTX grid are compared, not independently surveyed truth",
                               "Timing is one local run, not a service-level guarantee"]}
-    (ROOT / "docs/validation-results.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n")
+    (ROOT / "docs/validation-results.json").write_text(json.dumps(report, indent=2, allow_nan=False)+"\n", encoding="utf-8", newline="\n")
     print(json.dumps({k: v for k, v in report.items() if k != "scenarios"}, indent=2))
 
 

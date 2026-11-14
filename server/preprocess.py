@@ -154,7 +154,7 @@ def prepare_region(source_paths, crop_bounds, output_dir, cell_size_m=20):
         rows = [[None if v is None or (not isinstance(v, (bool, np.bool_)) and not math.isfinite(float(v)))
                  else bool(v) if isinstance(v, (bool, np.bool_)) else float(v) for v in row]
                 for row in values]
-        (out / f"{name}.json").write_text(json.dumps(rows, separators=(",", ":")) + "\n")
+        (out / f"{name}.json").write_text(json.dumps(rows, separators=(",", ":")) + "\n", encoding="utf-8", newline="\n")
 
     write_grid("elevation", elevation)
     write_grid("slope", slope)
@@ -181,7 +181,7 @@ def prepare_region(source_paths, crop_bounds, output_dir, cell_size_m=20):
         record_name = basename_ids.get(Path(source_path).name)
         record_path = source_dir / record_name if record_name else None
         if record_path and record_path.is_file():
-            record = json.loads(record_path.read_text())
+            record = json.loads(record_path.read_text(encoding="utf-8"))
             with Path(source_path).open("rb") as source:
                 if hashlib.file_digest(source, "sha256").hexdigest() != record["sha256"]:
                     raise ValueError("Known source filename does not match its registered checksum")
@@ -220,7 +220,7 @@ def prepare_region(source_paths, crop_bounds, output_dir, cell_size_m=20):
         "slopeMethod": "Centered finite differences; degrees; null unless full 3x3 elevation neighborhood exists.",
         "maskMeaning": "true means elevation, slope, and imagery are valid; false means at least one is missing.",
     }
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return manifest
 
 

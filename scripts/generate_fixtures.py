@@ -49,7 +49,7 @@ def generate(output=OUTPUT):
             result["planId"] = f"synthetic-fixture-{name}"
         fixture = {"synthetic": True, "description": "Development-only invented grid, not NASA terrain or a scientific result.",
                    "endpoint": endpoint, "request": payload, "httpStatus": response.status_code, "response": result}
-        (output / f"{name}.json").write_text(json.dumps(fixture, indent=2, allow_nan=False)+"\n")
+        (output / f"{name}.json").write_text(json.dumps(fixture, indent=2, allow_nan=False)+"\n", encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":
