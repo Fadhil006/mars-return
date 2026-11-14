@@ -48,5 +48,36 @@ export function heightfield(bundle: RegionBundle, cap = 256) {
     }
     valid.push(line);
   }
-  return { positions, uvs, indices: meshIndices(valid), origin };
+  return { positions, uvs, indices: meshIndices(valid), origin, rows: valid.length, cols: valid[0]?.length ?? 0, valid };
+}
+
+/**
+ * Vertical side walls along the four edges of the heightfield, from each edge vertex's real height down to `baseY`.
+ * Display only: the top edge of every wall is the measured edge profile; a wall segment touching a missing vertex is
+ * omitted, so a gap at the edge stays a gap. Returns flat triangle positions (no index), outward-facing.
+ */
+export function skirtPositions(field: { positions: number[]; rows: number; cols: number; valid: boolean[][] }, baseY: number): number[] {
+  const { positions, rows, cols, valid } = field, out: number[] = [];
+  const at = (r: number, c: number): Vec3 => { const i = (r * cols + c) * 3; return [positions[i], positions[i + 1], positions[i + 2]]; };
+  // The outermost row/column holding any valid vertex: border cells are often masked (slope needs a full 3 × 3
+  // neighbourhood), so the walls follow the mesh's real edge rather than the empty grid border.
+  const rowHas = (r: number) => valid[r].some(Boolean), colHas = (c: number) => valid.some((row) => row[c]);
+  const top = Array.from({ length: rows }, (_, r) => r).find(rowHas), bottom = Array.from({ length: rows }, (_, r) => rows - 1 - r).find(rowHas);
+  const left = Array.from({ length: cols }, (_, c) => c).find(colHas), right = Array.from({ length: cols }, (_, c) => cols - 1 - c).find(colHas);
+  if (top == null || bottom == null || left == null || right == null) return out;
+  const span = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, k) => a + k);
+  const edges: [number, number][][] = [
+    span(left, right).reverse().map((c) => [top, c]), // north edge
+    span(top, bottom).map((r) => [r, left]), // west edge
+    span(left, right).map((c) => [bottom, c]), // south edge
+    span(top, bottom).reverse().map((r) => [r, right]), // east edge
+  ];
+  for (const edge of edges) for (let k = 0; k + 1 < edge.length; k++) {
+    const [r1, c1] = edge[k], [r2, c2] = edge[k + 1];
+    if (!valid[r1][c1] || !valid[r2][c2]) continue;
+    const a = at(r1, c1), b = at(r2, c2);
+    const a0: Vec3 = [a[0], baseY, a[2]], b0: Vec3 = [b[0], baseY, b[2]];
+    out.push(...a, ...a0, ...b, ...b, ...a0, ...b0);
+  }
+  return out;
 }

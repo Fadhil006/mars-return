@@ -51,6 +51,44 @@ function summary(s: Assessment, l: Assessment): string | null {
   return parts.length ? `${parts.join(". ")}.` : null;
 }
 
+/**
+ * The answer first: the selected route's remaining margin, and how the time budget divides. Every segment is a
+ * returned value (travel, dwell, reserve, margin) except the budget, which is the plan's own input.
+ */
+function Headline({ a, mode, budget, outdated }: { a: Assessment; mode: Mode; budget: number; outdated: boolean }) {
+  const parts = [
+    { key: "travel", label: "Travel", v: a.travelMin },
+    { key: "dwell", label: "On site", v: a.dwellMin },
+    { key: "reserve", label: "Reserve", v: a.reserveMin },
+    { key: "margin", label: "Margin", v: a.marginMin != null && a.marginMin > 0 ? a.marginMin : 0 },
+  ];
+  const known = parts.every((p) => p.v != null) && a.totalRequiredMin != null;
+  const scale = Math.max(budget, a.totalRequiredMin ?? 0) || 1;
+  const over = a.marginMin != null && a.marginMin < 0;
+  return (
+    <section className={`rc-hero${outdated ? " outdated" : ""}${over ? " is-over" : ""}`} aria-label={`Selected route: ${MODE_LABEL[mode]}`}>
+      <div className="rc-hero-top">
+        <span className="section-label">Remaining margin</span>
+        <Status status={a.status} />
+      </div>
+      <p className="rc-hero-num" id={`metric-${mode}.marginMin-hero`}>{hm(a.marginMin)}</p>
+      <p className="caption">{MODE_LABEL[mode]} · {hm(a.totalRequiredMin)} required of a {hm(budget)} budget (assumption)</p>
+      {known && (
+        <div className="rc-budget" role="img"
+          aria-label={`Time budget: ${parts.map((p) => `${p.label} ${hm(p.v)}`).join(", ")}${over ? `; exceeds the budget by ${hm(-a.marginMin!)}` : ""}.`}>
+          <div className="rc-budget-bar">
+            {parts.map((p) => p.v! > 0 && <span key={p.key} className={`seg seg-${p.key}`} style={{ width: `${(p.v! / scale) * 100}%` }} />)}
+            {over && <span className="rc-budget-line" style={{ left: `${(budget / scale) * 100}%` }} title="Budget" />}
+          </div>
+          <ul className="rc-budget-key" aria-hidden="true">
+            {parts.map((p) => <li key={p.key}><span className={`dot seg-${p.key}`} />{p.label} <b>{hm(p.v)}</b></li>)}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: string; a: Assessment }) {
   const hl = (field: string) => (m.state.highlight === `${id}.${field}` ? "highlight" : undefined);
   return (
@@ -193,13 +231,15 @@ export function RouteComparison({ m }: { m: Mission }) {
       <h2 className="rc-h2 rc-title">Route comparison <span className="rc-sub">(model results)</span></h2>
       {shown && outdated && <p><span className="tag tag-outdated">Outdated</span> <span className="caption">These values no longer match the inputs.</span></p>}
 
+      {shown && state.planInputs && <Headline a={shown.options[m.mode]} mode={m.mode} budget={state.planInputs.totalBudgetMin} outdated={outdated} />}
+
       {/* The only route-mode selector; both modes are in one plan, so switching is not a new calculation. */}
       <fieldset className={`rc-modes${shown && outdated ? " outdated" : ""}`} disabled={state.rehearsing}>
         <legend className="sr-only">Route mode</legend>
         {MODES.map((mode) => {
           const a = shown?.options[mode];
           return (
-            <div className="rc-row" key={mode}>
+            <div className={`rc-row${state.inputs.mode === mode ? " is-selected" : ""}`} key={mode}>
               <label className="rc-name">
                 <input type="radio" name="table-mode" checked={state.inputs.mode === mode}
                   onChange={() => dispatch({ type: "setInput", key: "mode", value: mode })} />

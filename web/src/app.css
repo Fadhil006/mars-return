@@ -1,12 +1,30 @@
-.app-gate { display: grid; place-items: center; height: 100%; padding: var(--s5); text-align: center; }
+.app-gate { display: grid; place-items: center; height: 100%; padding: var(--s5); text-align: center;
+  background: radial-gradient(70% 60% at 50% 40%, #1f1a17 0%, var(--surface-app) 70%); }
+.loading { display: grid; justify-items: center; gap: var(--s3); color: var(--text-secondary); }
+.loading-mark { color: var(--text-secondary); }
+.loading-arc { transform-origin: 13px 13px; animation: spin 1.1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { margin: 0; font: 600 18px/24px var(--heading); color: var(--text-primary); letter-spacing: -0.01em; }
+.loading-list { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s1); font-size: 13px; }
+.loading-list li { animation: loading-in 500ms ease-out both; }
+.loading-list li:nth-child(2) { animation-delay: 150ms; } .loading-list li:nth-child(3) { animation-delay: 300ms; } .loading-list li:nth-child(4) { animation-delay: 450ms; }
+@keyframes loading-in { from { opacity: 0; transform: translateY(6px); } }
 .app { display: grid; height: 100%; grid-template: "bar bar bar" auto "left view right" minmax(0, 1fr) "strip strip strip" auto / 300px minmax(480px, 1fr) 360px; }
-.bar { grid-area: bar; padding: 0 var(--s5); background: var(--surface-app); border-bottom: 1px solid var(--border-subtle); }
+.bar { grid-area: bar; padding: 0 var(--s5); background: linear-gradient(180deg, #1d1917, var(--surface-app)); border-bottom: 1px solid var(--hairline); }
+.brand { display: inline-flex; align-items: center; gap: var(--s3); }
+.brand-mark { flex: none; color: var(--action); }
+/* Data status is information, not an action: neutral outline with a dot, so orange stays reserved for actions. */
+.bar .tag-data { background: rgb(255 255 255 / 0.04); border: 1px solid var(--border-control); color: var(--text-primary); gap: var(--s2); }
+.bar .tag-data::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); }
+.fresh { padding: 2px var(--s3) 2px var(--s2); border: 1px solid currentColor; border-radius: 999px; font-size: 13px; line-height: 18px; background: rgb(0 0 0 / 0.2); }
+.fresh.status-updating::before { animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.25; } }
 .bar-row { display: flex; align-items: center; gap: var(--s4); min-height: 52px; white-space: nowrap; }
 .bar-row2 { border-top: 1px solid var(--border-subtle); min-height: 50px; gap: var(--s5); }
 .product { margin: 0; font: 300 26px/32px var(--heading); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-primary); }
 .product b { font-weight: 700; }
 .slash { color: var(--action); font-weight: 400; }
-.bar .tag-sample, .bar .tag-data { height: 28px; padding: 0 var(--s3); border-radius: 8px; font-size: 14px; font-weight: 500; background: rgb(210 96 42 / 0.75); border-color: var(--action); color: var(--text-primary); }
+.bar .tag-sample, .bar .tag-data { height: 28px; padding: 0 var(--s3); border-radius: 999px; font-size: 13px; font-weight: 500; }
 .bar-end { margin-left: auto; display: flex; align-items: center; gap: var(--s4); font-size: 15px; }
 .mc-title { margin: 0; font: 700 26px/32px var(--heading); }
 .phase { display: flex; align-items: stretch; align-self: stretch; margin-left: var(--s6); }
@@ -18,12 +36,16 @@
 .versions { display: flex; gap: var(--s3); color: var(--text-muted); }
 .versions > summary { display: none; }
 .versions > span { margin-right: var(--s3); font-size: 11px; } /* flex gap does not reach <details> content in Chromium */
-.col { background: var(--surface-app); padding: var(--s4) var(--s5) 0; overflow-y: auto; min-height: 0; }
-.left { grid-area: left; }
-.right { grid-area: right; display: flex; flex-direction: column; padding: 0; }
-.view { grid-area: view; display: flex; flex-direction: column; min-width: 0; min-height: 0; position: relative; padding: var(--s5) var(--s2); background: var(--surface-app); }
+/* Layers: side panels and strip sit slightly above the page; the viewing area is the deepest layer with a soft
+   centre light (a plain gradient, nothing that could be read as terrain). */
+.app { background: var(--surface-app); }
+.col { background: var(--panel-grad), var(--surface-panel); padding: var(--s4) var(--s5) 0; overflow-y: auto; min-height: 0; scrollbar-width: thin; scrollbar-color: var(--border-control) transparent; }
+.left { grid-area: left; border-right: 1px solid var(--hairline); }
+.right { grid-area: right; display: flex; flex-direction: column; padding: 0; border-left: 1px solid var(--hairline); }
+.view { grid-area: view; display: flex; flex-direction: column; min-width: 0; min-height: 0; position: relative; padding: var(--s5) var(--s2);
+  background: radial-gradient(90% 80% at 50% 45%, #1f1a17 0%, var(--surface-app) 70%); }
 .view:fullscreen { padding: 0; }
-.strip { grid-area: strip; background: var(--surface-app); border-top: 1px solid var(--border-subtle); padding: var(--s2) var(--s5); }
+.strip { grid-area: strip; background: var(--panel-grad), var(--surface-panel); border-top: 1px solid var(--hairline); padding: var(--s2) var(--s5); }
 .panes, .drawer-toggle { display: none; }
 
 /* The view toolbar floats over the top-left of the map, on dark translucent panels. */

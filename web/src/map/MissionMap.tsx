@@ -8,7 +8,7 @@ import "./map.css";
 
 const VIOLET = "var(--hypothetical)";
 
-interface LineProps { pts: XY[] | null | undefined; toSvg: (p: XY) => string; color?: string; width?: number; dash?: string; casing?: boolean | string; opacity?: number; arrows?: ArrowSpec }
+interface LineProps { pts: XY[] | null | undefined; toSvg: (p: XY) => string; color?: string; width?: number; dash?: string; casing?: boolean | string; opacity?: number; arrows?: ArrowSpec; reveal?: { id: string; delay?: number } }
 interface ArrowSpec { size: number; offset: number; flipY: (p: XY) => [number, number] }
 
 /** Three display-only arrowheads along a leg, pointing the way of travel; `offset` staggers legs that share a path. */
@@ -22,11 +22,18 @@ function Arrows({ pts, color = "var(--route)", spec }: { pts: XY[]; color?: stri
 }
 
 /** A returned path drawn exactly as supplied: no smoothing, with a dark casing so it holds contrast over imagery. */
-function Line({ pts, toSvg, color = "var(--route)", width = 3, dash, casing = true, opacity = 1, arrows }: LineProps) {
+function Line({ pts, toSvg, color = "var(--route)", width = 3, dash, casing = true, opacity = 1, arrows, reveal }: LineProps) {
   if (!pts || pts.length < 2) return null;
   const points = pts.map(toSvg).join(" ");
+  // Display only: a newly returned route is drawn along its own path once, start to end (instant under reduced motion).
+  const maskId = reveal ? `mm-reveal-${reveal.id}` : undefined;
   return (
-    <g opacity={opacity}>
+    <g opacity={opacity} mask={maskId ? `url(#${maskId})` : undefined}>
+      {maskId && (
+        <mask id={maskId} maskUnits="userSpaceOnUse" x="-1e5" y="-1e5" width="2e5" height="2e5">
+          <polyline className="mm-reveal" points={points} pathLength={1} style={{ animationDelay: `${reveal!.delay ?? 0}ms` }} />
+        </mask>
+      )}
       {casing && <polyline className="mm-line" points={points} style={{ stroke: "var(--casing)", strokeWidth: width + 3 }}
         strokeDasharray={typeof casing === "string" ? casing : undefined} />}
       <polyline className="mm-line" points={points} style={{ stroke: color, strokeWidth: width }} strokeDasharray={dash} />
@@ -76,6 +83,8 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
   const otherMode: Mode = m.mode === "shortest" ? "slope_penalized" : "shortest";
   const other = m.current && state.plan && !routesIdentical(state.plan) ? state.plan.options[otherMode] : null;
   const routeOpacity = outdated ? 0.35 : state.rehearsing ? 0.55 : 1;
+  // A new plan or mode re-runs the draw-in once; the same result never animates again.
+  const revealKey = `${state.plan?.planId ?? "none"}-${m.mode}`.replace(/[^\w-]/g, "");
   const travelled = state.rehearsing && !outdated ? m.points.slice(0, m.posIndex + 1).map((p) => p.xy) : null;
 
   const ret = state.ret.data, stress = state.stress.data;
@@ -149,8 +158,10 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
           {other && <Line pts={other.outbound?.pathXY} toSvg={toSvg} width={1.5} casing={false} opacity={0.4} />}
           {other && !returnRetraces(other) && <Line pts={other.return?.pathXY} toSvg={toSvg} width={1.5} casing={false} opacity={0.4} />}
 
-          <Line pts={out} toSvg={toSvg} opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : outArrows} />
-          {!retraces && <Line pts={back} toSvg={toSvg} dash="8 6" opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : backArrows} />}
+          <Line key={`out-${revealKey}`} pts={out} toSvg={toSvg} opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : outArrows}
+            reveal={outdated ? undefined : { id: `out-${revealKey}` }} />
+          {!retraces && <Line key={`back-${revealKey}`} pts={back} toSvg={toSvg} dash="8 6" opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : backArrows}
+            reveal={outdated ? undefined : { id: `back-${revealKey}`, delay: 700 }} />}
           {retraces && back && !outdated && <g opacity={routeOpacity}><Arrows pts={back} spec={backArrows} /></g>}
           <Line pts={travelled} toSvg={toSvg} />
 

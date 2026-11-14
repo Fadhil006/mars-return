@@ -8,11 +8,33 @@ import { layerCanvas } from "../map/layers";
 import { extentM, returnRetraces } from "../mission/geo";
 import type { Mission } from "../mission/state";
 import type { XY } from "../mission/types";
-import { heightfield, surfacePoint } from "./scene";
+import { heightfield, skirtPositions, surfacePoint } from "./scene";
 import "./terrain.css";
 
-const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, BACKGROUND = 0x14171a, CASING = 0x0b1114;
+const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, CASING = 0x0b1114, WALL = 0x2a201b;
 const LIFT_M = 3; // display-only offset that keeps lines from flickering against the surface
+const CONTOUR_M = 10; // contour interval in measured metres; drawn from the elevation, never from the image
+const EXAGGERATIONS = [1, 2, 5] as const; // display only; 1× (true scale) is the default and every other value is labelled
+// Raking light from the north-west (azimuth 315°, 25° above the horizon), the usual hillshade convention:
+// low light is what makes small real relief readable. Display only; it is not the image's own sun.
+const SUN_AZIMUTH = (315 * Math.PI) / 180, SUN_ALTITUDE = (25 * Math.PI) / 180;
+
+/** Adds elevation contours to a standard material. Height is the mesh's own Y (measured metres, before exaggeration). */
+function withContours(material: THREE.MeshStandardMaterial, uniforms: { uContours: { value: number } }) {
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uContours = uniforms.uContours;
+    shader.uniforms.uInterval = { value: CONTOUR_M };
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>", "#include <common>\nvarying float vHeight;")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvHeight = position.y;");
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <common>", "#include <common>\nvarying float vHeight;\nuniform float uContours;\nuniform float uInterval;")
+      .replace("#include <map_fragment>", `#include <map_fragment>
+        float hc = vHeight / uInterval;
+        float line = 1.0 - min(abs(fract(hc - 0.5) - 0.5) / max(fwidth(hc), 1e-4), 1.0);
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.97, 0.93, 0.86), line * 0.55 * uContours);`);
+  };
+}
 
 let webgl: boolean | undefined;
 /** False when this browser cannot create a WebGL context; the 3D toggle is then disabled. */
@@ -33,8 +55,10 @@ interface Ctx {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
-  material: THREE.MeshLambertMaterial;
+  material: THREE.MeshStandardMaterial;
   mesh: THREE.Mesh;
+  walls: THREE.Mesh;
+  contours: { uContours: { value: number } };
   groups: Record<"route" | "marks" | "corridor" | "ret", THREE.Group>;
   origin: number;
   render: () => void;
@@ -64,6 +88,7 @@ export function TerrainView({ m }: { m: Mission }) {
   const ctxRef = useRef<Ctx | null>(null);
   const [lost, setLost] = useState(false);
   const [exag, setExag] = useState(1); // display-only vertical exaggeration; always stated on the toggle and in the legend
+  const [contours, setContours] = useState(true);
   const usable = !!bundle?.elevation && webglAvailable() && !lost;
 
   const point = (xy: XY, lift = LIFT_M) => {
@@ -98,19 +123,16 @@ export function TerrainView({ m }: { m: Mission }) {
     if (!usable || !canvas || !bundle) return;
     let renderer: THREE.WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     } catch {
       setLost(true);
       return;
     }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0); // the CSS backdrop behind the canvas is a plain gradient, not terrain
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(BACKGROUND);
-    // One neutral light pair; nothing decorative that could be read as terrain data.
-    scene.add(new THREE.AmbientLight(WHITE, 1.6));
-    const sun = new THREE.DirectionalLight(WHITE, 2.2);
-    sun.position.set(-1, 2, -1); // from the north-west, above
-    scene.add(sun);
 
     const field = heightfield(bundle);
     const geometry = new THREE.BufferGeometry();
@@ -118,17 +140,42 @@ export function TerrainView({ m }: { m: Mission }) {
     geometry.setAttribute("uv", new THREE.Float32BufferAttribute(field.uvs, 2));
     geometry.setIndex(field.indices);
     geometry.computeVertexNormals();
-    const material = new THREE.MeshLambertMaterial({ color: 0x8a8580, side: THREE.DoubleSide,
+    const contourUniforms = { uContours: { value: 1 } };
+    const material = new THREE.MeshStandardMaterial({ color: 0x8a8580, roughness: 0.95, metalness: 0, side: THREE.DoubleSide,
       polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+    withContours(material, contourUniforms);
     const mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow = mesh.receiveShadow = true; // relief shades itself: crater rims and scarps cast real-geometry shadows
     scene.add(mesh);
+
+    const manifest = bundle.region.manifest, { w, h } = extentM(manifest), span = Math.max(w, h);
+    geometry.computeBoundingBox();
+    const relief = geometry.boundingBox!.max.y;
+    // Block sides: the measured edge profile carried down to a base below the lowest cell (display only).
+    const wallGeometry = new THREE.BufferGeometry();
+    wallGeometry.setAttribute("position", new THREE.Float32BufferAttribute(skirtPositions(field, -Math.max(40, relief * 0.4)), 3));
+    wallGeometry.computeVertexNormals();
+    const walls = new THREE.Mesh(wallGeometry, new THREE.MeshStandardMaterial({ color: WALL, roughness: 1, side: THREE.DoubleSide }));
+    scene.add(walls);
+
+    // Dim sky/ground fill plus one raking sun; low fill keeps the shading from the real slopes visible.
+    scene.add(new THREE.HemisphereLight(0xd8dde3, 0x3a2a22, 0.7));
+    const sun = new THREE.DirectionalLight(0xfff4e8, 3.4);
+    const d = span * 1.5;
+    sun.position.set(-Math.sin(-SUN_AZIMUTH) * Math.cos(SUN_ALTITUDE) * d, Math.sin(SUN_ALTITUDE) * d, -Math.cos(SUN_AZIMUTH) * Math.cos(SUN_ALTITUDE) * d);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -span, right: span, top: span, bottom: -span, near: 1, far: d * 3 });
+    sun.shadow.bias = -0.0005;
+    sun.shadow.normalBias = span / 600;
 
     const groups = { route: new THREE.Group(), marks: new THREE.Group(), corridor: new THREE.Group(), ret: new THREE.Group() };
     scene.add(...Object.values(groups));
 
-    const manifest = bundle.region.manifest, { w, h } = extentM(manifest), span = Math.max(w, h);
-    geometry.computeBoundingBox();
-    const centre = new THREE.Vector3(manifest.originXY[0] + w / 2, geometry.boundingBox!.max.y / 2, -(manifest.originXY[1] + h / 2));
+    const centre = new THREE.Vector3(manifest.originXY[0] + w / 2, relief / 2, -(manifest.originXY[1] + h / 2));
+    sun.position.add(centre);
+    sun.target.position.copy(centre);
+    scene.add(sun, sun.target);
     const camera = new THREE.PerspectiveCamera(45, 1, span / 500, span * 10);
     const controls = new OrbitControls(camera, canvas); // no damping: every camera move is immediate
     controls.maxPolarAngle = Math.PI / 2 - 0.02;
@@ -140,7 +187,9 @@ export function TerrainView({ m }: { m: Mission }) {
     };
     const reset = () => {
       controls.target.copy(centre);
-      camera.position.set(centre.x + span * 0.55, centre.y + span * 0.6, centre.z + span * 0.55); // from the south-east, looking north-west
+      // From the south-east, about 30° above the horizon, far enough back that the whole block and its near sides are in frame.
+      const fit = (0.75 * span) / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.min(1, Math.max(camera.aspect, 0.75));
+      camera.position.copy(centre).add(new THREE.Vector3(0.82, 0.68, 0.82).normalize().multiplyScalar(fit * 0.85));
       controls.update();
       render();
     };
@@ -157,7 +206,7 @@ export function TerrainView({ m }: { m: Mission }) {
     });
     observer.observe(canvas.parentElement!);
 
-    ctxRef.current = { renderer, scene, camera, controls, material, mesh, groups, origin: field.origin, render, reset };
+    ctxRef.current = { renderer, scene, camera, controls, material, mesh, walls, contours: contourUniforms, groups, origin: field.origin, render, reset };
     reset();
     return () => {
       ctxRef.current = null;
@@ -172,9 +221,10 @@ export function TerrainView({ m }: { m: Mission }) {
   useEffect(() => {
     const ctx = ctxRef.current;
     if (!ctx) return;
-    ctx.mesh.scale.y = exag;
+    ctx.mesh.scale.y = ctx.walls.scale.y = exag;
+    ctx.contours.uContours.value = contours ? 1 : 0;
     ctx.render();
-  }, [bundle, usable, exag]);
+  }, [bundle, usable, exag, contours]);
 
   // Surface texture: imagery plus the grid layers that are switched on.
   const reach = state.reach.data;
@@ -249,6 +299,37 @@ export function TerrainView({ m }: { m: Mission }) {
     }
     ctx.render();
   }, [bundle, usable, exag, m.assessment, state.freshness, state.rehearsing, state.playing, m.posIndex]);
+
+  // When a new plan arrives, glide the camera to frame its route (same viewing direction; instant under reduced motion).
+  // Also runs when the 3D view opens; never while playback is moving the camera itself.
+  const planId = state.freshness === "current" ? state.plan?.planId : undefined;
+  useEffect(() => {
+    const ctx = ctxRef.current;
+    if (!ctx || !planId || state.playing || m.points.length < 2) return;
+    const pts = m.points.map((p) => point(p.xy, 0)).filter((p) => p !== null);
+    if (pts.length < 2) return;
+    const box = new THREE.Box3().setFromPoints(pts);
+    const target = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3()).length();
+    const span = Math.max(...Object.values(extentM(bundle!.region.manifest)));
+    const dir = ctx.camera.position.clone().sub(ctx.controls.target).normalize();
+    const dist = THREE.MathUtils.clamp(size * 1.6, span / 4, span * 1.2);
+    const toPos = target.clone().add(dir.multiplyScalar(dist));
+    const fromPos = ctx.camera.position.clone(), fromTarget = ctx.controls.target.clone();
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const duration = reduce ? 0 : 1100, start = performance.now();
+    let frame = 0;
+    const step = (now: number) => {
+      const t = duration ? Math.min(1, (now - start) / duration) : 1, e = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      ctx.camera.position.lerpVectors(fromPos, toPos, e);
+      ctx.controls.target.lerpVectors(fromTarget, target, e);
+      ctx.controls.update();
+      ctx.render();
+      if (t < 1) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [planId, m.mode, usable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Base, science stops and the rover traverse.
   useEffect(() => {
@@ -340,21 +421,35 @@ export function TerrainView({ m }: { m: Mission }) {
       <canvas ref={canvasRef} tabIndex={0} onKeyDown={onKeyDown}
         aria-label={`3D terrain from elevation data at ${exag === 1 ? "true vertical scale" : `${exag}× exaggerated vertical scale`}, with the same route and markers as the 2D map. Arrow keys orbit, plus and minus zoom.`} />
       <div className="terrain-info">
-        <button type="button" className="terrain-plate terrain-exag" aria-pressed={exag > 1}
-          title="Switch between true scale and 3× exaggerated relief. Display only; no route value changes."
-          onClick={() => setExag(exag === 1 ? 3 : 1)}>Vertical scale {exag}×{exag > 1 && " · exaggerated"}</button>
+        <div className={`terrain-plate terrain-exag${exag > 1 ? " is-exag" : ""}`} role="group"
+          aria-label="Vertical scale. Display only; no route value changes."
+          title="Vertical scale. Display only; no route value changes.">
+          <span className="terrain-exag-label">{exag === 1 ? "True scale" : "Exaggerated"}</span>
+          {EXAGGERATIONS.map((x) => (
+            <button key={x} type="button" aria-pressed={exag === x} onClick={() => setExag(x)}>{x}×</button>
+          ))}
+        </div>
+        <button type="button" className="terrain-plate terrain-toggle" aria-pressed={contours}
+          onClick={() => setContours(!contours)}>Contours {CONTOUR_M} m</button>
         <span className="terrain-plate terrain-north"><span ref={northRef} aria-hidden="true">↑</span> N</span>
       </div>
-      <ul className="terrain-legend terrain-plate" aria-label="3D marks">
+      <details className="terrain-legend terrain-plate" key={state.rehearsing ? "r" : "p"} open={!state.rehearsing}>
+      <summary>Legend</summary>
+      <ul aria-label="3D marks">
         <li>■ Base · Hypothetical</li>
         {layers.stops && <li>● Science stop</li>}
         {m.points.length > 0 && <li><span className="terrain-route">━</span> Outbound <span className="terrain-route">┅</span> Return{state.freshness !== "current" && " · Outdated"}</li>}
         {state.rehearsing && <li><span className="terrain-route">◆</span> Current position</li>}
         {(m.corridor || ret) && <li><span className="terrain-hyp">━</span> Hypothetical scenario</li>}
         <li>Gaps: no elevation data{bundle.missing.includes("mask.json") && " (missing-data mask unavailable; other gaps not shown)"}</li>
-        {exag > 1 && <li>Relief drawn {exag}× taller than measured</li>}
+        {exag > 1 && <li className="terrain-warn">Relief drawn {exag}× taller than measured</li>}
+        {contours && <li>Contours every {CONTOUR_M} m, from elevation</li>}
+        <li>Shading: light from the north-west, display only</li>
+        <li>Block sides: measured edge profile</li>
         <li>{bundle.imageryUrl ? "Greyscale CTX image, warm display tint" : "Imagery could not be loaded; plain surface"}</li>
       </ul>
+      </details>
+      {exag > 1 && <span className="terrain-plate terrain-exag-note">Relief drawn {exag}× taller than measured</span>}
       <button type="button" className="btn terrain-reset" onClick={() => ctxRef.current?.reset()}>Reset view</button>
     </div>
   );
