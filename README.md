@@ -101,6 +101,8 @@ MARS RETURN applies a long-standing human-exploration planning limit, the **walk
 - **NASA Mars Trek:** a web portal for 3D Mars terrain, distance and elevation-profile measurement ([Mars Trek](https://science.nasa.gov/science-research/planetary-science/mars-trek/)).
 - **JPL traversability tools:** slope, rock and terrain-type cost maps used in Mars 2020 landing-site analysis ([paper](https://www-robotics.jpl.nasa.gov/media/documents/Data-driven%20surface%20traversability%20analysis%20for%20Mars%202020%20landing%20site%20selection.pdf)).
 
+Everyday navigation apps shaped the interface. Like [Google Maps' fuel-efficient routing](https://blog.google/company-news/inside-google/around-the-globe/google-europe/eco-friendly-routing-in-europe/), it shows the fastest route beside an alternative and states the difference. Like [CalTopo](https://blog.caltopo.com/2013/01/16/slope-shading-revisited/), it shades the terrain by slope and breaks the trip into legs with time estimates. Like hikers' [turnaround times](https://www.outdoors.org/resources/amc-outdoors/features/the-right-time-to-bail-outdoor-safety-tips-every-hiker-should-know), it turns "return now or continue?" into a plain turnaround call.
+
 What MARS RETURN adds: it runs in a browser on real Jezero CTX terrain and the real Perseverance sampling sites. It asks the walkback question *again when the scenario changes mid-walk*: rehearse a closed corridor, lost time or a slower pace, then compare "return now" with "continue, then return". It also shows the return envelope ("from where can we still walk home?"), stress-tests the way home against single closures, and has an assistant that explains results without ever calculating numbers itself.
 
 ## Data sources

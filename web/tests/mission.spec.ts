@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diff } from "../src/mission/format";
+import { diff, turnaround } from "../src/mission/format";
 import { cellCenter, corridorPolygon, isSample, routePoints, routesIdentical, xyToCell } from "../src/mission/geo";
 import { initialState, reducer, type State } from "../src/mission/state";
 import type { Assessment, Leg, Manifest, PlanResponse, RegionBundle, XY } from "../src/mission/types";
@@ -131,5 +131,19 @@ describe("format", () => {
     expect(diff(133, 100)).toBe("−33");
     expect(diff(1, 1.0001)).toBe("0");
     expect(diff(null, 1)).toBe("—");
+  });
+});
+
+describe("turnaround call", () => {
+  it("says to turn around when only returning now fits", () => {
+    expect(turnaround({ status: "ok", marginMin: 40 }, { status: "over_budget", marginMin: -5 }))
+      .toBe("Turn around now: continuing to the site no longer fits the remaining time. Returning now keeps 40 min of margin.");
+  });
+  it("states the cost of continuing when both fit", () => {
+    expect(turnaround({ status: "ok", marginMin: 90 }, { status: "ok", marginMin: 30 }))
+      .toBe("Continuing still fits, with 30 min of margin (1 h 00 m less than returning now).");
+  });
+  it("reports when neither fits", () => {
+    expect(turnaround({ status: "no_path" }, { status: "over_budget", marginMin: -1 })).toBe("Neither option fits the remaining time.");
   });
 });

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./mission.css";
 import "./routes.css";
-import { diff, hm, num, STATUS_TEXT } from "./format";
+import { diff, hm, num, STATUS_TEXT, turnaround } from "./format";
 import { routesIdentical } from "./geo";
 import type { Mission } from "./state";
 import { MODE_LABEL, type Assessment, type Mode } from "./types";
@@ -131,6 +131,10 @@ function Scenario({ m }: { m: Mission }) {
           <p className="caption">From the paused position with {hm(m.remainingMin)} remaining.</p>
           <ReturnOption m={m} id="immediateReturn" title="Return now" a={ret.data.immediateReturn} />
           <ReturnOption m={m} id="continueThenReturn" title="Continue, then return" a={ret.data.continueThenReturn} />
+          {(() => {
+            const call = turnaround(ret.data.immediateReturn, ret.data.continueThenReturn);
+            return call && <p className="verdict"><strong>{call}</strong></p>;
+          })()}
         </>
       )}
       {reach.status === "loading" && <p role="status">Calculating the return envelope…</p>}
