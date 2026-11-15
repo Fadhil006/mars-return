@@ -134,3 +134,6 @@
   .btn, .segments button, .icon-btn, .phase button, .tabs button, .field input, .field select { min-height: 44px; }
   input[type="checkbox"], input[type="radio"] { width: 24px; height: 24px; }
 }
+
+/* Shown in the viewing area while the 3D view's code is downloading, or if that download fails. */
+.canvas-note { display: grid; place-items: center; height: 100%; margin: 0; padding: var(--s3); text-align: center; color: var(--text-secondary); }

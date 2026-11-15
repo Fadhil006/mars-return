@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import "./app.css";
 import { MissionAssistant } from "./assistant/MissionAssistant";
 import { EvidencePanel } from "./evidence/EvidencePanel";
@@ -9,7 +9,13 @@ import { RehearsalStrip } from "./mission/RehearsalStrip";
 import { RouteComparison } from "./mission/RouteComparison";
 import { useMission, type Freshness, type LayerKey, type Mission, type Tab } from "./mission/state";
 import { MissionReport } from "./report/MissionReport";
-import { TerrainView, webglAvailable } from "./terrain/TerrainView";
+import { webglAvailable } from "./terrain/webgl";
+
+// three.js is most of the bundle, so the 3D view is downloaded only when it is first opened.
+const TerrainView = lazy(() => import("./terrain/TerrainView").then(
+  (module) => ({ default: module.TerrainView }),
+  () => ({ default: () => <p className="canvas-note" role="alert">3D terrain could not be loaded. Reload the page, or use the 2D map.</p> }),
+));
 
 const FRESH: Record<Freshness, [string, string]> = {
   none: ["No result yet", ""], requesting: ["Updating", "status-updating"], current: ["Current", "status-current"],
@@ -206,7 +212,9 @@ export function App() {
           </div>
           {no3d && <p className="reason" id="no3d">{webgl ? "3D terrain needs the elevation layer, which could not be loaded." : NO_3D}</p>}
         </div>
-        <div className="canvas">{view === "3d" ? <TerrainView m={m} /> : <MissionMap m={m} />}</div>
+        <div className="canvas">{view === "3d"
+          ? <Suspense fallback={<p className="canvas-note" role="status">Loading 3D terrain</p>}><TerrainView m={m} /></Suspense>
+          : <MissionMap m={m} />}</div>
       </main>
 
       <aside className="col right" aria-label="Results">
