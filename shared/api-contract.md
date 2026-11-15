@@ -68,7 +68,7 @@ B1 discards responses whose request ID is not current. Any input change invalida
 
 ## B3 assistant boundary
 
-`POST /api/brief` (`server/assistant.py`, owner B3) takes `requestId`, `planId`, `selectedRouteMode` and `question` (1–500 characters); unknown fields are rejected. It returns `requestId`, `schemaVersion`, `planId`, `datasetVersion`, `modelVersion`, `answer`, `sourceIds`, `metricRefs`, `mode` and `supported`.
+`POST /api/brief` (`server/assistant.py`, owner B3) takes `requestId`, `planId`, `selectedRouteMode` and `question` (1–500 characters); unknown fields are rejected. It returns `requestId`, `schemaVersion`, `planId`, `datasetVersion`, `modelVersion`, `answer`, `sourceIds`, `metricRefs`, `mode` and `supported`. `planId` may come from `/api/plan`, `/api/rehearse` or `/api/stress` (the stress baseline is explained); a `/api/reach` plan ID returns 422 `invalid_scenario`, because a return envelope has no route to explain.
 
 - The plan is read through `server.evidence.trusted_context(store, planId, datasetVersion, selectedRouteMode)` using the running region's dataset version. Only saved calculations are trusted; nothing in the question can change a metric. Both plan and rehearsal IDs are accepted; a rehearsal must be asked about with the route mode it was saved with.
 - `metricRefs` are `<assessment>.<field>`: the route mode for a plan (`shortest.marginMin`), or `immediateReturn` / `continueThenReturn` for a rehearsal. Every `sourceId` exists in the region's source records or the stop's `sourceIds`.

@@ -69,8 +69,9 @@ def create_app(region_dir=None, *, region=None, store=None):
                 app.state.load_attempted = True
                 try:
                     app.state.region = load_region(app.state.region_dir)
-                except (OSError, ValueError, KeyError, TypeError):
-                    LOGGER.warning("Prepared region unavailable or invalid")
+                except (OSError, ValueError, KeyError, TypeError) as exc:
+                    LOGGER.warning("Prepared region unavailable or invalid (%s): %s: %s",
+                                   app.state.region_dir, type(exc).__name__, exc)
         return app.state.region
 
     @app.get("/api/region", response_model=RegionResponse)

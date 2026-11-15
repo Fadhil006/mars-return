@@ -148,3 +148,16 @@ def test_model_answer_carries_its_own_trace_and_evidence_answers_carry_none():
     value = ask(client, plan["planId"], "Can I still return?").json()
     assert value["mode"] == "model" and value["tracedNumbers"] == [{"value": f"{margin:.0f}", "ref": "shortest.marginMin"}]
     assert ask(client, plan["planId"], "What evidence supports this destination?").json()["tracedNumbers"] is None
+
+
+def test_stress_plan_is_explained_from_its_baseline_and_reach_is_refused_clearly():
+    client, plan = setup()
+    body = payload()
+    stress = client.post("/api/stress", json={**body, "selectedRouteMode": "shortest"}).json()
+    response = ask(client, stress["planId"], "Can I still return?")
+    assert response.status_code == 200, response.text
+    assert f"{stress['baseline']['marginMin']:.1f} min" in response.json()["answer"]
+    scenario = {k: v for k, v in body.items() if k not in ("targetId", "totalBudgetMin", "dwellMin")}
+    reach = client.post("/api/reach", json={**scenario, "selectedRouteMode": "shortest", "remainingBudgetMin": 100}).json()
+    response = ask(client, reach["planId"], "Can I still return?")
+    assert response.status_code == 422 and response.json()["error"]["code"] == "invalid_scenario"

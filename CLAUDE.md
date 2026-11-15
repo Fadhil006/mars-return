@@ -6,7 +6,7 @@ Guidance for Claude Code working in this repository.
 
 MARS RETURN is a NASA Space Apps 2026 "Martian Map" entry: a mission rehearsal tool for Jezero Crater that plans round-trip routes over real terrain and answers "Can we still get back?" when a scenario changes.
 
-Two groups of three people share the repo. **Group A's backend is implemented and tested. Group B's frontend (`web/`) and the assistant are not built yet** — `web/` holds only README placeholders. A folder or README existing does not mean the work is done.
+Two groups of three people share the repo. Group A's backend (`server/`) and Group B's frontend (`web/`) and assistant (`server/assistant.py`) are all implemented and tested. The app is deployed as one Docker container on Render (`Dockerfile`, `render.yaml`).
 
 ## Commands
 
@@ -27,7 +27,12 @@ python -m venv .venv
 .venv/bin/python -m scripts.validate_demo      # needs the raw DEM; rewrites docs/validation-results.json
 .venv/bin/python -m scripts.generate_fixtures  # regenerate synthetic fixtures in shared/fixtures/
 .venv/bin/python -m scripts.package_region --region-dir data/region --output data/packages/region.tar.gz
+
+./run.sh                                       # one command: set up, prepare terrain, build web, serve on :8000
+cd web && npm ci && npm run build && npm test  # frontend: typecheck + build, then the vitest suite
 ```
+
+CI (`.github/workflows/ci.yml`) runs the backend tests, the schema check, the web build and the web tests on every push and pull request.
 
 There is no linter or formatter configured. `.editorconfig` sets 4 spaces for Python, 2 elsewhere, LF endings.
 
@@ -38,6 +43,8 @@ There is no linter or formatter configured. `.editorconfig` sets 4 spaces for Py
   - `coordinates.py` — projection and pixel↔map conversion
   - `routing.py` — grid routing with two route objectives
   - `mission.py` — round-trip, rehearsal, return-envelope (`reach`) and closure stress arithmetic
+  - `contact.py` — line of sight to the hypothetical base (viewshed, out-of-contact time)
+  - `assistant.py` — `/api/brief`: template or model explanations of stored plans
   - `evidence.py` — source citations and `trusted_context` (server-calculated metrics by plan ID)
   - `models.py` — request/response models; `export_schema.py` writes `shared/schema.json` from them
   - `api.py` — the versioned API
@@ -46,7 +53,7 @@ There is no linter or formatter configured. `.editorconfig` sets 4 spaces for Py
 - `shared/` — `api-contract.md`, `schema.json`, and synthetic fixtures. This is the interface between the two groups.
 - `data/sources/` — tracked source and acquisition records. `data/region/` — prepared bundle; only `manifest.json`, `science-stops.json` and `rover-traverse.json` are tracked. `data/raw/` — downloads, ignored by Git.
 - `docs/` — architecture, data method, validation, demo script, submission checklist. `docs/plans/` holds the authoritative team plans; `03-group-a-winning-plan.md` is the current Group A plan.
-- `web/` — planned React/TypeScript/Vite + Three.js frontend. Not started.
+- `web/` — React/TypeScript/Vite + Three.js frontend: `src/mission/` (state, API client, controls), `src/map/` (2D), `src/terrain/` (3D), `src/assistant/`, `src/evidence/`, `src/report/`; `tests/` holds the vitest suite. The built `web/dist/` is served by the API at `/`.
 
 ## Rules that are easy to break
 
