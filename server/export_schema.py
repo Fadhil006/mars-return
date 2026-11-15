@@ -26,7 +26,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     text = schema_text()
     if args.check:
-        if not OUTPUT.exists() or OUTPUT.read_text() != text:
+        if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != text:
             raise SystemExit("shared/schema.json is stale; run python -m server.export_schema")
     else:
-        OUTPUT.write_text(text)
+        OUTPUT.write_text(text, encoding="utf-8", newline="\n")

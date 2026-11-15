@@ -61,6 +61,15 @@ export function App() {
   const [pane, setPane] = useState<"mission" | "map" | "results">("map"); // narrow screens
   const [drawer, setDrawer] = useState(false); // medium screens
   const viewRef = useRef<HTMLElement>(null);
+  const barRef = useRef<HTMLElement>(null);
+  // The plan drawer on medium screens starts under the header, whose height depends on wrapping.
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const observer = new ResizeObserver(() => document.documentElement.style.setProperty("--bar-h", `${bar.offsetHeight}px`));
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, [state.bundle]);
   const [full, setFull] = useState(false);
   useEffect(() => {
     const on = () => setFull(!!viewRef.current && document.fullscreenElement === viewRef.current);
@@ -77,7 +86,22 @@ export function App() {
             <p>{state.regionError?.message}</p>
             <button className="btn btn-primary" onClick={m.loadRegion}>Retry</button>
           </div>
-        ) : <p role="status">Loading the region…</p>}
+        ) : (
+          <div className="loading" role="status" aria-live="polite">
+            <svg className="loading-mark" width="56" height="56" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <circle cx="13" cy="13" r="11.5" stroke="currentColor" strokeOpacity="0.25" />
+              <path className="loading-arc" d="M13 1.5a11.5 11.5 0 0 1 11.5 11.5" stroke="#3dd6e8" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            <h1 className="loading-title">Loading the region</h1>
+            {/* What is actually being fetched, in order; no invented progress percentage. */}
+            <ul className="loading-list">
+              <li>Region manifest and Perseverance sampling sites</li>
+              <li>MRO CTX elevation, 20 m cells</li>
+              <li>CTX image, 5 m pixels</li>
+              <li>Slope and missing-data mask</li>
+            </ul>
+          </div>
+        )}
       </main>
     );
   }
@@ -109,10 +133,19 @@ export function App() {
 
   return (
     <div className={`app pane-${pane}${drawer ? " drawer-open" : ""}`}>
-      <header className="bar">
+      <header className="bar" ref={barRef}>
         <div className="bar-row">
           <button className="btn drawer-toggle" aria-expanded={drawer} onClick={() => setDrawer(!drawer)}>Plan panel</button>
-          <h1 className="product"><b>Mars</b> <span className="slash">/</span> Excursion planner</h1>
+          <span className="brand">
+            {/* Brand mark: a route loop out from a base and back. Decorative, hidden from assistive tech. */}
+            <svg className="brand-mark" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+              <circle cx="13" cy="13" r="11.5" stroke="currentColor" strokeOpacity="0.35" />
+              <path d="M7 17c2-6 6-9 12-9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path d="M19 8c-1 5-5 8-12 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="2 2.5" />
+              <rect x="5.5" y="15.5" width="3" height="3" fill="currentColor" /><circle cx="19" cy="8" r="2" fill="#3dd6e8" />
+            </svg>
+            <h1 className="product"><b>Mars</b> <span className="slash">/</span> Excursion planner</h1>
+          </span>
           {isSample(b) ? <span className="tag tag-sample">Development sample data</span>
             : <span className="tag tag-data">Real CTX terrain · Jezero Crater</span>}
           <span className="bar-end">

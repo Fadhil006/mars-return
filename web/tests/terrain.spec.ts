@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { cellCenter, elevationAt } from "../src/mission/geo";
 import type { RegionBundle } from "../src/mission/types";
-import { heightfield, meshIndices, originElevation, surfacePoint, toScene } from "../src/terrain/scene";
+import { heightfield, meshIndices, originElevation, skirtPositions, surfacePoint, toScene } from "../src/terrain/scene";
 
 // Invented 3 × 3 grid for transform checks only; not Mars terrain.
 const bundle = (elevation: (number | null)[][], mask: boolean[][] | null = null) => ({
@@ -25,6 +25,30 @@ describe("toScene", () => {
     expect(surfacePoint(b, xy, origin)).toEqual([125, 22, -225]);
     expect(surfacePoint(b, xy, origin, 3)![1]).toBe(25);
     expect(surfacePoint(b, [0, 0], origin)).toBeNull();
+  });
+});
+
+describe("block sides", () => {
+  const field = (heights: number[][], valid: boolean[][]) => ({
+    positions: heights.flatMap((row, r) => row.flatMap((y, c) => [c * 10, y, -r * 10])), rows: heights.length, cols: heights[0].length, valid,
+  });
+  const t = true, f = false;
+
+  it("drops each edge vertex's real height straight down to the base", () => {
+    const p = skirtPositions(field([[5, 6], [7, 8]], [[t, t], [t, t]]), -3);
+    expect(p).toHaveLength(4 * 6 * 3); // four edges, one segment each, two triangles
+    const ys = new Set(p.filter((_, i) => i % 3 === 1));
+    expect([...ys].sort((a, b) => a - b)).toEqual([-3, 5, 6, 7, 8]); // only measured heights and the base
+  });
+
+  it("follows the outermost valid ring when the grid border is masked, and leaves gaps open", () => {
+    const valid = [[f, f, f, f], [f, t, t, f], [f, t, t, f], [f, f, f, f]];
+    const p = skirtPositions(field([[0, 0, 0, 0], [0, 1, 2, 0], [0, 3, 4, 0], [0, 0, 0, 0]], valid), -1);
+    expect(p).toHaveLength(4 * 6 * 3);
+    expect(new Set(p.filter((_, i) => i % 3 === 1))).toEqual(new Set([-1, 1, 2, 3, 4]));
+    // South-west corner missing: of 8 edge segments, the 2 touching it are omitted (6 segments × 2 triangles × 3 vertices × 3).
+    const gap = [[t, t, t], [t, t, t], [f, t, t]];
+    expect(skirtPositions(field([[1, 1, 1], [1, 1, 1], [1, 1, 1]], gap), 0)).toHaveLength(6 * 6 * 3);
   });
 });
 

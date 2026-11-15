@@ -35,3 +35,5 @@ build/
 # Local code-graph output
 /graphify-out/
 !/data/region/rover-traverse.json
+# Local design-exploration tool output
+.superpowers/

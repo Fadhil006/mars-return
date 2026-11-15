@@ -13,7 +13,7 @@ from server.coordinates import xy_to_pixel
 
 def load_region(directory):
     directory = Path(directory)
-    manifest = json.loads((directory / "manifest.json").read_text())
+    manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     RegionManifest.model_validate(manifest)
     width, height = manifest["width"], manifest["height"]
     if type(width) is not int or type(height) is not int or not 1 <= width <= 512 or not 1 <= height <= 512:
@@ -38,7 +38,7 @@ def load_region(directory):
             raise ValueError(f"Checksum mismatch: {name}")
     region = {"manifest": manifest}
     for name in ("elevation", "slope", "mask"):
-        region[name] = json.loads((directory / f"{name}.json").read_text())
+        region[name] = json.loads((directory / f"{name}.json").read_text(encoding="utf-8"))
         if np.asarray(region[name], dtype=object).shape != (height, width):
             raise ValueError(f"{name} dimensions differ from manifest")
     elevation = np.asarray(region["elevation"], dtype=float)
@@ -51,7 +51,7 @@ def load_region(directory):
         raise ValueError("Traversable cells require finite elevation and slope")
     if np.any((slope[valid] < 0) | (slope[valid] > 90)):
         raise ValueError("Slope outside 0–90 degrees")
-    region["scienceStops"] = json.loads((directory / "science-stops.json").read_text())
+    region["scienceStops"] = json.loads((directory / "science-stops.json").read_text(encoding="utf-8"))
     if not isinstance(region["scienceStops"], list):
         raise ValueError("science-stops.json must contain a list")
     ids = set()
@@ -80,7 +80,7 @@ def load_region(directory):
         raise ValueError("Source reference missing from source records")
     traverse = directory / "rover-traverse.json"
     if traverse.is_file():  # optional layer; listed in checksums when the bundle was prepared with it
-        region["roverTraverse"] = json.loads(traverse.read_text())
+        region["roverTraverse"] = json.loads(traverse.read_text(encoding="utf-8"))
         if not isinstance(region["roverTraverse"].get("waypoints"), list) or not isinstance(region["roverTraverse"].get("pathXY"), list):
             raise ValueError("rover-traverse.json requires waypoints and pathXY lists")
     region["directory"] = directory

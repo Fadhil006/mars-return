@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mars planner — design directions</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f3ee;color:#24282c;font:16px/1.55 system-ui,sans-serif}main{max-width:1600px;margin:auto;padding:44px 4vw}header{max-width:850px;margin-bottom:32px}.eyebrow{color:#985034;font-size:12px;letter-spacing:.16em;font-weight:700;text-transform:uppercase}h1{font-size:clamp(28px,3vw,44px);letter-spacing:-.035em;line-height:1.15;margin:12px 0}p{color:#535b60}nav{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}button,a{font:inherit}button{cursor:pointer}nav a,.zoom{background:white;border:1px solid #c6c5bf;border-radius:6px;padding:10px 16px;color:inherit;text-decoration:none}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}figure{margin:0;min-width:0}figcaption{font-weight:650;margin-bottom:12px;font-size:20px}.preview{display:block;padding:0;width:100%;border:1px solid #c7c7c2;background:white;border-radius:6px;overflow:hidden;box-shadow:0 10px 24px #2028300b}.preview:hover{outline:3px solid #ad5938;outline-offset:4px}.preview img{width:100%;height:auto;display:block}.hint{font-size:14px;margin-top:10px}.note{margin-top:36px;padding-top:22px;border-top:1px solid #d3d2cb;max-width:950px;font-size:14px}dialog{border:0;border-radius:8px;width:96vw;max-width:1800px;max-height:96vh;padding:0;background:#f5f3ee}dialog::backdrop{background:#101820df}.dialogbar{position:sticky;top:0;background:#f5f3ee;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;z-index:1}.dialogbar h2{font-size:18px;margin:0}.dialogbar button{border:1px solid #aab0b3;background:white;border-radius:5px;padding:8px 16px}dialog img{display:block;width:100%;height:auto}:focus-visible{outline:3px solid #a04d2c;outline-offset:4px}@media(max-width:850px){.grid{grid-template-columns:1fr}main{padding:28px 5vw}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">Design exploration · 13 November 2026</div>
+<h1>Three directions for the Mars planner</h1>
+<p>Compare the workspace layouts and visual styles. Open any image to inspect it at a larger size. These are static design concepts; the mission controls inside the images are not functional.</p>
+<nav aria-label="Jump to concept"><a href="#concept-1">Option 1</a><a href="#concept-2">Option 2</a><a href="#concept-3">Option 3</a></nav></header>
+<section class="grid" aria-label="Design options">
+<figure id="concept-1"><figcaption>Option 1</figcaption><button class="preview" onclick="showConcept(1)" aria-label="Enlarge option 1"><img src="files/concept-1.png" alt="Option 1: dark three-column mission workspace with controls, a central map and route comparison."></button><p class="hint">Click to enlarge</p></figure>
+<figure id="concept-2"><figcaption>Option 2</figcaption><button class="preview" onclick="showConcept(2)" aria-label="Enlarge option 2"><img src="files/concept-2.png" alt="Option 2: light atlas workspace with a large map and a single planning sidebar."></button><p class="hint">Click to enlarge</p></figure>
+<figure id="concept-3"><figcaption>Option 3</figcaption><button class="preview" onclick="showConcept(3)" aria-label="Enlarge option 3"><img src="files/concept-3.png" alt="Option 3: guided destination selection with step navigation and an illustrative terrain view."></button><p class="hint">Click to enlarge</p></figure>
+</section>
+<p class="note"><strong>Design previews only.</strong> All terrain, routes, destinations and values shown are illustrative. Generated labels and extra fields are proposals, not approved requirements. In particular, crew and energy fields are outside the current brief; final time units, route labels and scientific statements will be reviewed separately. The eventual terrain and route results must come from Group A’s data. Selecting a direction does not start implementation.</p>
+<p>Reply in the chat with your preferred option and anything you would change or combine. We’ll then design the remaining screens and states.</p>
+</main>
+<dialog id="viewer"><div class="dialogbar"><h2 id="viewer-title">Design preview</h2><button onclick="document.getElementById('viewer').close()">Close preview</button></div><img id="full-image" alt="Enlarged design concept"></dialog>
+<script>function showConcept(n){document.getElementById('viewer-title').textContent='Option '+n;const img=document.getElementById('full-image');img.src='files/concept-'+n+'.png';img.alt='Enlarged option '+n+' design preview';document.getElementById('viewer').showModal()}</script>
+</body></html>
+

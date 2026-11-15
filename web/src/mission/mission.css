@@ -51,6 +51,15 @@
 .option-metrics { display: grid; grid-template-columns: 1fr auto; gap: var(--s1) var(--s3); margin: 0; }
 .option-metrics dt { color: var(--text-secondary); }
 .option-metrics dd { margin: 0; text-align: right; font-weight: 500; }
+/* Short desktop windows: both return options fit in the results panel together. */
+@media (min-width: 900px) and (max-height: 900px) {
+  .card-hyp { padding: var(--s2) var(--s3); margin-bottom: var(--s2); display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s3); align-items: baseline; }
+  .card-hyp > * { grid-column: 1 / -1; }
+  .card-hyp > .option-title { grid-column: 1; }
+  .card-hyp > .option-title + p { grid-column: 2; } /* status on the title's line */
+  .card-hyp > p { margin: 0 0 var(--s1); }
+  .card-hyp .option-metrics { gap: 0 var(--s3); }
+}
 .verdict { margin-top: var(--s2) !important; }
 
 .rehearsal { display: grid; gap: var(--s2); }

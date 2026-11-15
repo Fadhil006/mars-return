@@ -11,7 +11,10 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
+
+# Some USGS mirrors refuse Python's default client name with HTTP 403.
+USER_AGENT = "mars-return-data-fetch/1.0"
 
 ROOT = Path(__file__).resolve().parents[1]
 CROP = [4353000, 1091800, 4356000, 1094800]  # projected west, south, east, north; same as prepare_demo
@@ -95,16 +98,16 @@ def main():
     for name in SOURCE_IDS:
         path = raw / name
         if not path.exists():
-            with urlopen(BASE_URL + name, timeout=120) as source:
+            with urlopen(Request(BASE_URL + name, headers={"User-Agent": USER_AGENT}), timeout=120) as source:
                 path.write_bytes(source.read())
         hashes[SOURCE_IDS[name]] = hashlib.sha256(path.read_bytes()).hexdigest()
-        parsed[name] = json.loads(path.read_text())
-    samples = json.loads((ROOT / "data/sources/m20-samples.json").read_text())
+        parsed[name] = json.loads(path.read_text(encoding="utf-8"))
+    samples = json.loads((ROOT / "data/sources/m20-samples.json").read_text(encoding="utf-8"))
     stops, layer = build_science(parsed["M20_waypoints.json"], parsed["M20_traverse.json"], samples["sites"])
     layer["sourceSha256"] = hashes
     region = ROOT / "data/region"
-    (region / "science-stops.json").write_text(json.dumps(stops, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
-    (region / "rover-traverse.json").write_text(json.dumps(layer, ensure_ascii=False, allow_nan=False) + "\n")
+    (region / "science-stops.json").write_text(json.dumps(stops, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8", newline="\n")
+    (region / "rover-traverse.json").write_text(json.dumps(layer, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8", newline="\n")
     print(f"{len(stops)} sample sites, {len(layer['waypoints'])} rover localizations, {len(layer['pathXY'])} path points")
     print("Now run: python -m scripts.prepare_demo")
 

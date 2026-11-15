@@ -1,6 +1,7 @@
 import { useLayoutEffect, useState, type ReactNode } from "react";
 import "./mission.css";
 import { hm, num } from "./format";
+import { checkNumber, type NumberLimits } from "./numberInput";
 import type { Inputs, Mission } from "./state";
 
 type NumberKey = "totalBudgetMin" | "maxSlopeDeg" | "speedMPerMin" | "dwellMin" | "reserveMin";
@@ -27,26 +28,64 @@ export function MissionControls({ m }: { m: Mission }) {
   const locked = state.rehearsing, requesting = freshness === "requesting";
   const set = (key: keyof Inputs, value: string | number) => dispatch({ type: "setInput", key, value });
   const [editing, setEditing] = useState<NumberKey | null>(null);
+  // The exact text being typed, and the value before editing began. The field shows this text, never a value
+  // React rebuilt from a half-typed number ("-" used to reset the field, so "-10" became 1010).
+  const [draft, setDraft] = useState<{ key: NumberKey; text: string; start: number } | null>(null);
+  const [rejected, setRejected] = useState<{ key: NumberKey; text: string; error: string } | null>(null);
   const stop = region.scienceStops.find((s) => s.id === inputs.targetId);
-  // The field turns from formatted text into a number on focus; select it before the next keystroke so typing replaces the value.
+  // The field turns from formatted text into the raw number on focus; select it before the next keystroke so typing replaces the value.
   useLayoutEffect(() => { if (editing) (document.getElementById(`in-${editing}`) as HTMLInputElement | null)?.select(); }, [editing]);
 
-  // Plain mono text that becomes a number input on focus; `show` formats the value when not being edited.
-  const input = (key: NumberKey, label: string, min?: number, max?: number, show?: (v: number) => string) => {
+  const fieldError = (key: NumberKey, limits: NumberLimits) => {
+    if (draft?.key === key) { const r = checkNumber(draft.text, limits); return "error" in r ? r.error : null; }
+    return rejected?.key === key ? rejected.error : null;
+  };
+
+  // Plain mono text; `show` formats the value when not being edited. Only a complete, in-range number is applied.
+  const input = (key: NumberKey, label: string, limits: NumberLimits, show?: (v: number) => string) => {
     const formatted = show && editing !== key;
+    const error = fieldError(key, limits);
     return (
-      <input id={`in-${key}`} className="plain" aria-label={label} type={formatted ? "text" : "number"} inputMode="decimal"
-        min={min} max={max} step="any" value={formatted ? show(inputs[key]) : inputs[key]} readOnly={locked}
-        onFocus={() => setEditing(key)} onBlur={() => setEditing(null)}
-        onChange={(e) => Number.isFinite(e.target.valueAsNumber) && set(key, e.target.valueAsNumber)} />
+      <input id={`in-${key}`} className="plain" aria-label={label} type="text" inputMode="decimal" autoComplete="off"
+        value={formatted ? show(inputs[key]) : draft?.key === key ? draft.text : String(inputs[key])} readOnly={locked}
+        aria-invalid={error ? true : undefined} aria-describedby={error ? `err-${key}` : undefined}
+        onFocus={() => {
+          setEditing(key);
+          setDraft({ key, text: String(inputs[key]), start: inputs[key] });
+          if (rejected?.key === key) setRejected(null);
+        }}
+        onChange={(e) => {
+          const text = e.target.value;
+          setDraft((d) => ({ key, text, start: d?.key === key ? d.start : inputs[key] }));
+          const r = checkNumber(text, limits);
+          if ("value" in r) set(key, r.value);
+        }}
+        onBlur={() => {
+          // Leaving an invalid entry restores the value from before editing (not a half-typed prefix) and says so.
+          if (draft?.key === key && error) {
+            set(key, draft.start);
+            setRejected({ key, text: draft.text, error });
+          }
+          setDraft(null);
+          setEditing(null);
+        }} />
     );
   };
-  const row = (icon: ReactNode, key: NumberKey, label: string, unit: string, min?: number, max?: number, show?: (v: number) => string, extra?: ReactNode) => (
-    <div className="arow">
-      {icon}
-      <label htmlFor={`in-${key}`}>{label}</label>
-      <span className="aval">{input(key, `${label}, ${unit}`, min, max, show)}{!show && <span className="unit">{unit}</span>}{extra}</span>
-    </div>
+  const errorNote = (key: NumberKey, limits: NumberLimits) => {
+    const error = fieldError(key, limits);
+    if (!error) return null;
+    const after = draft?.key === key ? "" : ` “${rejected?.text}” was not applied; the previous value is kept.`;
+    return <p id={`err-${key}`} className="reason field-error" aria-live="polite">{error}{after}</p>;
+  };
+  const row = (icon: ReactNode, key: NumberKey, label: string, unit: string, limits: NumberLimits, show?: (v: number) => string, extra?: ReactNode) => (
+    <>
+      <div className="arow">
+        {icon}
+        <label htmlFor={`in-${key}`}>{label}</label>
+        <span className="aval">{input(key, `${label}, ${unit}`, limits, show)}{!show && <span className="unit">{unit}</span>}{extra}</span>
+      </div>
+      {errorNote(key, limits)}
+    </>
   );
 
   return (
@@ -63,17 +102,18 @@ export function MissionControls({ m }: { m: Mission }) {
 
       <section className="assumptions" aria-labelledby="assumptions-h">
         <h3 id="assumptions-h" className="sub-heading">Assumptions <span className="tag">Assumption</span></h3>
-        {row(ICON.rover, "speedMPerMin", "Traverse speed", "m/min", 0, bounds.speedMPerMin[1], undefined,
+        {row(ICON.rover, "speedMPerMin", "Traverse speed", "m/min", { above: 0, max: bounds.speedMPerMin[1] }, undefined,
           <span className="caption derived">({num(inputs.speedMPerMin * 0.06, 2)} km/h)</span>)}
-        {row(ICON.slope, "maxSlopeDeg", "Max slope (traverse)", "°", bounds.maxSlopeDeg[0], bounds.maxSlopeDeg[1])}
-        {row(ICON.clock, "dwellMin", "On-site science time", "minutes", 0, undefined, dur)}
-        {row(ICON.reserve, "reserveMin", "Reserve", "min", 0)}
+        {row(ICON.slope, "maxSlopeDeg", "Max slope (traverse)", "°", { min: bounds.maxSlopeDeg[0], max: bounds.maxSlopeDeg[1] })}
+        {row(ICON.clock, "dwellMin", "On-site science time", "minutes", { min: 0 }, dur)}
+        {row(ICON.reserve, "reserveMin", "Reserve", "min", { min: 0 })}
       </section>
 
       <div className="budget">
         <label htmlFor="in-totalBudgetMin" className="sub-heading">Total time budget</label>
-        {input("totalBudgetMin", "Total time budget, minutes", 0, undefined, dur)}
+        {input("totalBudgetMin", "Total time budget, minutes", { min: 0 }, dur)}
         <span className="caption">(outbound + on-site + return + reserve)</span>
+        {errorNote("totalBudgetMin", { min: 0 })}
       </div>
 
       <p className="base">
