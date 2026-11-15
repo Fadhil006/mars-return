@@ -78,3 +78,6 @@
   .ep-mid b { display: inline-block; max-width: 90px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
   .rs-actions { margin-left: 0; }
 }
+.rs-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.rs-collapsed { display: flex; align-items: center; gap: var(--s3); }
+.rs-collapsed .rs-title { margin: 0; }

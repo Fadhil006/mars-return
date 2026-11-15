@@ -18,6 +18,7 @@ const clock = (min: number | null | undefined) => {
 export function RehearsalStrip({ m }: { m: Mission }) {
   const { state, dispatch, points, posIndex, point } = m;
   const [speed, setSpeed] = useState(1);
+  const [hidden, setHidden] = useState(false); // display only: collapses the strip to give the map more room
   const [remText, setRemText] = useState<string | null>(null); // exact text while the remaining-time field is edited
   const remCheck = remText == null ? null : checkNumber(remText, { min: 0 });
   const remError = remCheck && "error" in remCheck ? remCheck.error : null;
@@ -48,13 +49,22 @@ export function RehearsalStrip({ m }: { m: Mission }) {
   const pct = last > 0 ? (posIndex / last) * 100 : 0;
   const stopName = (m.stop?.name ?? m.stop?.id ?? "Destination").split(" — ")[0];
 
+  if (hidden) return (
+    <div className="rs-collapsed">
+      <h2 className="rs-title">Rehearse route</h2>
+      <button className="btn" aria-expanded={false} onClick={() => setHidden(false)}>Show rehearsal</button>
+    </div>
+  );
   return (
     <div className="rs" onKeyDown={(e) => {
       // Space toggles playback from anywhere in the strip except controls that use Space themselves.
       if (e.key === " " && !(e.target as HTMLElement).matches("button, input:not([type=range]), select")) { e.preventDefault(); toggle(); }
     }}>
       <div className="rs-intro">
-        <h2 className="rs-title">Rehearse route</h2>
+        <div className="rs-head">
+          <h2 className="rs-title">Rehearse route</h2>
+          <button className="btn" aria-expanded={true} onClick={() => setHidden(true)} title="Hide the rehearsal strip to give the map more room">Hide</button>
+        </div>
         <p className="caption">Preview the planned traverse and elevation profile.</p>
         {!on && <button className="btn" onClick={() => dispatch({ type: "rehearse", on: true })}>Rehearse selected route</button>}
       </div>

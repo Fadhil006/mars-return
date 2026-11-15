@@ -52,7 +52,7 @@ export function MissionMap({ m }: { m: Mission }) {
 }
 
 function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
-  const { state, dispatch } = m;
+  const { state } = m;
   const manifest = bundle.region.manifest;
   const [ox, oy] = manifest.originXY;
   const { w, h } = extentM(manifest);
@@ -194,10 +194,10 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
           {layers.stops && bundle.region.scienceStops.map((stop) => {
             const selected = stop.id === state.inputs.targetId;
             return (
-              <button key={stop.id} type="button" className={`mm-stop${selected ? " mm-stop-selected" : ""}`} style={at(stop.positionXY)}
+              <button key={stop.id} type="button" className={`mm-stop${selected ? " mm-stop-selected" : ""}${layers.labels ? " mm-stop-labelled" : ""}`} style={at(stop.positionXY)}
                 aria-pressed={selected} aria-label={`Select destination ${stopName(stop.id, stop.name)}`}
                 disabled={state.rehearsing} title={state.rehearsing ? "Edit the plan to change destination" : undefined}
-                onClick={() => dispatch({ type: "setInput", key: "targetId", value: stop.id })}>
+                onClick={() => m.pickStop(stop.id)}>
                 <span className="mm-label">{stopName(stop.id, stop.name).split(" — ")[0]}</span>
               </button>
             );

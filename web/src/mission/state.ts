@@ -6,7 +6,7 @@ import type { Assessment, BriefResponse, Mode, PlanResponse, ReachResponse, Regi
 
 export type Freshness = "none" | "requesting" | "current" | "outdated" | "failed";
 export type Tab = "routes" | "evidence" | "assistant";
-export type LayerKey = "imagery" | "slope" | "stops" | "traverse" | "envelope";
+export type LayerKey = "imagery" | "slope" | "stops" | "labels" | "traverse" | "envelope";
 export type ChildKey = "ret" | "reach" | "stress" | "brief";
 
 export interface Inputs {
@@ -63,7 +63,7 @@ export const initialState: State = {
   freshness: "none", expired: false, requestId: null, plan: null, planInputs: null, error: null,
   rehearsing: false, posIndex: 0, playing: false, scenario: { blocked: false, remainingMin: null },
   ret: idle, reach: idle, stress: idle, brief: idle, question: "",
-  view: "2d", layers: { imagery: true, slope: false, stops: true, traverse: false, envelope: true },
+  view: "2d", layers: { imagery: true, slope: false, stops: true, labels: true, traverse: false, envelope: true },
   tab: "evidence", reportOpen: false, highlight: null,
 };
 
@@ -215,14 +215,17 @@ export function useMission() {
     return { requestId: newRequestId(), schemaVersion: 1, datasetVersion: m.datasetVersion, baseXY: m.scenario!.baseXY };
   };
 
-  const requestRoutes = useCallback(() => {
+  const compared = useRef(false); // once routes have been compared, picking a site on the map re-plans straight away
+  const requestRoutes = useCallback((patch: Partial<Inputs> = {}) => {
     const s = ref.current;
     if (!s.bundle?.region.manifest.scenario) return;
-    const { mode, ...rest } = s.inputs;
+    compared.current = true;
+    const inputs = { ...s.inputs, ...patch };
+    const { mode, ...rest } = inputs;
     const body = { ...identity(), ...rest };
     dispatch({ type: "planRequested", requestId: body.requestId });
     post<PlanResponse>("plan", body).then(
-      (plan) => dispatch({ type: "planLoaded", requestId: body.requestId, plan, inputs: s.inputs }),
+      (plan) => dispatch({ type: "planLoaded", requestId: body.requestId, plan, inputs }),
       (e) => dispatch({ type: "planFailed", requestId: body.requestId, error: fail(e) }));
   }, []);
 
@@ -265,7 +268,13 @@ export function useMission() {
       selectedRouteMode: s.planInputs.mode, question: text.slice(0, 500) }, text);
   }, [child]);
 
-  return { state, ...d, dispatch, loadRegion, requestRoutes, requestReturn, requestReach, requestStress, ask };
+  /** Map click on a science stop: set it as the destination and, after the first comparison, show the route to it. */
+  const pickStop = useCallback((targetId: string) => {
+    dispatch({ type: "setInput", key: "targetId", value: targetId });
+    if (compared.current) requestRoutes({ targetId });
+  }, [requestRoutes]);
+
+  return { state, ...d, dispatch, loadRegion, requestRoutes, pickStop, requestReturn, requestReach, requestStress, ask };
 }
 
 export type Mission = ReturnType<typeof useMission>;

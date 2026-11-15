@@ -82,7 +82,7 @@ function clear(group: THREE.Group) {
 }
 
 export function TerrainView({ m }: { m: Mission }) {
-  const { state, dispatch } = m, { bundle, layers } = state;
+  const { state } = m, { bundle, layers } = state;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const northRef = useRef<HTMLSpanElement>(null);
   const ctxRef = useRef<Ctx | null>(null);
@@ -197,7 +197,7 @@ export function TerrainView({ m }: { m: Mission }) {
         // shortcut: labels are not hidden behind terrain, only behind the camera; raycast if ridges ever hide a stop.
         el.hidden = !v || v.z > 1 || Math.abs(v.x) > 1 || Math.abs(v.y) > 1;
         if (!v || el.hidden) continue;
-        const box = { x: ((v.x + 1) / 2) * cw - el.offsetWidth / 2, y: ((1 - v.y) / 2) * ch - el.offsetHeight - 8, w: el.offsetWidth, h: el.offsetHeight };
+        const box = { x: ((v.x + 1) / 2) * cw - el.offsetWidth / 2, y: ((1 - v.y) / 2) * ch - (el.classList.contains("terrain-stop-dot") ? el.offsetHeight / 2 : el.offsetHeight + 14), w: el.offsetWidth, h: el.offsetHeight };
         // Overlapping labels stack upward so every stop stays readable and clickable.
         for (const o of placed) if (box.x < o.x + o.w && o.x < box.x + box.w && box.y < o.y + o.h && o.y < box.y + box.h) box.y = o.y - box.h - 2;
         placed.push(box);
@@ -364,7 +364,7 @@ export function TerrainView({ m }: { m: Mission }) {
     const group = ctx.groups.marks;
     clear(group);
     anchors.current.clear();
-    const anchor = (id: string, xy: XY) => { const p = point(xy, 40); if (p) anchors.current.set(id, p); };
+    const anchor = (id: string, xy: XY) => { const p = point(xy, 13); if (p) anchors.current.set(id, p); };
     if (m.baseXY) anchor("base", m.baseXY);
     if (layers.stops) for (const stop of bundle.region.scienceStops) anchor(stop.id, stop.positionXY);
     if (m.baseXY) addMark(group, new THREE.BoxGeometry(28, 28, 28), m.baseXY, WHITE, 14);
@@ -451,15 +451,15 @@ export function TerrainView({ m }: { m: Mission }) {
       <canvas ref={canvasRef} tabIndex={0} onKeyDown={onKeyDown}
         aria-label={`3D terrain from elevation data at ${exag === 1 ? "true vertical scale" : `${exag}× exaggerated vertical scale`}, with the same route and markers as the 2D map. Arrow keys orbit, plus and minus zoom.`} />
       <div className="terrain-marks">
-        {m.baseXY && <span className="terrain-mark" ref={(el) => { if (el) labelEls.current.set("base", el); else labelEls.current.delete("base"); }}>Base · Hypothetical</span>}
+        {m.baseXY && layers.labels && <span className="terrain-mark" ref={(el) => { if (el) labelEls.current.set("base", el); else labelEls.current.delete("base"); }}>Base · Hypothetical</span>}
         {layers.stops && bundle.region.scienceStops.map((stop) => {
           const selected = stop.id === state.inputs.targetId, name = (stop.name ?? stop.id).split(" — ")[0];
           return (
-            <button key={stop.id} type="button" className="terrain-mark terrain-stop" aria-pressed={selected}
+            <button key={stop.id} type="button" className={`terrain-mark terrain-stop${layers.labels ? "" : " terrain-stop-dot"}`} aria-pressed={selected}
               ref={(el) => { if (el) labelEls.current.set(stop.id, el); else labelEls.current.delete(stop.id); }}
               aria-label={`Select destination ${stop.name ?? stop.id}`} disabled={state.rehearsing}
               title={state.rehearsing ? "Edit the plan to change destination" : `Go to ${stop.name ?? stop.id}`}
-              onClick={() => dispatch({ type: "setInput", key: "targetId", value: stop.id })}>{name}</button>
+              onClick={() => m.pickStop(stop.id)}>{layers.labels ? name : <span className="sr-only">{name}</span>}</button>
           );
         })}
       </div>

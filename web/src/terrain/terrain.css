@@ -38,3 +38,5 @@
 .terrain-stop:disabled { cursor: not-allowed; }
 .terrain-stop:disabled:not([aria-pressed="true"]) { opacity: 0.6; }
 @media (pointer: coarse) { .terrain-stop { min-height: 32px; padding: 6px 10px; } }
+/* Labels off: the stop stays a clickable dot over its marker. */
+.terrain-stop-dot { width: 16px; height: 16px; padding: 0; border-radius: 50%; background: rgb(255 255 255 / 0.15); }
