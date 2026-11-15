@@ -28,3 +28,13 @@
   .terrain-info { top: 60px; flex-wrap: wrap; justify-content: flex-end; }
   .terrain-exag-note { top: 100px; }
 }
+/* Base and stop labels pinned to the scene; stops are buttons that pick the destination, as on the 2D map. */
+.terrain-marks { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.terrain-mark { position: absolute; left: 0; top: 0; padding: 1px 6px; border: 1px solid transparent; border-radius: 4px; background: rgb(11 17 20 / 0.85);
+  color: var(--text-primary); font: inherit; font-size: 12px; line-height: 16px; white-space: nowrap; }
+.terrain-stop { pointer-events: auto; cursor: pointer; border-color: rgb(255 255 255 / 0.5); }
+.terrain-stop:hover, .terrain-stop:focus-visible { border-color: #fff; }
+.terrain-stop[aria-pressed="true"] { color: var(--route); border-color: var(--route); font-weight: 600; }
+.terrain-stop:disabled { cursor: not-allowed; }
+.terrain-stop:disabled:not([aria-pressed="true"]) { opacity: 0.6; }
+@media (pointer: coarse) { .terrain-stop { min-height: 32px; padding: 6px 10px; } }
