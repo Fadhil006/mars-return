@@ -8,13 +8,13 @@ import { layerCanvas } from "../map/layers";
 import { extentM, returnRetraces } from "../mission/geo";
 import type { Mission } from "../mission/state";
 import type { XY } from "../mission/types";
-import { heightfield, skirtPositions, surfacePoint } from "./scene";
+import { autoRelief, heightfield, skirtPositions, surfacePoint } from "./scene";
 import "./terrain.css";
 
 const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, CASING = 0x0b1114, WALL = 0x2a201b;
 const LIFT_M = 3; // display-only offset that keeps lines from flickering against the surface
 const CONTOUR_M = 10; // contour interval in measured metres; drawn from the elevation, never from the image
-const EXAGGERATIONS = [1, 2, 5] as const; // display only; 1× (true scale) is the default and every other value is labelled
+const EXAGGERATIONS = [1, 2, 5] as const; // display only; Auto (tilt-driven) is the default and every value drawn is labelled
 // Raking light from the north-west (azimuth 315°, 25° above the horizon), the usual hillshade convention:
 // low light is what makes small real relief readable. Display only; it is not the image's own sun.
 const SUN_AZIMUTH = (315 * Math.PI) / 180, SUN_ALTITUDE = (25 * Math.PI) / 180;
@@ -88,6 +88,9 @@ export function TerrainView({ m }: { m: Mission }) {
   const ctxRef = useRef<Ctx | null>(null);
   const [lost, setLost] = useState(false);
   const [exag, setExag] = useState(1); // display-only vertical exaggeration; always stated on the toggle and in the legend
+  const [auto, setAuto] = useState(true); // relief follows camera tilt (autoRelief); the drawn value is always shown
+  const autoRef = useRef(auto);
+  autoRef.current = auto;
   const [contours, setContours] = useState(true);
   const usable = !!bundle?.elevation && webglAvailable() && !lost;
 
@@ -194,6 +197,7 @@ export function TerrainView({ m }: { m: Mission }) {
       render();
     };
     controls.addEventListener("change", render);
+    controls.addEventListener("change", () => { if (autoRef.current) setExag(autoRelief(controls.getPolarAngle())); });
     const onLost = (event: Event) => { event.preventDefault(); setLost(true); };
     canvas.addEventListener("webglcontextlost", onLost);
     const observer = new ResizeObserver(() => {
@@ -217,6 +221,11 @@ export function TerrainView({ m }: { m: Mission }) {
       renderer.dispose();
     };
   }, [bundle, usable]);
+
+  useEffect(() => {
+    const ctx = ctxRef.current;
+    if (auto && ctx) setExag(autoRelief(ctx.controls.getPolarAngle()));
+  }, [bundle, usable, auto]);
 
   useEffect(() => {
     const ctx = ctxRef.current;
@@ -424,16 +433,18 @@ export function TerrainView({ m }: { m: Mission }) {
         <div className={`terrain-plate terrain-exag${exag > 1 ? " is-exag" : ""}`} role="group"
           aria-label="Vertical scale. Display only; no route value changes."
           title="Vertical scale. Display only; no route value changes.">
-          <span className="terrain-exag-label">{exag === 1 ? "True scale" : "Exaggerated"}</span>
+          <span className="terrain-exag-label">{auto ? `Auto ${exag}×` : exag === 1 ? "True scale" : "Exaggerated"}</span>
+          <button type="button" aria-pressed={auto} onClick={() => setAuto(true)}
+            title="Relief rises as you tilt toward the horizon; true scale from straight above">Auto</button>
           {EXAGGERATIONS.map((x) => (
-            <button key={x} type="button" aria-pressed={exag === x} onClick={() => setExag(x)}>{x}×</button>
+            <button key={x} type="button" aria-pressed={!auto && exag === x} onClick={() => { setAuto(false); setExag(x); }}>{x}×</button>
           ))}
         </div>
         <button type="button" className="terrain-plate terrain-toggle" aria-pressed={contours}
           onClick={() => setContours(!contours)}>Contours {CONTOUR_M} m</button>
         <span className="terrain-plate terrain-north"><span ref={northRef} aria-hidden="true">↑</span> N</span>
       </div>
-      <details className="terrain-legend terrain-plate" key={state.rehearsing ? "r" : "p"} open={!state.rehearsing}>
+      <details className="terrain-legend terrain-plate">
       <summary>Legend</summary>
       <ul aria-label="3D marks">
         <li>■ Base · Hypothetical</li>

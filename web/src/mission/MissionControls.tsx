@@ -148,7 +148,13 @@ export function MissionControls({ m }: { m: Mission }) {
       {freshness === "outdated" && !state.expired && (
         <div className="banner banner-outdated" role="status">Inputs changed. These results no longer match.</div>
       )}
-      {freshness === "none" && <p className="reason">Compare routes to see the calculated round trip.</p>}
+      {freshness === "none" && (
+        <ol className="reason getting-started" aria-label="How to use the planner">
+          <li><b>Pick</b> a destination and check the assumptions.</li>
+          <li><b>Compare routes</b> to see the round trip and the time it leaves spare.</li>
+          <li><b>Rehearse</b> the walk, pause anywhere and ask: can we still get back?</li>
+        </ol>
+      )}
       {freshness === "failed" && error && (
         <div className="banner banner-error" role="alert">
           {error.status === "data_unavailable" ? (

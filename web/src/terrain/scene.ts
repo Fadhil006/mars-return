@@ -81,3 +81,13 @@ export function skirtPositions(field: { positions: number[]; rows: number; cols:
   }
   return out;
 }
+
+/**
+ * Auto relief: true scale looking straight down, rising to 3× by about 75° of tilt, where flat relief is hardest to
+ * read. Capped at 3×: higher, the near edge of the block hides the route at grazing angles. Polar angle in radians
+ * (0 = top-down). Half steps keep re-renders rare. Display only.
+ */
+export function autoRelief(polar: number): number {
+  const t = Math.min(Math.max((polar - 0.6) / (1.3 - 0.6), 0), 1);
+  return Math.round((1 + 2 * t) * 2) / 2;
+}

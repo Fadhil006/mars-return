@@ -41,6 +41,8 @@ a { color: var(--route); }
 .btn-primary:hover:not(:disabled) { background: var(--action-hover); border-color: var(--action-hover); }
 .btn:disabled, .field input:disabled, .field select:disabled { opacity: 0.4; cursor: not-allowed; }
 .reason { font-size: 12px; line-height: 16px; color: var(--text-muted); margin: var(--s1) 0 0; } /* every disabled control states why */
+.getting-started { padding-left: 18px; display: grid; gap: 4px; }
+.getting-started b { color: var(--text-primary); font-weight: 600; }
 .field-error { color: var(--status-error); }
 input[aria-invalid="true"] { outline: 2px solid var(--status-error); outline-offset: 1px; }
 
