@@ -8,6 +8,14 @@ A Mars mission rehearsal project for the NASA Space Apps Martian Map challenge: 
 
 Needs Python 3.12+, Node with npm, and about 450 MB of free disk space for the terrain download. **No API keys or accounts are required.**
 
+On Linux or macOS, one command does everything (setup steps already done are skipped):
+
+```sh
+./run.sh                 # then open http://127.0.0.1:8000
+```
+
+Step by step (Windows, or to run each part yourself):
+
 ```sh
 python -m venv .venv
 .venv/bin/python -m pip install -r server/requirements.lock
