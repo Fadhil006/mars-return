@@ -13,7 +13,9 @@ LEGS = ("outbound", "return", "currentToTarget", "targetToBase")
 LEG_FIELDS = ("distanceM", "ascentM", "maxSlopeDeg", "meanSlopeDeg", "travelMin")
 # Checked in order; the first match wins, so unsupported topics are never answered from route data.
 TOPICS = (
-    ("unsupported", r"weather|storm|dust|wind|temperature|radiation|medical|health|oxygen|suit|safe|safety|surviv\w*|die|injur\w*|hazard\w*|obstacle\w*|rock fall|life|water|alien\w*"),
+    ("unsupported", r"weather|storm|dust|wind|temperature|medical|health|oxygen|suit|surviv\w*|die|injur\w*|rock fall|life|water|alien\w*"),
+    ("radiation", r"radiation|dose|cosmic"),
+    ("limits", r"safe|safety|hazard\w*|obstacle\w*|danger\w*|risk\w*"),
     ("evidence", r"evidence|sources?|samples?|destination|stop|science|scientific|resolution|data|dataset|imagery|elevation|provenance|cit\w+"),
     ("return", r"return\w*|back|home|still|margin|budget|time|late|blocked|closure|corridor|reserve"),
     ("route", r"route\w*|path|why|slope|distance|short\w*|compar\w*|differ\w*|steep\w*|far|long"),
@@ -118,6 +120,22 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
             f"Sources: {cited}" if cited else "No source record is attached to this stop.",
             "The stop is a recorded position; the base it is reached from is hypothetical."]))
         source_ids, refs = list(stop.get("sourceIds", [])), []
+    elif topic == "radiation":
+        # The dose shown in the interface is a display estimate made in the browser; the planner never computes it.
+        answer = ("The radiation figure shown is a display estimate, not a planner result: the surface dose rate that"
+                  " Curiosity's RAD instrument measured in Gale Crater (Hassler et al. 2014, galactic cosmic rays only,"
+                  " solar particle events excluded), scaled to the planned time outside. It is not a measurement at"
+                  " Jezero and not a forecast; Jezero sits higher than Gale, so its dose is likely somewhat higher."
+                  " It does not change the route or the time margin.")
+        source_ids, refs = [], []
+    elif topic == "limits":
+        lead = ("This is not a safety assessment. The planner covers only terrain slope against the chosen ceiling,"
+                " cells with no elevation data, distance and a constant walking speed on 20 m orbital terrain."
+                " It cannot see rocks, sand, ripples or anything smaller than about 20 m.")
+        body = " ".join(_assessment_text(name, item, budget, budget_label) for name, item in items.items())
+        answer = f"{lead} {body}{CAVEAT}"
+        source_ids = list(context["sourceIds"])
+        refs = [f"{name}.{field}" for name in items for field in ("status", "marginMin")]
     else:
         lead = (f"Scenario at the current position, with {_n(budget, 'min')} of remaining time." if rehearsal
                 else f"Round trip from the hypothetical base to {stop_name} under a slope ceiling of"
@@ -132,7 +150,7 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
               "supported": topic != "unsupported", "modelVersion": context["modelVersion"]}
     if complete is None and os.environ.get("MODEL_API_KEY") and os.environ.get("MODEL_PROVIDER", "anthropic") in ("", "anthropic"):
         complete = anthropic_complete
-    if complete is None or topic == "unsupported":
+    if complete is None or topic in ("unsupported", "radiation", "limits"):  # fixed wording, never rephrased by a model
         return result
 
     facts = {"destination": stop_name, "inputs": {k: v for k, v in inputs.items() if isinstance(v, (int, float, str))},

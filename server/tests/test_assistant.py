@@ -65,7 +65,30 @@ def test_rehearsal_plan_and_evidence_and_no_path():
     assert "no route was found" in answer and "None" not in answer
 
 
-@pytest.mark.parametrize("question", ["What is the weather today?", "Is it safe for the crew?", "Tell me a joke"])
+@pytest.mark.parametrize("question", ["Is the route safe?", "What hazards are there?", "How risky is this?"])
+def test_safety_questions_state_limits_without_a_safety_claim(question):
+    def complete(prompt):
+        raise AssertionError("model called for a limits question")
+    client, plan = setup(complete)
+    value = ask(client, plan["planId"], question).json()
+    margin = plan["options"]["shortest"]["marginMin"]
+    assert classify(question) == "limits" and value["supported"] is True and value["mode"] == "template"
+    assert value["answer"].startswith("This is not a safety assessment.")
+    assert f"{margin:.1f} min" in value["answer"] and "hypothetical" in value["answer"]
+    assert "shortest.marginMin" in value["metricRefs"]
+
+
+def test_radiation_question_explains_the_estimate_and_gives_no_number():
+    def complete(prompt):
+        raise AssertionError("model called for a radiation question")
+    client, plan = setup(complete)
+    value = ask(client, plan["planId"], "What radiation dose will the crew get?").json()
+    assert value["supported"] is True and value["mode"] == "template"
+    assert "Gale" in value["answer"] and "not a forecast" in value["answer"]
+    assert [t.strip(".,()") for t in value["answer"].split() if t.strip(".,()").isdigit()] == ["2014"]  # citation year only
+
+
+@pytest.mark.parametrize("question", ["What is the weather today?", "Can the crew survive this?", "Tell me a joke"])
 def test_unsupported_question_never_reaches_the_model(question):
     def complete(prompt):
         raise AssertionError("model called for an unsupported question")
