@@ -26,8 +26,9 @@ RUN python -m scripts.prepare_demo && rm -rf data/raw/*
 
 FROM python:3.12-slim
 WORKDIR /app
-COPY server/requirements.lock server/
-RUN pip install --no-cache-dir --default-timeout=120 --retries 10 -r server/requirements.lock && useradd --create-home app
+# The running API needs neither the raster tools nor the test tools, so it installs the runtime subset only.
+COPY server/requirements-runtime.lock server/
+RUN pip install --no-cache-dir --default-timeout=120 --retries 10 -r server/requirements-runtime.lock && useradd --create-home app
 COPY server/ server/
 COPY --from=terrain /app/data/region/ data/region/
 COPY --from=web /app/web/dist/ web/dist/

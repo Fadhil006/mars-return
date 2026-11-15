@@ -146,6 +146,10 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
     context = trusted_context(store, plan_id, dataset, selected_route_mode)
     inputs = store.get(plan_id, dataset)["inputs"]
     metrics = context["metrics"]
+    if "baseline" in metrics:  # closure stress test: explain the round trip it re-checked
+        metrics = metrics["baseline"]
+    elif "returnMin" in metrics:  # return envelope: a grid, with no route or destination to explain
+        raise ValueError("A return-envelope result cannot be explained; ask about a plan, rehearsal or stress test")
     rehearsal = "immediateReturn" in metrics
     items = ({name: metrics[name] for name in ("immediateReturn", "continueThenReturn")} if rehearsal
              else {selected_route_mode: metrics})

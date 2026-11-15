@@ -10,6 +10,7 @@ import type { Mission } from "../mission/state";
 import type { XY } from "../mission/types";
 import { MAX_TILT, autoRelief, heightfield, skirtPositions, surfacePoint } from "./scene";
 import "./terrain.css";
+import { webglAvailable } from "./webgl";
 
 const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, CASING = 0x0b1114, WALL = 0x2a201b;
 const LIFT_M = 3; // display-only offset that keeps lines from flickering against the surface
@@ -34,20 +35,6 @@ function withContours(material: THREE.MeshStandardMaterial, uniforms: { uContour
         float line = 1.0 - min(abs(fract(hc - 0.5) - 0.5) / max(fwidth(hc), 1e-4), 1.0);
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.97, 0.93, 0.86), line * 0.55 * uContours);`);
   };
-}
-
-let webgl: boolean | undefined;
-/** False when this browser cannot create a WebGL context; the 3D toggle is then disabled. */
-export function webglAvailable(): boolean {
-  if (webgl === undefined) {
-    try {
-      const canvas = document.createElement("canvas");
-      webgl = !!(canvas.getContext("webgl2") ?? canvas.getContext("webgl"));
-    } catch {
-      webgl = false;
-    }
-  }
-  return webgl;
 }
 
 interface Ctx {

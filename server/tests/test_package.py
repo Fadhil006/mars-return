@@ -1,5 +1,6 @@
 import json
 import tarfile
+from pathlib import Path
 
 import pytest
 
@@ -46,3 +47,11 @@ def test_rejects_symlink(tmp_path):
     (source / "extra").symlink_to(source / "manifest.json")
     with pytest.raises(ValueError, match="Symlinks"):
         package_region(source, tmp_path / "out.tar.gz")
+
+
+def test_runtime_requirements_are_a_pinned_subset_of_the_lock():
+    server = Path(__file__).resolve().parents[1]
+    pins = lambda name: {line.strip() for line in (server / name).read_text(encoding="utf-8").splitlines()
+                         if line.strip() and not line.startswith("#")}
+    runtime = pins("requirements-runtime.lock")
+    assert runtime and runtime <= pins("requirements.lock")

@@ -9,7 +9,7 @@ python -m venv .venv
 .venv/bin/python -m server.export_schema --check
 ```
 
-`pyproject.toml` lists direct dependencies; `requirements.lock` pins the tested environment including test tools. Run modules from the repository root, not from `server/`.
+`pyproject.toml` lists direct dependencies; `requirements.lock` pins the tested environment including test tools; `requirements-runtime.lock` is the subset the running API imports, used by the final Docker stage. Run modules from the repository root, not from `server/`.
 
 A1 owns preprocessing and coordinates; A2 routing and mission arithmetic; A3 API, validation and evidence lookup. B3 owns the assistant/model adapter. Synthetic tests are never evidence of actual Mars terrain accuracy.
 
