@@ -92,6 +92,17 @@ In line with the NASA Space Apps rules on Super Intelligence (SI) tools:
 
 Use actual imagery/elevation for the region. The base, blocked corridor, speed, time budget and slope ceiling are hypothetical scenario inputs. Derived routes are model results, not certified astronaut navigation or safety guidance. Preserve missing-data masks and show data resolution.
 
+## Related work and what is new here
+
+MARS RETURN applies a long-standing human-exploration planning limit, the **walkback constraint**, to real Mars terrain: a crew must always be able to walk home if something fails.
+
+- **Apollo and the NASA Walkback Test (2007):** Apollo-era planning assumed a 10 km maximum excursion, so a crew could still walk back if the rover failed. NASA tested suited walkback in 2007 ([report record](https://corpora.tika.apache.org/base/docs/govdocs1/515/515870.pdf)). Later work recalculated the walkback limit during an EVA from actual consumption ([Virtual Spacesuit, ICES 2018](https://ttu-ir.tdl.org/handle/2346/74208)).
+- **SEXTANT (MIT, 2010):** a MATLAB traverse planner for the lunar south pole that finds efficient paths by distance, time or energy and computes the walkback from any point on a traverse ([AIAA SPACE 2010](https://core.ac.uk/works/6902634), [thesis](https://dspace.mit.edu/handle/1721.1/59560)).
+- **NASA Mars Trek:** a web portal for 3D Mars terrain, distance and elevation-profile measurement ([Mars Trek](https://science.nasa.gov/science-research/planetary-science/mars-trek/)).
+- **JPL traversability tools:** slope, rock and terrain-type cost maps used in Mars 2020 landing-site analysis ([paper](https://www-robotics.jpl.nasa.gov/media/documents/Data-driven%20surface%20traversability%20analysis%20for%20Mars%202020%20landing%20site%20selection.pdf)).
+
+What MARS RETURN adds: it runs in a browser on real Jezero CTX terrain and the real Perseverance sampling sites. It asks the walkback question *again when the scenario changes mid-walk*: rehearse a closed corridor, lost time or a slower pace, then compare "return now" with "continue, then return". It also shows the return envelope ("from where can we still walk home?"), stress-tests the way home against single closures, and has an assistant that explains results without ever calculating numbers itself.
+
 ## Data sources
 
 - [M20 Jezero Crater CTX DEM 20 m](https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif) (USGS, NASA MRO CTX)
