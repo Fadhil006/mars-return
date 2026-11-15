@@ -10,6 +10,13 @@ const FIELD: Record<string, string> = {
   marginMin: "remaining margin", totalRequiredMin: "total time required", travelMin: "travel time estimate",
   totalDistanceM: "distance", distanceM: "distance", dwellMin: "dwell", reserveMin: "reserve", status: "status",
   maxSlopeDeg: "maximum slope", meanSlopeDeg: "mean slope", ascentM: "ascent",
+  outOfContactMin: "time out of sight of base", longestOutOfContactMin: "longest stretch out of sight",
+  maxOutOfContactMin: "contact rule", contactStatus: "contact verdict",
+};
+const INPUT: Record<string, string> = {
+  totalBudgetMin: "time budget", remainingBudgetMin: "remaining time", speedMPerMin: "walking speed",
+  maxSlopeDeg: "slope ceiling", reserveMin: "reserve", dwellMin: "time on site", elapsedMin: "time elapsed",
+  maxOutOfContactMin: "contact rule", mastHeightM: "base mast height",
 };
 const LEG: Record<string, string> = {
   outbound: "outbound", return: "return", currentToTarget: "to destination", targetToBase: "back to base",
@@ -18,6 +25,7 @@ const LEG: Record<string, string> = {
 /** "slope_penalized.outbound.maxSlopeDeg" → "Lower slope · outbound · maximum slope". Unknown parts are shown as sent. */
 export function metricLabel(ref: string): string {
   const [head, ...rest] = ref.split(".");
+  if (head === "input") return `${INPUT[rest[0]] ?? rest[0]} (input)`;
   return [ASSESSMENT[head] ?? head, ...rest.map((part) => LEG[part] ?? FIELD[part] ?? part)].join(" · ");
 }
 
@@ -84,6 +92,7 @@ export function MissionAssistant({ m }: { m: Mission }) {
                 ))}
               </div>
             )}
+            {brief.data.tracedNumbers && brief.data.tracedNumbers.length > 0 && <ProofStrip items={brief.data.tracedNumbers} m={m} />}
             <p className="caption">Authoritative numbers are in the Routes tab.</p>
           </article>
         )}
@@ -96,5 +105,26 @@ export function MissionAssistant({ m }: { m: Mission }) {
         </p>
       )}
     </section>
+  );
+}
+
+/** Every number in the answer, each linked to the stored value it repeats. The server rejects model answers with any
+ * number it cannot trace; this makes that check visible. */
+function ProofStrip({ items, m }: { items: { value: string; ref: string | null }[]; m: Mission }) {
+  const traced = items.filter((item) => item.ref).length;
+  return (
+    <div className="as-proof" aria-label="Numbers traced to planner output">
+      <p className={`as-proof-count${traced === items.length ? " all" : ""}`}>
+        <strong>{traced} of {items.length}</strong> numbers traced to planner output
+      </p>
+      <div className="as-chips">
+        {items.map((item, i) => item.ref
+          ? <button key={i} type="button" className={`tag as-chip as-num${m.state.highlight === item.ref ? " highlight" : ""}`}
+              title={metricLabel(item.ref)} onClick={() => !item.ref!.startsWith("input.") && m.dispatch({ type: "setHighlight", ref: item.ref })}>
+              <span className="mono">{item.value}</span> <span className="as-num-ref">{metricLabel(item.ref)}</span>
+            </button>
+          : <span key={i} className="tag as-chip as-untraced"><span className="mono">{item.value}</span> untraced</span>)}
+      </div>
+    </div>
   );
 }

@@ -128,3 +128,23 @@ def test_model_answer_is_accepted_only_when_consistent():
     client.app.state.brief_complete = lambda prompt: seen.append(json.loads(prompt)) or "not json"
     assert ask(client, plan["planId"], "Why this route?").json()["mode"] == "template"
     assert set(seen[0]) == {"question", "facts", "allowedSourceIds", "allowedMetricRefs"}
+
+
+def test_every_number_in_a_route_answer_is_traced_to_a_stored_value():
+    client, plan = setup()
+    value = ask(client, plan["planId"], "Can I still return?").json()
+    traced = value["tracedNumbers"]
+    assert traced and all(item["ref"] is not None for item in traced)
+    margin = f"{plan['options']['shortest']['marginMin']:.1f}"
+    assert {"value": margin, "ref": "shortest.marginMin"} in traced
+    assert any(item["ref"] == "input.totalBudgetMin" for item in traced)
+
+
+def test_model_answer_carries_its_own_trace_and_evidence_answers_carry_none():
+    client, plan = setup()
+    margin = plan["options"]["shortest"]["marginMin"]
+    reply = {"answer": f"You keep {margin:.0f} min of margin.", "sourceIds": [], "metricRefs": ["shortest.marginMin"]}
+    client.app.state.brief_complete = lambda prompt: json.dumps(reply)
+    value = ask(client, plan["planId"], "Can I still return?").json()
+    assert value["mode"] == "model" and value["tracedNumbers"] == [{"value": f"{margin:.0f}", "ref": "shortest.marginMin"}]
+    assert ask(client, plan["planId"], "What evidence supports this destination?").json()["tracedNumbers"] is None

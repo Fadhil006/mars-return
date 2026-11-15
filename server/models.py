@@ -201,6 +201,11 @@ class BriefRequest(Model):
     question: Annotated[str, Field(min_length=1, max_length=500)]
 
 
+class TracedNumber(Model):
+    value: str
+    ref: str | None  # metricRef, input.<name>, or the record kind it came from; None means untraced
+
+
 class BriefResponse(Model):
     requestId: Identifier
     schemaVersion: Literal[1] = 1
@@ -212,6 +217,7 @@ class BriefResponse(Model):
     metricRefs: list[str]
     mode: Literal["model", "template"]
     supported: bool
+    tracedNumbers: list[TracedNumber] | None = None
 
 
 class RegionManifest(BaseModel):

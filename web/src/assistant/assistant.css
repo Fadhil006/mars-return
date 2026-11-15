@@ -12,3 +12,10 @@
 .as-chip { background: transparent; font: inherit; font-size: 12px; cursor: pointer; height: auto; min-height: 24px; white-space: normal; text-align: left; gap: var(--s1); }
 .as-chip:hover { color: var(--text-primary); }
 @media (pointer: coarse) { .as-chip, .as-starters .btn, .as-ask .btn, .as-ask input { min-height: 44px; } }
+.as-proof { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border-subtle); }
+.as-proof-count { margin: 0 0 var(--s2); font-size: 13px; color: var(--status-outdated); }
+.as-proof-count.all { color: var(--status-current); }
+.as-proof-count.all::before { content: "✓ "; }
+.as-num .mono { color: var(--text-primary); }
+.as-num-ref { color: var(--text-secondary); }
+.as-untraced { color: var(--status-error); }

@@ -117,6 +117,8 @@ export interface BriefResponse {
   metricRefs: string[];
   mode: "model" | "template";
   supported: boolean;
+  /** Each number in the answer and the stored value it repeats (metricRef, input.<name>, or record kind); null = untraced. */
+  tracedNumbers?: { value: string; ref: string | null }[] | null;
 }
 
 export interface Manifest {

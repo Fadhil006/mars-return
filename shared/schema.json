@@ -292,6 +292,21 @@
         "supported": {
           "title": "Supported",
           "type": "boolean"
+        },
+        "tracedNumbers": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/TracedNumber"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tracednumbers"
         }
       },
       "required": [
@@ -2019,6 +2034,32 @@
         "verdict"
       ],
       "title": "StressResponse",
+      "type": "object"
+    },
+    "TracedNumber": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "string"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ref"
+        }
+      },
+      "required": [
+        "value",
+        "ref"
+      ],
+      "title": "TracedNumber",
       "type": "object"
     }
   },

@@ -85,6 +85,50 @@ def _consistent(answer, allowed):
     return True
 
 
+def _paths(value, path=()):
+    """(path, number) for every number in the facts, including numbers inside text, in document order."""
+    if isinstance(value, bool) or value is None:
+        return
+    if isinstance(value, (int, float)):
+        yield path, abs(float(value))
+    elif isinstance(value, str):
+        for token in NUMBER.findall(value):
+            yield path, float(token)
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            yield from _paths(item, path + (key,))
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            yield from _paths(item, path)
+
+
+def _ref(path):
+    if path[0] == "assessments":
+        return ".".join(path[1:])  # the same <assessment>.<field> form as metricRefs, plus leg fields
+    return f"input.{path[1]}" if path[0] == "inputs" else path[0]
+
+
+UNIT = {"min": "Min", "m": "M", "degrees": "Deg", "°": "Deg"}
+
+
+def _trace(answer, facts):
+    """Each number in an answer with the stored value it repeats: same unit first (min, m, degrees), then planner
+    metrics before inputs before records, then fields not already used, so a click lands on the right metric."""
+    order = {"assessments": 0, "inputs": 1}
+    candidates = list(_paths({k: v for k, v in facts.items() if k != "referenceAnswer"}))
+    traced, used = [], set()
+    for found in re.finditer(r"(?<![\w.-])(\d+(?:\.\d+)?)(?!\w)\s*(min|m|degrees|°)?", answer):
+        token, suffix = found.group(1), UNIT.get(found.group(2) or "")
+        digits = len(token.partition(".")[2])
+        matches = [path for path, value in candidates if round(value, digits) == float(token)]
+        matches.sort(key=lambda path: (suffix is not None and not str(path[-1]).endswith(suffix),
+                                       order.get(path[0], 2), _ref(path) in used))
+        ref = _ref(matches[0]) if matches else None
+        used.add(ref)
+        traced.append({"value": token, "ref": ref})
+    return traced
+
+
 def anthropic_complete(prompt):
     import anthropic  # optional dependency: Group A runs without it and without a credential
     client = anthropic.Anthropic(api_key=os.environ["MODEL_API_KEY"], timeout=8.0, max_retries=0)
@@ -158,21 +202,23 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
         refs = [f"{name}.{field}" for name in items for field in ("status", "totalRequiredMin", "marginMin")
                 + (("longestOutOfContactMin", "contactStatus") if items[name].get("contactStatus") else ())]
 
-    result = {"answer": answer, "sourceIds": source_ids, "metricRefs": refs, "mode": "template",
-              "supported": topic != "unsupported", "modelVersion": context["modelVersion"]}
-    if complete is None and os.environ.get("MODEL_API_KEY") and os.environ.get("MODEL_PROVIDER", "anthropic") in ("", "anthropic"):
-        complete = anthropic_complete
-    if complete is None or topic in ("unsupported", "radiation", "limits"):  # fixed wording, never rephrased by a model
-        return result
-
     facts = {"destination": stop_name, "inputs": {k: v for k, v in inputs.items() if isinstance(v, (int, float, str))},
              "assessments": {name: {**{f: item.get(f) for f in FIELDS},
                                     **{leg: {f: item[leg].get(f) for f in LEG_FIELDS} for leg in LEGS if item.get(leg)}}
                              for name, item in items.items()},
              "stop": {k: stop.get(k) for k in ("description", "samples", "locationProvenance", "scientificQuestion")},
              "sources": [{k: known[i].get(k) for k in ("sourceId", "title", "resolution", "limitations")}
-                         for i in allowed_sources if i in known],
-             "referenceAnswer": answer}
+                         for i in allowed_sources if i in known]}
+    traced = topic in ("route", "return", "limits")  # answers made of planner numbers carry a proof strip
+    result = {"answer": answer, "sourceIds": source_ids, "metricRefs": refs, "mode": "template",
+              "supported": topic != "unsupported", "modelVersion": context["modelVersion"],
+              "tracedNumbers": _trace(answer, facts) if traced else None}
+    if complete is None and os.environ.get("MODEL_API_KEY") and os.environ.get("MODEL_PROVIDER", "anthropic") in ("", "anthropic"):
+        complete = anthropic_complete
+    if complete is None or topic in ("unsupported", "radiation", "limits"):  # fixed wording, never rephrased by a model
+        return result
+
+    facts["referenceAnswer"] = answer
     try:
         text = complete(json.dumps({"question": question, "facts": facts, "allowedSourceIds": allowed_sources,
                                     "allowedMetricRefs": allowed_refs}, allow_nan=False))
@@ -182,7 +228,8 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
                 and set(reply["sourceIds"]) <= set(allowed_sources) and set(reply["metricRefs"]) <= set(allowed_refs)
                 and _consistent(generated, _numbers(facts))):
             return {**result, "answer": generated.strip(), "sourceIds": list(reply["sourceIds"]),
-                    "metricRefs": list(reply["metricRefs"]), "mode": "model"}
+                    "metricRefs": list(reply["metricRefs"]), "mode": "model",
+                    "tracedNumbers": _trace(generated.strip(), facts) if traced else None}
     except Exception:  # provider outage, timeout, refusal or malformed output: the labelled template stands
         pass
     return result
