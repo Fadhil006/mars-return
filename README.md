@@ -96,6 +96,7 @@ In line with the NASA Space Apps rules on Super Intelligence (SI) tools:
 
 - **Code and documentation:** written with the help of the AI coding assistant Claude (Anthropic), used through Claude Code. The team chose the challenge, designed the approach and reviewed, tested and validated the generated code (see `server/tests`, `web/tests` and [validation](docs/validation.md)).
 - **In the app:** the mission assistant can optionally use a Claude model to word its explanations. It never calculates anything itself: it reads the saved plan's numbers, and a model answer is kept only if every number and citation matches that plan. Each answer lists every number it contains next to the stored value it repeats. Safety, hazard and radiation questions get fixed, never model-written answers that state what the planner does not model. Without a key, it uses fixed templates.
+- **Design and planning:** the interface layout, the browser tab icon (`web/public/favicon.svg`, drawn as SVG code by Claude), an expert-review exercise run with Claude subagents (`docs/plans/05-panel/`) and the plans in `docs/plans/` were produced with Claude and reviewed by the team.
 - **Data:** all terrain, imagery and sampling-site data come from NASA and USGS sources and are not AI-generated. The AI tools did not produce any NASA branding.
 
 ## Scientific scope
