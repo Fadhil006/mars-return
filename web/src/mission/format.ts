@@ -23,3 +23,16 @@ export function hm(min: number | null | undefined): string {
   const t = Math.round(Math.abs(min)), h = Math.floor(t / 60), m = t % 60;
   return `${min < 0 && t ? "−" : ""}${h ? `${h} h ${String(m).padStart(2, "0")} m` : `${m} min`}`;
 }
+
+/**
+ * Hiking-style turnaround call from the two returned options, comparing returned margins only.
+ * Null when there is nothing clear to say.
+ */
+export function turnaround(now: { status: string; marginMin?: number | null }, cont: { status: string; marginMin?: number | null }): string | null {
+  if (now.status !== "ok" && cont.status !== "ok") return "Neither option fits the remaining time.";
+  if (now.status === "ok" && cont.status !== "ok")
+    return `Turn around now: continuing to the site ${cont.status === "over_budget" ? "no longer fits the remaining time" : "has no route"}. Returning now keeps ${hm(now.marginMin)} of margin.`;
+  if (now.status === "ok" && cont.marginMin != null && now.marginMin != null)
+    return `Continuing still fits, with ${hm(cont.marginMin)} of margin (${hm(now.marginMin - cont.marginMin)} less than returning now).`;
+  return null;
+}
