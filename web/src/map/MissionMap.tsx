@@ -89,7 +89,7 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
   const revealKey = `${state.plan?.planId ?? "none"}-${m.mode}`.replace(/[^\w-]/g, "");
   const travelled = state.rehearsing && !outdated ? m.points.slice(0, m.posIndex + 1).map((p) => p.xy) : null;
 
-  const ret = state.ret.data, stress = state.stress.data;
+  const ret = state.call ? state.ret.data : null, stress = state.stress.data; // hidden until the user makes the call
   const hatch = w / 100; // shortcut: hatch spacing is 1% of the map (6 px at 600 px wide), not a fixed 6 px; measure the element if exact spacing matters
   const barM = [5000, 2000, 1000, 500, 200, 100, 50].find((len) => len <= w / 4) ?? w / 4;
   const stopName = (id: string, name?: string) => name ?? id;

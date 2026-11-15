@@ -399,7 +399,7 @@ export function TerrainView({ m }: { m: Mission }) {
   }, [bundle, usable, exag, corridorKey]);
 
   // Return options from the matching rehearsal result only.
-  const ret = state.ret.data;
+  const ret = state.call ? state.ret.data : null; // hidden until the user makes the call
   useEffect(() => {
     const ctx = ctxRef.current;
     if (!ctx) return;

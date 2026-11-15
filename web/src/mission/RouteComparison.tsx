@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { callFeedback, DECIDE_SECONDS } from "./decide";
 import "./mission.css";
 import "./routes.css";
 import { diff, doseMSv, hm, num, RAD_MSV_PER_DAY, STATUS_TEXT, turnaround } from "./format";
@@ -145,6 +146,29 @@ function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: stri
   );
 }
 
+/** The user commits to a call before the planner's options are shown; silence after the countdown is recorded too. */
+function DecideFirst({ m }: { m: Mission }) {
+  const [left, setLeft] = useState(DECIDE_SECONDS);
+  const decide = (call: "return" | "continue" | "none" | "skip") => m.dispatch({ type: "makeCall", call });
+  useEffect(() => {
+    if (left <= 0) { decide("none"); return; }
+    const timer = window.setTimeout(() => setLeft(left - 1), 1000);
+    return () => window.clearTimeout(timer);
+  }, [left]); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <div className="card decide" role="group" aria-label="Make the call before seeing the planner's options">
+      <p className="decide-q"><strong>Your call.</strong> The crew is paused here with {hm(m.remainingMin)} remaining. Turn back, or carry on to the site?</p>
+      <div className="decide-buttons">
+        <button className="btn btn-primary" onClick={() => decide("return")}>Return now</button>
+        <button className="btn btn-primary" onClick={() => decide("continue")}>Continue, then return</button>
+      </div>
+      <div className="decide-timer" aria-hidden="true"><span style={{ width: `${(left / DECIDE_SECONDS) * 100}%` }} /></div>
+      <p className="caption" role="timer" aria-live="off">{left} s left · the planner's numbers appear after you decide.{" "}
+        <button className="link-btn" onClick={() => decide("skip")}>Skip and show results</button></p>
+    </div>
+  );
+}
+
 function Scenario({ m }: { m: Mission }) {
   const { ret, reach } = m.state;
   const blocked = ret.error?.message.startsWith("current position is blocked");
@@ -160,14 +184,19 @@ function Scenario({ m }: { m: Mission }) {
     <section className="rc-section" aria-live="polite" ref={ref}>
       <h3 className="rc-h3">Return options <span className="tag tag-hyp">Hypothetical scenario</span></h3>
       {ret.status === "idle" && <p className="reason">Pause at a position, set the scenario, then request return options.</p>}
-      {ret.status === "loading" && <p role="status">Requesting return options…</p>}
+      {ret.status !== "idle" && !ret.error && m.state.call == null && <DecideFirst key={ret.requestId} m={m} />}
+      {ret.status === "loading" && m.state.call != null && <p role="status">Requesting return options…</p>}
       {ret.error && (
         <div className="banner banner-error" role="alert">
           {blocked ? "The current position is inside the blocked corridor. No return route can be calculated from here." : ret.error.message}
         </div>
       )}
-      {ret.data && (
+      {ret.data && m.state.call != null && (
         <>
+          {(() => {
+            const line = callFeedback(m.state.call!, ret.data);
+            return line && <p className="decide-feedback" role="status"><strong>{line}</strong></p>;
+          })()}
           <p className="caption">From the paused position with {hm(m.remainingMin)} remaining.</p>
           <ReturnOption m={m} id="immediateReturn" title="Return now" a={ret.data.immediateReturn} />
           <ReturnOption m={m} id="continueThenReturn" title="Continue, then return" a={ret.data.continueThenReturn} />

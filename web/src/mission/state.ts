@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { ApiFailure, loadBundle, newRequestId, post } from "./api";
 import { corridorPolygon, routePoints, type RoutePoint } from "./geo";
+import type { Call } from "./decide";
 import type { Assessment, BriefResponse, Mode, PlanResponse, ReachResponse, RegionBundle, RehearsalResponse, StressResponse, XY } from "./types";
 
 export type Freshness = "none" | "requesting" | "current" | "outdated" | "failed";
@@ -44,6 +45,7 @@ export interface State {
   playing: boolean;
   scenario: { blocked: boolean; remainingMin: number | null }; // null = default for the current position
   ret: Async<RehearsalResponse>;
+  call: Call | null; // the user's decision before return options are revealed; null = not made yet
   reach: Async<ReachResponse>;
   stress: Async<StressResponse>;
   brief: Async<BriefResponse>;
@@ -62,7 +64,7 @@ export const initialState: State = {
   inputs: { targetId: "", mode: "shortest", totalBudgetMin: 180, maxSlopeDeg: 15, speedMPerMin: 30, dwellMin: 10, reserveMin: 20 },
   freshness: "none", expired: false, requestId: null, plan: null, planInputs: null, error: null,
   rehearsing: false, posIndex: 0, playing: false, scenario: { blocked: false, remainingMin: null },
-  ret: idle, reach: idle, stress: idle, brief: idle, question: "",
+  ret: idle, call: null, reach: idle, stress: idle, brief: idle, question: "",
   view: "2d", layers: { imagery: true, slope: false, stops: true, labels: true, traverse: false, envelope: true, contact: true },
   tab: "evidence", reportOpen: false, highlight: null,
 };
@@ -81,6 +83,7 @@ export type Action =
   | { type: "setScenario"; blocked?: boolean; remainingMin?: number | null }
   | { type: "resetScenario" }
   | { type: "childRequested"; key: ChildKey; requestId: string; question?: string }
+  | { type: "makeCall"; call: Call }
   | { type: "childLoaded"; key: ChildKey; requestId: string; data: unknown }
   | { type: "childFailed"; key: ChildKey; requestId: string; error: Fail }
   | { type: "setView"; view: "2d" | "3d" }
@@ -90,7 +93,7 @@ export type Action =
   | { type: "setHighlight"; ref: string | null };
 
 // Scenario results and explanations never outlive the position or scenario they were asked about.
-const clearScenarioResults = { ret: idle, reach: idle, brief: idle, highlight: null } as const;
+const clearScenarioResults = { ret: idle, call: null, reach: idle, brief: idle, highlight: null } as const;
 const clearAll = { ...clearScenarioResults, stress: idle, rehearsing: false, playing: false, posIndex: 0,
   scenario: { blocked: false, remainingMin: null }, reportOpen: false } as const;
 
@@ -145,7 +148,10 @@ export function reducer(s: State, a: Action): State {
       if (s.freshness !== "current") return s;
       return { ...s, [a.key]: { status: "loading", requestId: a.requestId, data: null, error: null },
         ...(a.key === "brief" ? { question: a.question ?? "", highlight: null } : {}),
-        ...(a.key === "ret" || a.key === "reach" ? { brief: idle, playing: false } : {}) };
+        ...(a.key === "ret" || a.key === "reach" ? { brief: idle, playing: false } : {}),
+        ...(a.key === "ret" ? { call: null } : {}) };
+    case "makeCall":
+      return s.ret.status === "idle" || s.call ? s : { ...s, call: a.call };
     case "childLoaded":
       if (s[a.key].requestId !== a.requestId) return s;
       return { ...s, [a.key]: { status: "ok", requestId: a.requestId, data: a.data, error: null } };

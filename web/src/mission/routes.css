@@ -84,3 +84,11 @@ button.src-line:hover { color: var(--text-primary); text-decoration: underline; 
 .rc-contact { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border-subtle); }
 .rc-contact.is-over { border-left: 3px solid var(--status-outdated); padding-left: var(--s3); margin-left: calc(-1 * var(--s3) - 3px); }
 .rc-contact .caption { margin: var(--s1) 0 0; }
+.decide { border-left: 3px solid var(--status-updating); }
+.decide-q { margin: 0 0 var(--s3); }
+.decide-buttons { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.decide-timer { height: 4px; margin: var(--s3) 0 var(--s2); background: var(--border-subtle); border-radius: 2px; overflow: hidden; }
+.decide-timer span { display: block; height: 100%; background: var(--status-updating); transition: width 1s linear; }
+@media (prefers-reduced-motion: reduce) { .decide-timer span { transition: none; } }
+.decide-feedback { margin: 0 0 var(--s3); padding: var(--s2) var(--s3); border-left: 3px solid var(--status-updating); background: var(--surface-raised); border-radius: 0 8px 8px 0; }
+.link-btn { background: none; border: 0; padding: 0; font: inherit; color: var(--status-updating); text-decoration: underline; cursor: pointer; }
