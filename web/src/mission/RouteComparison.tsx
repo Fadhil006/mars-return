@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./mission.css";
 import "./routes.css";
-import { diff, hm, num, STATUS_TEXT, turnaround } from "./format";
+import { diff, doseMSv, hm, num, RAD_MSV_PER_DAY, STATUS_TEXT, turnaround } from "./format";
 import { routesIdentical } from "./geo";
 import type { Mission } from "./state";
 import { MODE_LABEL, type Assessment, type Mode } from "./types";
@@ -65,6 +65,7 @@ function Headline({ a, mode, budget, outdated }: { a: Assessment; mode: Mode; bu
   const known = parts.every((p) => p.v != null) && a.totalRequiredMin != null;
   const scale = Math.max(budget, a.totalRequiredMin ?? 0) || 1;
   const over = a.marginMin != null && a.marginMin < 0;
+  const outside = a.travelMin != null && a.dwellMin != null ? a.travelMin + a.dwellMin : null;
   return (
     <section className={`rc-hero${outdated ? " outdated" : ""}${over ? " is-over" : ""}`} aria-label={`Selected route: ${MODE_LABEL[mode]}`}>
       <div className="rc-hero-top">
@@ -84,6 +85,12 @@ function Headline({ a, mode, budget, outdated }: { a: Assessment; mode: Mode; bu
             {parts.map((p) => <li key={p.key}><span className={`dot seg-${p.key}`} />{p.label} <b>{hm(p.v)}</b></li>)}
           </ul>
         </div>
+      )}
+      {outside != null && (
+        <p className="caption rc-dose" title="Curiosity RAD, Gale Crater, Aug 2012 to Jun 2013 (Hassler et al. 2014, Science). Galactic cosmic rays only; a solar particle event would add more.">
+          <b>Radiation est. ≈ {num(doseMSv(outside), 2)} mSv</b> for {hm(outside)} outside (travel + on site), from the {RAD_MSV_PER_DAY} mSv/day
+          that Curiosity's RAD measured on the surface at Gale Crater. Jezero sits about 2 km higher, so its dose is likely a little higher; no solar storm included.
+        </p>
       )}
     </section>
   );

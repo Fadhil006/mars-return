@@ -36,3 +36,14 @@ export function turnaround(now: { status: string; marginMin?: number | null }, c
     return `Continuing still fits, with ${hm(cont.marginMin)} of margin (${hm(now.marginMin - cont.marginMin)} less than returning now).`;
   return null;
 }
+
+/**
+ * Galactic cosmic ray dose equivalent measured on the surface by Curiosity's RAD, Gale Crater, Aug 2012 to Jun 2013
+ * (Hassler et al. 2014, Science, doi:10.1126/science.1244797; SwRI release, 9 Dec 2013). Source: data/sources/msl-rad.json.
+ */
+export const RAD_MSV_PER_DAY = 0.67;
+
+/** Display-only estimate: the measured daily rate scaled to the planned minutes outside. Not a route value. */
+export function doseMSv(minutes: number | null | undefined): number | null {
+  return minutes == null ? null : (minutes / 1440) * RAD_MSV_PER_DAY;
+}

@@ -120,6 +120,9 @@ What MARS RETURN adds: it runs in a browser on real Jezero CTX terrain and the r
 - [Mars 2020 rover waypoints](https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json) and [traverse](https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_traverse.json) (NASA)
 - [Perseverance Mars Rock Samples](https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/) and [Location Map](https://science.nasa.gov/mission/mars-2020-perseverance/location-map/) (NASA)
 - [PDS Geosciences Node: Mars 2020](https://pds-geosciences.wustl.edu/missions/mars2020/) and [PLACES bundle](https://pds-geosciences.wustl.edu/missions/mars2020/places.htm)
+- Radiation: surface dose equivalent of 0.67 mSv/day measured by Curiosity's Radiation Assessment Detector (RAD) at Gale Crater, Aug 2012 to Jun 2013 ([Hassler et al. 2014, *Science*](https://doi.org/10.1126/science.1244797); [SwRI release](https://www.swri.org/press-release/swri-scientists-publish-first-radiation-measurements-surface-mars)). Used for a per-excursion dose estimate; measured at Gale, not Jezero.
+
+Data kinds used: **optical** (CTX image), **topographic** (CTX elevation and the slope derived from it), **radiation** (MSL RAD), plus Perseverance sample and position records.
 
 Full records with checksums and limitations are in `data/sources/`.
 

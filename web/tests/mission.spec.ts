@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diff, turnaround } from "../src/mission/format";
+import { diff, doseMSv, turnaround } from "../src/mission/format";
 import { cellCenter, corridorPolygon, isSample, routePoints, routesIdentical, xyToCell } from "../src/mission/geo";
 import { initialState, reducer, type State } from "../src/mission/state";
 import type { Assessment, Leg, Manifest, PlanResponse, RegionBundle, XY } from "../src/mission/types";
@@ -145,5 +145,13 @@ describe("turnaround call", () => {
   });
   it("reports when neither fits", () => {
     expect(turnaround({ status: "no_path" }, { status: "over_budget", marginMin: -1 })).toBe("Neither option fits the remaining time.");
+  });
+});
+
+describe("radiation estimate", () => {
+  it("scales the measured 0.67 mSv/day to minutes outside", () => {
+    expect(doseMSv(1440)).toBeCloseTo(0.67);
+    expect(doseMSv(120)).toBeCloseTo(0.0558, 3);
+    expect(doseMSv(null)).toBeNull();
   });
 });

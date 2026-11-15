@@ -1,0 +1,13 @@
+{
+  "sourceId": "msl-rad-surface-dose",
+  "kind": "radiation",
+  "instrument": "Radiation Assessment Detector (RAD), Mars Science Laboratory Curiosity rover",
+  "location": "Gale Crater (not Jezero)",
+  "period": "August 2012 to June 2013 (first ~300 sols, near solar maximum)",
+  "doseEquivalentMSvPerDay": 0.67,
+  "component": "galactic cosmic rays only; solar particle events excluded",
+  "citation": "Hassler, D. M., et al. (2014). Mars' Surface Radiation Environment Measured with the Mars Science Laboratory's Curiosity Rover. Science 343(6169). doi:10.1126/science.1244797",
+  "url": "https://www.swri.org/press-release/swri-scientists-publish-first-radiation-measurements-surface-mars",
+  "transcribed": "2026-11-15",
+  "note": "Value quoted from the SwRI (RAD builder) release of 9 Dec 2013. Used only for a display estimate: rate x planned minutes outside. Jezero's surface is about 2 km higher than Gale's floor, so less atmosphere shields it and its dose is likely somewhat higher."
+}
