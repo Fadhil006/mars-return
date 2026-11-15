@@ -1,0 +1,46 @@
+# Red team: rival captain (red-team-competitor)
+
+## 0. The field: MARS RETURN is far from alone
+A GitHub search on 15 Nov 2026 finds **69 repos with "interplanetary survival guide" in name/description** and **~1,257 matching "martian map" + 2026** (api.github.com search; many are empty forks, but dozens are real). The "can we get home?" idea is already common. The entries that threaten you:
+
+| Entry | Why it threatens MARS RETURN |
+|---|---|
+| **ReturnLine** (Heilbronn), https://github.com/padyyy/ReturnLine | *Same thesis, same name pattern:* "plans and rehearses one crewed EVA… for every 10 m shows whether the crew can still get home in time", 4 hard safety rules, **planetary-protection zones**, science stops along Curiosity's traverse. Judges who see both will think one copied the other. |
+| **LIFELINE** (Nablus), https://github.com/faressalameh22/lifeline-marswalk | Apollo "walk-back" rule as its story; a **time slider shrinks the safe zone live**; one-tap "Rover fails" / "Running late" buttons; GO/NO-GO with a "Why NO-GO" list; 3D safety fence; **live demo + slides PDF already public**. This is your rehearsal done as a story in 4 clicks. |
+| **Land & Stand** (Madrid), https://github.com/raaulalonso/LandAndStand | Strongest *idea*: round-trip **probability field** for a crew deconditioned after 6 months in zero-g, changing **sol by sol**, eight astronaut profiles, one continuous fly-down from the globe to Gale. Human body as the story, not the grid. |
+| **Sightline** (Jakarta), https://github.com/monek825/sightline | "The Mars map with no blue dot": viewshed blind zones (home hidden from ~75% of ground within 3 km), **Horizon Match** skyline localization, a real **May 2024 solar storm replay** measured by Curiosity RAD. A real novelty plus an event-driven demo. |
+| **MarsShield**, https://github.com/Snehal707/MarsShield (live: marsshield.vercel.app) | Radiation done properly: terrain sky-blocking vs **measured RAD drop at Maria Gordon Notch (285→230 µGy/day)**, a predict-then-reveal story, CSV export. Your new "MSL RAD radiation estimate" looks thin beside it. |
+| **AresNav** https://github.com/dipsptl/AresNav, **RedStep** https://redstep.vercel.app, **MarsWeave**, **OlympusTrail** https://olympus-trail.vercel.app | Multi-mission breadth (HiRISE, RAD, InSight, DONKI, SWIM ice, MCD), GO/CAUTION/NO-GO verdicts, REAL/DERIVED/MODELLED labels. Your "honest labelling" is not unique either. |
+| Already known: Protikriti, MarsWay (see docs/challenge-alignment.md) | ~25 datasets, globe, rover street view, walk-home card and range rings. |
+| AstroMind / MarswalkAI, https://dev.to/walsal201/astromind-4ji4 | Six-mission layer pitch (MOLA, HiRISE, CRISM, THEMIS, MCS, rovers) + LLM: the kind of breadth slide that sways a quick judge. |
+
+## 1. What wins Space Apps globally (2023–2025)
+Winners lists: 2025 https://www.nasa.gov/learning-resources/stem-engagement-at-nasa/nasa-announces-2025-international-space-apps-challenge-global-winners/ ; 2024 https://www.nasa.gov/learning-resources/stem-engagement-at-nasa/nasa-international-space-apps-challenge-announces-2024-global-winners/ ; finalists 2023 https://www.spaceappschallenge.org/2023/awards/global-finalists/ (not read in detail).
+Patterns:
+1. **One human question, one visible answer.** SpaceGenes+ (2025 Best Use of Science): radiation and microgravity on astronaut health. PureFlow (2025 Best Mission Concept): habitats validated against solar storms. SkySense (Best Use of Technology): "activity risk rating". Each one is a decision a person makes, not a dashboard of layers.
+2. **Real data, visibly used.** Best Use of Data / Science go to projects where the NASA dataset *is* the product (JWST spectra scan, NEO risk zones), not decoration.
+3. **Storytelling has its own award** (HerCode "A Solar Tale", TerraTales). A 30-second video or 7-slide deck is the whole first impression (docs/research-winning-plan.md line 90).
+4. **No Mars route planner won in 2024 or 2025.** The top 10 come from 10k+ submissions across all challenges. Inside one crowded challenge, the winner is the entry a judge remembers after 40 others.
+
+## 2. How I would attack MARS RETURN in front of judges
+1. **"It's a 3 km box."** `/api/region` manifest: 150×150 cells × 20 m = **3 × 3 km**. Perseverance has driven 30+ km; Land & Stand flies down from the planet. Your "Martian Map" is one tile. I would put our globe-to-crater fly-down next to your static square.
+2. **"Only two missions, and one is text."** MRO/CTX terrain + Perseverance points and traverse (your own doc admits "two missions, not many"). RAD now adds a third, but as a *uniform estimate from Gale*, not a terrain-aware layer. The challenge text asks for *multiple NASA science missions*. Protikriti lists ~25 datasets, AresNav 5 missions, AstroMind 6. Your breadth slide loses before anyone thinks.
+3. **The first screen is a form.** Desktop screenshot: a dropdown, four assumption rows, "Total time budget 3 h 00 m", an orange button, a right panel full of sample-table text and "Location and its limits" prose. Status pill says **"No result yet"**. It looks like a careful dashboard. Nothing moves and nothing is at stake. LIFELINE opens with a slider that shrinks a green zone.
+4. **The killer feature is hidden.** "Rehearse" is disabled until you compare routes, and the event injection sits behind pause + checkbox + "Request return options". The rehearsal strip was even *hidden* in commit 3fe8fb9. In a 30-second video you will barely reach it.
+5. **"Hypothetical" everywhere reads as "not real".** Hypothetical base, hypothetical corridor, hypothetical crew scenario, "Assumption" badges, "Time estimates depend on selected assumptions." It is honest, but judges score Validity *and* Impact. Six disclaimers on one screen tell them nothing is at stake.
+6. **The science is a table, not a reason to walk.** Sid shows "Ha'ahóni, Atsá: Rock Core, Igneous." Why should an astronaut go *there* rather than the next crater? No minerals (CRISM), no "what a human adds over the rover" answered with data. The "Excursion question" is posed but never answered.
+7. **The routing is ordinary.** A 15° slope cap, constant 30 m/min, a 20 m grid, "shortest vs lower slope". Every rival has A* + slope + walk-home. A judge who has seen five will glaze over.
+8. **The assistant is a chatbot bolt-on** in a third tab, with "Standard explanation" templates unless a key is set. Your thesis is "whoever uses AI best wins", yet the AI is the least visible thing in the product.
+9. **Not shipped.** No hosted URL and no video (docs/run-demo.md: "Hosted deployment… not done"). The demo script runs about 2 minutes and 7 steps, against a 30 s video / 7-slide limit. Rivals have Vercel links and slide PDFs today.
+10. **Mobile:** at 390×844 headless Chromium was still on "Loading the region" after 40 s of virtual time (shots/red-mobile40.png), while desktop rendered. The payload is only ~1.1 MB, so this may be a headless artefact or a real image-decode stall in `loadImage` (web/src/mission/api.ts:54). Unverified on a real phone. If a judge opens your link on a phone and sees a spinner, you are done.
+11. **Name collision:** "MARS RETURN" vs ReturnLine vs LIFELINE vs "walk home". Same idea, three teams. The one with the best 30 seconds wins it.
+
+## 3. The single change that would scare me most
+**Make the rehearsal the opening shot, done to the crew by real data, not by a checkbox.** Open straight into a walk already under way on the 3D terrain. At minute X a **real recorded event** lands, for example the real May 2024 solar particle event that Curiosity RAD measured (DONKI + RAD), or a real MEDA dust/pressure excursion over Jezero. The envelope of "can we still get back" **collapses live on the terrain**. The app then shows "return now" against "continue then return" with server numbers. The assistant writes a 2-line, cited mission-control call ("Abort to base via the lower-slope corridor: margin 14 min, source RAD sol N") that is *checked against trusted_context on screen* (a visible "numbers verified ✓" badge). That fixes the dashboard problem, adds a third and fourth mission in a way that changes a decision (Validity + Relevance), makes the AI visibly clever and honest (Creativity), and fits a 30-second video (Presentation). Every rival has a walk-home card. None has replayed a *real* Mars event into a *paused, verified* rehearsal with an AI flight director whose numbers are checked. Sightline has the storm story but no tested arithmetic; you have the arithmetic but no story. Combine them and I lose.
+
+Second fear (cheap): a public URL that loads on a phone in <3 s, plus a 30-second video that starts on the collapse, not on the form.
+
+## 4. Trap I expect the panel to push
+**"Add 20 more datasets / layers to match Protikriti."** Breadth is a race you lose: they already list ~25 and look busy for it. Each extra layer adds load time, a new provenance story and another tab the judge won't open. Add only layers that **change the return decision** (RAD/DONKI event, MEDA conditions, maybe CRISM for *why this stop*), then stop.
+
+Not checked: competitor live sites were not opened (READMEs only); the 2023 winners list was not read in detail; the official 2026 judging guide was not readable here (TLS); the mobile stall was not tested on a real device.
