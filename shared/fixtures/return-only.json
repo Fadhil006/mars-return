@@ -29,14 +29,15 @@
     "datasetVersion": "synthetic-development-v1",
     "modelVersion": "grid-constant-speed-v1",
     "planId": "synthetic-fixture-return-only",
-    "inputHash": "b120b4790e1400bccfa9dc4281f82d2a5c1774eb3187d7750d817f0424741185",
+    "inputHash": "c4b21a7023de13e5207bc2ddf20c0c3c187b0799c910edaa8095345aba212aaf",
     "sourceIds": [
       "synthetic-not-mars"
     ],
     "warnings": [
       "Illustrative scenario, not certified astronaut navigation or physiological safety guidance.",
       "Constant speed and horizontal grid distance do not model terrain-dependent fatigue or suit performance.",
-      "Endpoints are represented by containing-cell centers; paths are not smoothed."
+      "Endpoints are represented by containing-cell centers; paths are not smoothed.",
+      "Contact is geometric line of sight to a hypothetical base mast over 20 m terrain; it ignores antennas, relays and radio diffraction."
     ],
     "selectedRouteMode": "shortest",
     "immediateReturn": {
@@ -115,6 +116,18 @@
           5.0,
           25.0
         ],
+        "outOfContactM": 0.0,
+        "outOfContactMin": 0.0,
+        "longestOutOfContactMin": 0.0,
+        "longestOutOfContactStartM": null,
+        "longestOutOfContactEndM": null,
+        "inContact": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
         "message": null
       },
       "currentToTarget": null,
@@ -125,6 +138,10 @@
       "reserveMin": 5.0,
       "totalRequiredMin": 9.0,
       "marginMin": 11.0,
+      "outOfContactMin": 0.0,
+      "longestOutOfContactMin": 0.0,
+      "maxOutOfContactMin": 15.0,
+      "contactStatus": "within_rule",
       "message": null
     },
     "continueThenReturn": {
@@ -212,6 +229,19 @@
         "effectiveGoalXY": [
           95.0,
           25.0
+        ],
+        "outOfContactM": 0.0,
+        "outOfContactMin": 0.0,
+        "longestOutOfContactMin": 0.0,
+        "longestOutOfContactStartM": null,
+        "longestOutOfContactEndM": null,
+        "inContact": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
         ],
         "message": null
       },
@@ -333,6 +363,23 @@
           5.0,
           25.0
         ],
+        "outOfContactM": 0.0,
+        "outOfContactMin": 0.0,
+        "longestOutOfContactMin": 0.0,
+        "longestOutOfContactStartM": null,
+        "longestOutOfContactEndM": null,
+        "inContact": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
         "message": null
       },
       "totalDistanceM": 140.0,
@@ -341,6 +388,10 @@
       "reserveMin": 5.0,
       "totalRequiredMin": 24.0,
       "marginMin": -4.0,
+      "outOfContactMin": 0.0,
+      "longestOutOfContactMin": 0.0,
+      "maxOutOfContactMin": 15.0,
+      "contactStatus": "within_rule",
       "message": null
     }
   }

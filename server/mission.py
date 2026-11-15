@@ -2,7 +2,10 @@
 
 import math
 
+from server.contact import contact_metrics, viewshed
 from server.routing import return_field, route
+
+MAST_M, EYE_M, CONTACT_RULE_MIN = 2.0, 1.7, 15.0  # hypothetical scenario defaults, mirrored in server/models.py
 
 
 def _valid(value, positive=False):
@@ -15,10 +18,44 @@ def _leg(region, start, end, request, mode):
         result["travelMin"] = result["distanceM"] / request["speedMPerMin"]
         if not math.isfinite(result["travelMin"]):
             raise ValueError("speedMPerMin is too small to produce a finite travel time")
+        visible = _visible(region, request)
+        if visible is not None:
+            result.update(contact_metrics(result, visible, region["manifest"], request["speedMPerMin"]))
     return result
 
 
-def _assessment(legs, speed, budget, reserve, dwell):
+def _visible(region, request):
+    try:
+        return viewshed(region, request["baseXY"], request.get("mastHeightM", MAST_M), request.get("eyeHeightM", EYE_M))
+    except (KeyError, TypeError, ValueError, IndexError):
+        return None  # an invalid base already makes the legs invalid; contact is simply not reported
+
+
+def _contact(assessment, legs, speed, dwell, rule):
+    """Total and longest continuous time out of sight of base, including time spent at a stop the base cannot see."""
+    if not legs or any("inContact" not in leg for leg in legs):
+        return
+    runs, current = [], 0.0
+    for i, leg in enumerate(legs):
+        flags, profile = leg["inContact"], leg["profile"]
+        if i and not legs[i - 1]["inContact"][-1] and not flags[0]:
+            current += dwell  # waiting at a stop out of sight extends the blind stretch
+        elif i:
+            runs.append(current); current = 0.0
+        for j in range(1, len(flags)):
+            if flags[j - 1] and flags[j]:
+                runs.append(current); current = 0.0
+            else:
+                current += (profile[j]["distanceM"] - profile[j - 1]["distanceM"]) / speed
+    runs.append(current)
+    blind_dwell = dwell if len(legs) > 1 and not legs[0]["inContact"][-1] else 0.0
+    longest = max(runs)
+    assessment.update(outOfContactMin=sum(leg["outOfContactMin"] for leg in legs) + blind_dwell,
+                      longestOutOfContactMin=longest, maxOutOfContactMin=rule,
+                      contactStatus="within_rule" if longest <= rule else "exceeds_rule")
+
+
+def _assessment(legs, speed, budget, reserve, dwell, rule=CONTACT_RULE_MIN):
     distances = [leg.get("distanceM") for leg in legs]
     message = next((leg.get("message") for leg in legs if leg.get("message")), None)
     if any(distance is None for distance in distances):
@@ -33,9 +70,18 @@ def _assessment(legs, speed, budget, reserve, dwell):
     required = travel + dwell + reserve
     if not math.isfinite(required):
         raise ValueError("Scenario produces a non-finite required time")
-    return {"status": "ok" if required <= budget else "over_budget", "totalDistanceM": total_distance,
-            "travelMin": travel, "dwellMin": dwell, "reserveMin": reserve,
-            "totalRequiredMin": required, "marginMin": budget - required}
+    assessment = {"status": "ok" if required <= budget else "over_budget", "totalDistanceM": total_distance,
+                  "travelMin": travel, "dwellMin": dwell, "reserveMin": reserve,
+                  "totalRequiredMin": required, "marginMin": budget - required}
+    _contact(assessment, legs, speed, dwell, rule)
+    return assessment
+
+
+def _rule(request):
+    rule = request.get("maxOutOfContactMin", CONTACT_RULE_MIN)
+    if not _valid(rule):
+        raise ValueError("maxOutOfContactMin must be a finite nonnegative number")
+    return rule
 
 
 def _validate_request(request, fields):
@@ -64,10 +110,16 @@ def evaluate_plan(region, request):
         outbound = _leg(region, request.get("baseXY"), stop.get("positionXY"), request, mode)
         returning = _leg(region, stop.get("positionXY"), request.get("baseXY"), request, mode)
         assessment = _assessment((outbound, returning), request["speedMPerMin"], request["totalBudgetMin"],
-                                 request["reserveMin"], request["dwellMin"])
+                                 request["reserveMin"], request["dwellMin"], _rule(request))
         assessment["outbound"], assessment["return"] = outbound, returning
         options[mode] = assessment
-    return {"options": options}
+    result = {"options": options}
+    visible = _visible(region, request)
+    if visible is not None:
+        result["contact"] = {"visible": visible.astype(int).tolist(), "visibleFraction": float(visible.mean()),
+                             "mastHeightM": request.get("mastHeightM", MAST_M), "eyeHeightM": request.get("eyeHeightM", EYE_M),
+                             "maxOutOfContactMin": _rule(request)}
+    return result
 
 
 def evaluate_rehearsal(region, request):
@@ -82,7 +134,7 @@ def evaluate_rehearsal(region, request):
     if immediate_leg.get("message", "").startswith("start position is blocked"):
         immediate_leg["message"] = "current position is blocked, over the slope limit, or has unavailable terrain data"
     immediate = _assessment((immediate_leg,), request["speedMPerMin"], request["remainingBudgetMin"],
-                            request["reserveMin"], 0)
+                            request["reserveMin"], 0, _rule(request))
     immediate["return"] = immediate_leg
 
     current_to_target = _leg(region, current, target, request, mode)
@@ -90,7 +142,7 @@ def evaluate_rehearsal(region, request):
         current_to_target["message"] = "current position is blocked, over the slope limit, or has unavailable terrain data"
     target_to_base = _leg(region, target, base, request, mode)
     continuation = _assessment((current_to_target, target_to_base), request["speedMPerMin"],
-                               request["remainingBudgetMin"], request["reserveMin"], request["remainingDwellMin"])
+                               request["remainingBudgetMin"], request["reserveMin"], request["remainingDwellMin"], _rule(request))
     continuation["currentToTarget"] = current_to_target
     continuation["targetToBase"] = target_to_base
     return {"immediateReturn": immediate, "continueThenReturn": continuation}
@@ -134,7 +186,7 @@ def evaluate_stress(region, request):
     speed, budget, reserve, dwell = (request[k] for k in ("speedMPerMin", "totalBudgetMin", "reserveMin", "dwellMin"))
     outbound = _leg(region, base, target, request, mode)
     home = _leg(region, target, base, request, mode)
-    baseline = _assessment((outbound, home), speed, budget, reserve, dwell)
+    baseline = _assessment((outbound, home), speed, budget, reserve, dwell, _rule(request))
     baseline["outbound"], baseline["return"] = outbound, home
     result = {"baseline": baseline, "closures": [], "survivableCount": 0, "worstMarginMin": None,
               "verdict": "unavailable", "closureRadiusM": radius}
@@ -148,7 +200,7 @@ def evaluate_stress(region, request):
     for index in dict.fromkeys(picked):
         closed = {**request, "blockedPolygonsXY": list(request.get("blockedPolygonsXY", [])) + [_octagon(path[index], radius)]}
         detour = _leg(region, target, base, closed, mode)
-        check = _assessment((outbound, detour), speed, budget, reserve, dwell)
+        check = _assessment((outbound, detour), speed, budget, reserve, dwell, _rule(request))
         result["closures"].append({
             "centerXY": path[index], "alongReturnM": home["profile"][index]["distanceM"], "status": check["status"],
             "returnDistanceM": detour["distanceM"], "detourM": None if detour["distanceM"] is None else detour["distanceM"] - home["distanceM"],

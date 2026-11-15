@@ -15,7 +15,7 @@ Cell centers are `x = west + (col + 0.5)*cellSizeM`, `y = south + (height-row-0.
 `POST /api/plan` takes:
 
 - Required: `requestId`, `schemaVersion: 1`, `datasetVersion`, `baseXY`, `targetId`.
-- Defaults: `maxSlopeDeg: 15`, `speedMPerMin: 30`, `totalBudgetMin: 180`, `reserveMin: 20`, `dwellMin: 10`, `blockedPolygonsXY: []`.
+- Defaults: `maxSlopeDeg: 15`, `speedMPerMin: 30`, `totalBudgetMin: 180`, `reserveMin: 20`, `dwellMin: 10`, `blockedPolygonsXY: []`, `mastHeightM: 2`, `eyeHeightM: 1.7`, `maxOutOfContactMin: 15` (all three hypothetical contact inputs, on every scenario request).
 - Slope range: 5–30 degrees. Speed: greater than zero, at most 1000 m/min. Times are nonnegative, capped at 1,000,000 minutes to bound numerical inputs. Reserve must not exceed initial total budget.
 
 `POST /api/rehearse` takes the common identity, dataset, base, target, slope, speed, reserve and polygon fields, plus required `selectedRouteMode`, `currentXY`, `elapsedMin`, `remainingBudgetMin`, and optional `remainingDwellMin: 10`. It does **not** take `totalBudgetMin` or original `dwellMin`.
@@ -35,6 +35,8 @@ Successful HTTP calculations include `requestId`, `schemaVersion`, `datasetVersi
 - Plan: `options.shortest` and `options.slope_penalized`.
 - Rehearsal: `selectedRouteMode`, `immediateReturn`, `continueThenReturn`.
 - Each assessment has `status`, named legs, `totalDistanceM`, `travelMin`, `dwellMin`, `reserveMin`, `totalRequiredMin`, and `marginMin`.
+- Contact (when the base has terrain data): each `ok` leg adds `outOfContactM`, `outOfContactMin`, `longestOutOfContactMin`, `longestOutOfContactStartM`, `longestOutOfContactEndM` (metres along the leg) and `inContact` (one boolean per `pathXY` vertex). Each assessment adds `outOfContactMin` (walking plus dwell at a stop the base cannot see), `longestOutOfContactMin` (one continuous stretch, across the stop), `maxOutOfContactMin` and `contactStatus` (`within_rule` when the longest stretch is at most the rule, else `exceeds_rule`). `contactStatus` is a second verdict and never changes `status`. A step between two path cells is in contact only if both cells can see the base mast.
+- Plan responses add `contact`: `visible` (row-major 0/1 grid, row 0 north, same shape as the region), `visibleFraction`, `mastHeightM`, `eyeHeightM`, `maxOutOfContactMin`. Line of sight is geometric on the DEM with curvature, bilinear terrain samples every half cell, and any sight line passing within one cell of missing data counts as blocked. It ignores antennas, relays and radio diffraction.
 - Plan legs: `outbound`, `return`.
 - Immediate return leg: `return`.
 - Continuation legs: `currentToTarget`, `targetToBase`.

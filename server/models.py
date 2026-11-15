@@ -25,6 +25,10 @@ class Scenario(Model):
     maxSlopeDeg: Annotated[Finite, Field(ge=5, le=30)] = 15
     speedMPerMin: Annotated[Finite, Field(gt=0, le=1000)] = 30
     reserveMin: Nonnegative = 20
+    # Hypothetical contact scenario: mast on the base, eye height of the walker, and the longest time allowed out of sight.
+    mastHeightM: Annotated[Finite, Field(ge=0, le=30)] = 2
+    eyeHeightM: Annotated[Finite, Field(ge=0, le=3)] = 1.7
+    maxOutOfContactMin: Annotated[Finite, Field(ge=0, le=600)] = 15
     blockedPolygonsXY: Annotated[list[list[XY]], Field(max_length=16)] = []
 
     @model_validator(mode="after")
@@ -95,6 +99,12 @@ class Leg(Model):
     requestedGoalXY: XY | None = None
     effectiveStartXY: XY | None = None
     effectiveGoalXY: XY | None = None
+    outOfContactM: Finite | None = None
+    outOfContactMin: Finite | None = None
+    longestOutOfContactMin: Finite | None = None
+    longestOutOfContactStartM: Finite | None = None
+    longestOutOfContactEndM: Finite | None = None
+    inContact: list[bool] | None = None
     message: str | None = None
 
 
@@ -110,6 +120,10 @@ class Assessment(Model):
     reserveMin: Finite
     totalRequiredMin: Finite | None
     marginMin: Finite | None
+    outOfContactMin: Finite | None = None
+    longestOutOfContactMin: Finite | None = None
+    maxOutOfContactMin: Finite | None = None
+    contactStatus: Literal["within_rule", "exceeds_rule"] | None = None
     message: str | None = None
 
 
@@ -129,8 +143,17 @@ class RouteOptions(Model):
     slope_penalized: Assessment
 
 
+class Contact(Model):
+    visible: list[list[Literal[0, 1]]]
+    visibleFraction: Finite
+    mastHeightM: Finite
+    eyeHeightM: Finite
+    maxOutOfContactMin: Finite
+
+
 class PlanResponse(Envelope):
     options: RouteOptions
+    contact: Contact | None = None
 
 
 class RehearsalResponse(Envelope):

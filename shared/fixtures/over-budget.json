@@ -20,14 +20,15 @@
     "datasetVersion": "synthetic-development-v1",
     "modelVersion": "grid-constant-speed-v1",
     "planId": "synthetic-fixture-over-budget",
-    "inputHash": "2b2e912fb825abfc8ec5938ee554d63a4c6ed4a972e376e47b32fc0d6f090ee3",
+    "inputHash": "64bd84180d45d4833c80fd04efd8437f2e53654ccce27446c5a2c63ba3d0103e",
     "sourceIds": [
       "synthetic-not-mars"
     ],
     "warnings": [
       "Illustrative scenario, not certified astronaut navigation or physiological safety guidance.",
       "Constant speed and horizontal grid distance do not model terrain-dependent fatigue or suit performance.",
-      "Endpoints are represented by containing-cell centers; paths are not smoothed."
+      "Endpoints are represented by containing-cell centers; paths are not smoothed.",
+      "Contact is geometric line of sight to a hypothetical base mast over 20 m terrain; it ignores antennas, relays and radio diffraction."
     ],
     "options": {
       "shortest": {
@@ -150,6 +151,23 @@
             95.0,
             25.0
           ],
+          "outOfContactM": 0.0,
+          "outOfContactMin": 0.0,
+          "longestOutOfContactMin": 0.0,
+          "longestOutOfContactStartM": null,
+          "longestOutOfContactEndM": null,
+          "inContact": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
           "message": null
         },
         "return": {
@@ -270,6 +288,23 @@
             5.0,
             25.0
           ],
+          "outOfContactM": 0.0,
+          "outOfContactMin": 0.0,
+          "longestOutOfContactMin": 0.0,
+          "longestOutOfContactStartM": null,
+          "longestOutOfContactEndM": null,
+          "inContact": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
           "message": null
         },
         "currentToTarget": null,
@@ -280,6 +315,10 @@
         "reserveMin": 20.0,
         "totalRequiredMin": 36.0,
         "marginMin": -11.0,
+        "outOfContactMin": 0.0,
+        "longestOutOfContactMin": 0.0,
+        "maxOutOfContactMin": 15.0,
+        "contactStatus": "within_rule",
         "message": null
       },
       "slope_penalized": {
@@ -402,6 +441,23 @@
             95.0,
             25.0
           ],
+          "outOfContactM": 0.0,
+          "outOfContactMin": 0.0,
+          "longestOutOfContactMin": 0.0,
+          "longestOutOfContactStartM": null,
+          "longestOutOfContactEndM": null,
+          "inContact": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
           "message": null
         },
         "return": {
@@ -522,6 +578,23 @@
             5.0,
             25.0
           ],
+          "outOfContactM": 0.0,
+          "outOfContactMin": 0.0,
+          "longestOutOfContactMin": 0.0,
+          "longestOutOfContactStartM": null,
+          "longestOutOfContactEndM": null,
+          "inContact": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
           "message": null
         },
         "currentToTarget": null,
@@ -532,8 +605,80 @@
         "reserveMin": 20.0,
         "totalRequiredMin": 36.0,
         "marginMin": -11.0,
+        "outOfContactMin": 0.0,
+        "longestOutOfContactMin": 0.0,
+        "maxOutOfContactMin": 15.0,
+        "contactStatus": "within_rule",
         "message": null
       }
+    },
+    "contact": {
+      "visible": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "visibleFraction": 1.0,
+      "mastHeightM": 2.0,
+      "eyeHeightM": 1.7,
+      "maxOutOfContactMin": 15.0
     }
   }
 }

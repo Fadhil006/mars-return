@@ -8,7 +8,8 @@ from server.evidence import trusted_context
 
 LABELS = {"shortest": "Shortest distance", "slope_penalized": "Lower slope",
           "immediateReturn": "Return now", "continueThenReturn": "Continue to the stop, then return"}
-FIELDS = ("status", "totalDistanceM", "travelMin", "dwellMin", "reserveMin", "totalRequiredMin", "marginMin")
+FIELDS = ("status", "totalDistanceM", "travelMin", "dwellMin", "reserveMin", "totalRequiredMin", "marginMin",
+          "outOfContactMin", "longestOutOfContactMin", "maxOutOfContactMin", "contactStatus")
 LEGS = ("outbound", "return", "currentToTarget", "targetToBase")
 LEG_FIELDS = ("distanceM", "ascentM", "maxSlopeDeg", "meanSlopeDeg", "travelMin")
 # Checked in order; the first match wins, so unsupported topics are never answered from route data.
@@ -45,7 +46,17 @@ def _assessment_text(name, item, budget, budget_label):
                else f"over the {budget_label} by {_n(item['marginMin'], 'min')}")
     return (f"{label}: {_n(item['totalDistanceM'], 'm', 0)} in total; {_n(item['travelMin'], 'min')} travel"
             f" + {_n(item['dwellMin'], 'min')} dwell + {_n(item['reserveMin'], 'min')} reserve"
-            f" = {_n(item['totalRequiredMin'], 'min')} required against {_n(budget, 'min')}, {verdict}.")
+            f" = {_n(item['totalRequiredMin'], 'min')} required against {_n(budget, 'min')}, {verdict}."
+            + _contact_text(item))
+
+
+def _contact_text(item):
+    if item.get("contactStatus") is None:
+        return ""
+    rule = "exceeding" if item["contactStatus"] == "exceeds_rule" else "within"
+    return (f" Out of sight of the base for {_n(item['outOfContactMin'], 'min')} in total; the longest continuous stretch"
+            f" is {_n(item['longestOutOfContactMin'], 'min')}, {rule} the hypothetical"
+            f" {_n(item['maxOutOfContactMin'], 'min')} contact rule.")
 
 
 def _slope_text(item):
@@ -144,7 +155,8 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
         slopes = "".join(_slope_text(item) for item in items.values()) if topic == "route" else ""
         answer = f"{lead} {body}{slopes}{CAVEAT}"
         source_ids = list(context["sourceIds"])
-        refs = [f"{name}.{field}" for name in items for field in ("status", "totalRequiredMin", "marginMin")]
+        refs = [f"{name}.{field}" for name in items for field in ("status", "totalRequiredMin", "marginMin")
+                + (("longestOutOfContactMin", "contactStatus") if items[name].get("contactStatus") else ())]
 
     result = {"answer": answer, "sourceIds": source_ids, "metricRefs": refs, "mode": "template",
               "supported": topic != "unsupported", "modelVersion": context["modelVersion"]}
@@ -154,7 +166,7 @@ def build_brief(region, store, plan_id, selected_route_mode, question, complete=
         return result
 
     facts = {"destination": stop_name, "inputs": {k: v for k, v in inputs.items() if isinstance(v, (int, float, str))},
-             "assessments": {name: {**{f: item[f] for f in FIELDS},
+             "assessments": {name: {**{f: item.get(f) for f in FIELDS},
                                     **{leg: {f: item[leg].get(f) for f in LEG_FIELDS} for leg in LEGS if item.get(leg)}}
                              for name, item in items.items()},
              "stop": {k: stop.get(k) for k in ("description", "samples", "locationProvenance", "scientificQuestion")},

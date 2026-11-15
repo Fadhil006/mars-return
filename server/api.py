@@ -24,6 +24,7 @@ WARNINGS = [
     "Illustrative scenario, not certified astronaut navigation or physiological safety guidance.",
     "Constant speed and horizontal grid distance do not model terrain-dependent fatigue or suit performance.",
     "Endpoints are represented by containing-cell centers; paths are not smoothed.",
+    "Contact is geometric line of sight to a hypothetical base mast over 20 m terrain; it ignores antennas, relays and radio diffraction.",
 ]
 
 

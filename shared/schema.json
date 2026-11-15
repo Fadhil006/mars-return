@@ -110,6 +110,58 @@
           ],
           "title": "Marginmin"
         },
+        "outOfContactMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outofcontactmin"
+        },
+        "longestOutOfContactMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longestoutofcontactmin"
+        },
+        "maxOutOfContactMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxoutofcontactmin"
+        },
+        "contactStatus": {
+          "anyOf": [
+            {
+              "enum": [
+                "within_rule",
+                "exceeds_rule"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contactstatus"
+        },
         "message": {
           "anyOf": [
             {
@@ -368,6 +420,50 @@
         "pathXY"
       ],
       "title": "Closure",
+      "type": "object"
+    },
+    "Contact": {
+      "additionalProperties": false,
+      "properties": {
+        "visible": {
+          "items": {
+            "items": {
+              "enum": [
+                0,
+                1
+              ],
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Visible",
+          "type": "array"
+        },
+        "visibleFraction": {
+          "title": "Visiblefraction",
+          "type": "number"
+        },
+        "mastHeightM": {
+          "title": "Mastheightm",
+          "type": "number"
+        },
+        "eyeHeightM": {
+          "title": "Eyeheightm",
+          "type": "number"
+        },
+        "maxOutOfContactMin": {
+          "title": "Maxoutofcontactmin",
+          "type": "number"
+        }
+      },
+      "required": [
+        "visible",
+        "visibleFraction",
+        "mastHeightM",
+        "eyeHeightM",
+        "maxOutOfContactMin"
+      ],
+      "title": "Contact",
       "type": "object"
     },
     "ErrorDetail": {
@@ -640,6 +736,81 @@
           "default": null,
           "title": "Effectivegoalxy"
         },
+        "outOfContactM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outofcontactm"
+        },
+        "outOfContactMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outofcontactmin"
+        },
+        "longestOutOfContactMin": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longestoutofcontactmin"
+        },
+        "longestOutOfContactStartM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longestoutofcontactstartm"
+        },
+        "longestOutOfContactEndM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longestoutofcontactendm"
+        },
+        "inContact": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Incontact"
+        },
         "message": {
           "anyOf": [
             {
@@ -718,6 +889,27 @@
           "maximum": 1000000,
           "minimum": 0,
           "title": "Reservemin",
+          "type": "number"
+        },
+        "mastHeightM": {
+          "default": 2,
+          "maximum": 30,
+          "minimum": 0,
+          "title": "Mastheightm",
+          "type": "number"
+        },
+        "eyeHeightM": {
+          "default": 1.7,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Eyeheightm",
+          "type": "number"
+        },
+        "maxOutOfContactMin": {
+          "default": 15,
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Maxoutofcontactmin",
           "type": "number"
         },
         "blockedPolygonsXY": {
@@ -825,6 +1017,17 @@
         },
         "options": {
           "$ref": "#/$defs/RouteOptions"
+        },
+        "contact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Contact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -916,6 +1119,27 @@
           "maximum": 1000000,
           "minimum": 0,
           "title": "Reservemin",
+          "type": "number"
+        },
+        "mastHeightM": {
+          "default": 2,
+          "maximum": 30,
+          "minimum": 0,
+          "title": "Mastheightm",
+          "type": "number"
+        },
+        "eyeHeightM": {
+          "default": 1.7,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Eyeheightm",
+          "type": "number"
+        },
+        "maxOutOfContactMin": {
+          "default": 15,
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Maxoutofcontactmin",
           "type": "number"
         },
         "blockedPolygonsXY": {
@@ -1264,6 +1488,27 @@
           "title": "Reservemin",
           "type": "number"
         },
+        "mastHeightM": {
+          "default": 2,
+          "maximum": 30,
+          "minimum": 0,
+          "title": "Mastheightm",
+          "type": "number"
+        },
+        "eyeHeightM": {
+          "default": 1.7,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Eyeheightm",
+          "type": "number"
+        },
+        "maxOutOfContactMin": {
+          "default": 15,
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Maxoutofcontactmin",
+          "type": "number"
+        },
         "blockedPolygonsXY": {
           "default": [],
           "items": {
@@ -1562,6 +1807,27 @@
           "maximum": 1000000,
           "minimum": 0,
           "title": "Reservemin",
+          "type": "number"
+        },
+        "mastHeightM": {
+          "default": 2,
+          "maximum": 30,
+          "minimum": 0,
+          "title": "Mastheightm",
+          "type": "number"
+        },
+        "eyeHeightM": {
+          "default": 1.7,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Eyeheightm",
+          "type": "number"
+        },
+        "maxOutOfContactMin": {
+          "default": 15,
+          "maximum": 600,
+          "minimum": 0,
+          "title": "Maxoutofcontactmin",
           "type": "number"
         },
         "blockedPolygonsXY": {
