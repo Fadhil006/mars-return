@@ -87,10 +87,17 @@ function Headline({ a, mode, budget, outdated }: { a: Assessment; mode: Mode; bu
         </div>
       )}
       {outside != null && (
-        <p className="caption rc-dose" title="Curiosity RAD, Gale Crater, Aug 2012 to Jun 2013 (Hassler et al. 2014, Science). Galactic cosmic rays only; a solar particle event would add more.">
-          <b>Radiation est. ≈ {num(doseMSv(outside), 2)} mSv</b> for {hm(outside)} outside (travel + on site), from the {RAD_MSV_PER_DAY} mSv/day
-          that Curiosity's RAD measured on the surface at Gale Crater. Jezero sits about 2 km higher, so its dose is likely a little higher; no solar storm included.
-        </p>
+        <div className="rc-dose" title="Curiosity RAD, Gale Crater, Aug 2012 to Jun 2013 (Hassler et al. 2014, Science). Galactic cosmic rays only; a solar particle event would add more.">
+          <div className="rc-hero-top">
+            <span className="section-label">Radiation dose est.</span>
+            <span className="tag">NASA MSL RAD</span>
+          </div>
+          <p className="rc-dose-num">≈ {num(doseMSv(outside), 2)} <span>mSv</span></p>
+          <p className="caption">
+            {hm(outside)} outside (travel + on site) at the {RAD_MSV_PER_DAY} mSv/day Curiosity's RAD measured on the surface at Gale Crater.
+            Jezero sits about 2 km higher, so its dose is likely a little higher; no solar storm included.
+          </p>
+        </div>
       )}
     </section>
   );

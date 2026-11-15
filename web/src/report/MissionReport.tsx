@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { num, STATUS_TEXT } from "../mission/format";
+import { doseMSv, num, RAD_MSV_PER_DAY, STATUS_TEXT } from "../mission/format";
 import { isSample } from "../mission/geo";
 import type { Mission } from "../mission/state";
 import { MODE_LABEL, type Assessment, type Leg, type Mode, type XY } from "../mission/types";
@@ -22,6 +22,8 @@ const legRows = (key: "outbound" | "return" | "currentToTarget" | "targetToBase"
     [`${name} ascent`, (a) => withUnit(leg(a)?.ascentM, "m")],
   ];
 };
+const RADIATION: Row = ["Radiation dose estimate (outside)",
+  (a) => (a.travelMin == null || a.dwellMin == null ? "—" : withUnit(doseMSv(a.travelMin + a.dwellMin), "mSv", 3))];
 const TOTALS: Row[] = [
   ["Status", (a) => STATUS_TEXT[a.status] ?? a.status],
   ["Total distance", (a) => withUnit(a.totalDistanceM, "m")],
@@ -119,8 +121,12 @@ export function MissionReport({ m }: { m: Mission }) {
         <Table caption="Route metrics for both modes"
           head={MODES.map((mode) => <>{MODE_LABEL[mode]}{mode === inputs.mode && <> <span className="tag">Selected</span></>}</>)}
           columns={MODES.map((mode) => plan.options[mode])}
-          rows={[...TOTALS, ...legRows("outbound", "Outbound"), ...legRows("return", "Return")]} />
+          rows={[...TOTALS, RADIATION, ...legRows("outbound", "Outbound"), ...legRows("return", "Return")]} />
         <p className="caption">Values are returned by the planning service and rounded for display. The map image is not included; this table is its text equivalent.</p>
+        <p><strong>Radiation dose estimate.</strong> Time outside (travel + on site) multiplied by the {RAD_MSV_PER_DAY} mSv/day galactic cosmic ray
+          dose equivalent that Curiosity's Radiation Assessment Detector measured on the surface at Gale Crater, August 2012 to June 2013.
+          Jezero's surface is about 2 km higher than Gale's floor, so less atmosphere shields it and its dose is likely somewhat higher.
+          A solar particle event is not included. Display estimate, not a dosimetry result.</p>
 
         <h2>4 Assumptions</h2>
         <table className="metrics">
@@ -171,6 +177,10 @@ export function MissionReport({ m }: { m: Mission }) {
 
         <h2>6 Sources</h2>
         <ul className="rp-sources">
+          <li>
+            <a href="https://doi.org/10.1126/science.1244797" target="_blank" rel="noopener noreferrer">Hassler et al. 2014, Mars' Surface Radiation Environment Measured with the Mars Science Laboratory's Curiosity Rover (Science)</a>
+            {" · MSL Curiosity RAD · 0.67 mSv/day"}<span className="rp-limit"> Limitation: measured at Gale Crater, not Jezero; galactic cosmic rays only.</span>
+          </li>
           {sources.map((s) => (
             <li key={s.sourceId}>
               {s.url ? <a href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a> : s.title}

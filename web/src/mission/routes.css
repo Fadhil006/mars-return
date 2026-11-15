@@ -75,3 +75,9 @@ button.src-line:hover { color: var(--text-primary); text-decoration: underline; 
 .routes .closures th, .routes .closures td { padding: 0 var(--s1); font-size: 12px; }
 .routes .closures th { letter-spacing: 0.02em; }
 .routes .btn { border-radius: 6px; }
+
+/* Radiation estimate: its own block under the time budget so the third data kind is visible at a glance. */
+.rc-dose { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border-subtle); }
+.rc-dose-num { margin: var(--s1) 0 0; font: 600 24px/28px var(--heading); color: var(--text-primary); }
+.rc-dose-num span { font-size: 14px; color: var(--text-secondary); }
+.rc-dose .caption { margin: var(--s1) 0 0; }
