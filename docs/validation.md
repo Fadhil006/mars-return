@@ -59,6 +59,27 @@ At 20 m resolution and a 15-degree limit this part of the crater floor is forgiv
 
 The envelope's return time at Sid equals the point-to-point return leg to within 1e-6 m.
 
+## Contact with base (15 November)
+
+`server/contact.py` computes line of sight from the hypothetical base to every cell: base terrain + mast (default 2 m) to cell terrain + eye height (1.7 m), terrain sampled bilinearly every half cell, lowered by the Mars curvature drop d²/2R. A sight line within one cell of missing data counts as blocked. Tests on synthetic terrain (`server/tests/test_contact.py`) cover flat terrain, a ridge with a known blind band, blind walking plus a blind stop adding up, the inclusive rule threshold, a taller mast never seeing less, missing data blocking, rehearsal legs and the API grid.
+
+Real Jezero CTX terrain, default hypothetical base, 30 m/min, 10 min on site, 15 min contact rule. The base mast sees **25.1 %** of the 150 × 150 crop; the grid takes about 0.4 s to compute and is cached per base and mast.
+
+| Site | Mode | Margin (min) | Out of sight, outbound (min) | Out of sight, total (min) | Longest stretch (min) | Contact rule |
+|---|---|---|---|---|---|---|
+| Sid — Octavia E. Butler Landing / Ch'ał outcrop | Shortest | 76.3 | 26.8 | 62.8 | 62.8 | exceeds |
+| Sid — Octavia E. Butler Landing / Ch'ał outcrop | Lower slope | 75.2 | 25.6 | 61.2 | 61.2 | exceeds |
+| Roubion — Polygon Valley | Shortest | 53.8 | 20.7 | 51.5 | 51.5 | exceeds |
+| Roubion — Polygon Valley | Lower slope | 52.3 | 19.5 | 49.0 | 49.0 | exceeds |
+| Rochette — Artuby Ridge | Shortest | 76.9 | 6.4 | 22.1 | 22.1 | exceeds |
+| Rochette — Artuby Ridge | Lower slope | 74.5 | 4.2 | 18.3 | 18.3 | exceeds |
+| Brac — South Séítah | Shortest | 92.4 | 0.0 | 0.0 | 0.0 | within |
+| Brac — South Séítah | Lower slope | 92.4 | 0.0 | 0.0 | 0.0 | within |
+| Issole — South Séítah | Shortest | 89.8 | 0.0 | 0.0 | 0.0 | within |
+| Issole — South Séítah | Lower slope | 89.8 | 0.0 | 0.0 | 0.0 | within |
+
+Every route fits the time budget, but three of five sites break the contact rule because the site itself is out of sight: the longest stretch runs from the last visible cell on the way out, through the time on site, to the first visible cell on the way back. The rule value, mast height and base position are hypothetical inputs; the results were not tuned to produce a failure. Limits: geometric line of sight only (no antenna pattern, relay, diffraction or multipath), on 20 m terrain that cannot show boulders or small ridges.
+
 ## Cross-mission check: rover localizations against the orbital grid
 
 125 Perseverance end-of-drive localizations (sols 13–404) fall inside the crop. Rover elevation minus prepared CTX elevation at the containing cell: mean **−0.82 m**, median −0.87 m, standard deviation **1.98 m**, largest absolute difference 4.79 m. The steepest grid slope at any real rover stop is 6.77 degrees, inside the default 15-degree limit.

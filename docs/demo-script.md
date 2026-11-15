@@ -9,13 +9,17 @@ Follows the narrative in `docs/design/design.md` section 14, using the labels in
 
 ## Narrative
 
-1. **Problem.** "An explorer has a science goal and a fixed amount of time to get back. Which route, and how much margin is left?"
-2. **Destination.** Choose a destination from the list or the map. In the **Evidence** tab, point to the samples from NASA's inventory, "Location and its limits", and one source card: its mission, date, resolution and limitation. Say that the base and the crew scenario are hypothetical.
-3. **Routes.** Press **Request routes**. In the **Routes** tab compare "Shortest distance" with "Lower slope" and read the remaining-margin row from the screen. If both modes return the same route, say so; that is a valid result.
-4. **Terrain.** Switch to **3D terrain** (vertical scale 1×; the toggle shows relief 3× taller, labelled). Press **Rehearse selected route**, play, and pause partway.
-5. **Change.** Tick **Hypothetical corridor blocked**, or reduce the remaining time, and press **Request return options**. Show both cards: "Return now" and "Continue, then return", each with its own status and margin. Optionally show the return envelope and the closure stress test.
-6. **Why.** In the **Assistant** tab ask "Can I still return?". Point to the badge that says whether the answer is "AI model" or "Standard explanation", then select a source chip to open the cited source in the Evidence tab.
-7. **Close.** Press **Open mission report**. State what works now, what was measured, and what would still need validating: the routes are model results on 20 m orbital terrain, the speed is constant, and nothing here is certified navigation or safety guidance.
+The story: *the plan says GO, but the base cannot see you for most of the walk. Would you have turned back in time?*
+
+1. **Problem.** "An explorer has a science goal and a fixed time to get back. Which route, and how much margin is left?"
+2. **Destination.** Sid is preselected. In the **Evidence** tab, point to the samples from NASA's inventory and one source card. Say that the base and the crew scenario are hypothetical.
+3. **GO.** Press **Compare routes**. Read the remaining margin and "Within budget" from the **Routes** tab.
+4. **But.** Point to the dark wash on the map, "Base cannot see here", and the dashed stretch of the route. Read **Out of sight of base** in the Routes tab: "Exceeds contact rule", with the longest stretch. Say why it is long: Sid itself is out of sight, so the time on site counts too. The mast height and the 15 min rule are hypothetical inputs.
+5. **Your call.** Press **Rehearse selected route**, drag the playhead partway, optionally tick **Hypothetical corridor blocked**, and press **Request return options**. The options stay hidden: let the audience (or a judge) choose **Return now** or **Continue, then return** before the countdown ends. Read the line that compares the call with the planner's results, then both option cards.
+6. **Proof.** In the **Assistant** tab ask "Can I still return?". Point to "n of n numbers traced to planner output" and click one number chip: it highlights the same value in the Routes tab. Say what happens to a model answer that invents a number: it is discarded, and the standard explanation is shown instead (covered by `server/tests/test_assistant.py`).
+7. **Close.** Optionally switch to **3D terrain**. Press **Open mission report**. State what is measured (real CTX terrain, real Perseverance sampling sites) and what is hypothetical (base, mast, contact rule, speed, budget, corridor). Nothing here is certified navigation, communications or safety guidance.
+
+For the 30-second video, use steps 3 → 4 → 5 → 6 only; see `docs/plans/06-winning-execution-plan.md` section 4.
 
 ## If something fails live
 
@@ -26,4 +30,4 @@ Follows the narrative in `docs/design/design.md` section 14, using the labels in
 
 ## Do not claim
 
-Physical survival, live weather, new discoveries, validated astronaut operations, or an accuracy figure for the assistant.
+Physical survival, live weather, new discoveries, validated astronaut operations, real radio coverage (line of sight is geometric only), or an accuracy figure for the assistant.

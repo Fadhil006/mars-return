@@ -93,7 +93,7 @@ The app runs locally and offline once the data is prepared. Synthetic fixtures a
 In line with the NASA Space Apps rules on Super Intelligence (SI) tools:
 
 - **Code and documentation:** written with the help of the AI coding assistant Claude (Anthropic), used through Claude Code. The team chose the challenge, designed the approach and reviewed, tested and validated the generated code (see `server/tests`, `web/tests` and [validation](docs/validation.md)).
-- **In the app:** the mission assistant can optionally use a Claude model to word its explanations. It never calculates anything itself: it reads the saved plan's numbers, and a model answer is kept only if every number and citation matches that plan. Without a key, it uses fixed templates.
+- **In the app:** the mission assistant can optionally use a Claude model to word its explanations. It never calculates anything itself: it reads the saved plan's numbers, and a model answer is kept only if every number and citation matches that plan. Each answer lists every number it contains next to the stored value it repeats. Safety, hazard and radiation questions get fixed, never model-written answers that state what the planner does not model. Without a key, it uses fixed templates.
 - **Data:** all terrain, imagery and sampling-site data come from NASA and USGS sources and are not AI-generated. The AI tools did not produce any NASA branding.
 
 ## Scientific scope
@@ -111,7 +111,13 @@ MARS RETURN applies a long-standing human-exploration planning limit, the **walk
 
 Everyday navigation apps shaped the interface. Like [Google Maps' fuel-efficient routing](https://blog.google/company-news/inside-google/around-the-globe/google-europe/eco-friendly-routing-in-europe/), it shows the fastest route beside an alternative and states the difference. Like [CalTopo](https://blog.caltopo.com/2013/01/16/slope-shading-revisited/), it shades the terrain by slope and breaks the trip into legs with time estimates. Like hikers' [turnaround times](https://www.outdoors.org/resources/amc-outdoors/features/the-right-time-to-bail-outdoor-safety-tips-every-hiker-should-know), it turns "return now or continue?" into a plain turnaround call.
 
-What MARS RETURN adds: it runs in a browser on real Jezero CTX terrain and the real Perseverance sampling sites. It asks the walkback question *again when the scenario changes mid-walk*: rehearse a closed corridor, lost time or a slower pace, then compare "return now" with "continue, then return". It also shows the return envelope ("from where can we still walk home?"), stress-tests the way home against single closures, and has an assistant that explains results without ever calculating numbers itself.
+What MARS RETURN adds, newest first:
+
+- **Contact with base.** The route can fit the time budget and still take the crew out of sight of base for most of the walk. The planner computes line of sight from a hypothetical base mast over the real terrain, reports the longest continuous time out of contact (including time spent at a site the base cannot see), and checks it against a hypothetical contact rule, as Artemis EVA planning limits time without line of sight to the lander. On the default plan to Sid, the route fits with 1 h 16 min to spare but is out of sight for 1 h 03 min at a stretch. See [validation](docs/validation.md#contact-with-base-15-november).
+- **Decide first.** In a rehearsal, the planner's options stay hidden until you make the call — return now, or continue — against a 10-second countdown. Then it shows how your call compares with its results. Committing before seeing an AI or model answer reduces over-reliance on it (Buçinca et al., CSCW 2021).
+- **An assistant that proves its numbers.** Every number in an answer is shown with the stored plan value it repeats ("11 of 11 numbers traced to planner output"). A model answer with any number that is not in the plan is discarded.
+
+It also runs in a browser on real Jezero CTX terrain and the real Perseverance sampling sites. It asks the walkback question *again when the scenario changes mid-walk*: rehearse a closed corridor, lost time or a slower pace, then compare "return now" with "continue, then return". It also shows the return envelope ("from where can we still walk home?"), stress-tests the way home against single closures, and has an assistant that explains results without ever calculating numbers itself.
 
 ## Data sources
 
