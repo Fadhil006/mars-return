@@ -82,12 +82,15 @@ export function skirtPositions(field: { positions: number[]; rows: number; cols:
   return out;
 }
 
+/** Lowest camera tilt (polar angle from straight down). Lower, the raised near edge of the block hides the terrain top. */
+export const MAX_TILT = 1.4; // about 80°
+
 /**
- * Auto relief: true scale looking straight down, rising to 3× by about 75° of tilt, where flat relief is hardest to
- * read. Capped at 3×: higher, the near edge of the block hides the route at grazing angles. Polar angle in radians
- * (0 = top-down). Half steps keep re-renders rare. Display only.
+ * Auto relief: true scale looking straight down, 3× by about 75° of tilt, and 5× with the camera fully down
+ * (MAX_TILT), where flat relief is hardest to read. Polar angle in radians (0 = top-down). Half steps keep
+ * re-renders rare. Display only.
  */
 export function autoRelief(polar: number): number {
-  const t = Math.min(Math.max((polar - 0.6) / (1.3 - 0.6), 0), 1);
-  return Math.round((1 + 2 * t) * 2) / 2;
+  const ramp = (x: number, a: number, b: number) => Math.min(Math.max((x - a) / (b - a), 0), 1);
+  return Math.round((1 + 2 * ramp(polar, 0.6, 1.3) + 2 * ramp(polar, 1.3, MAX_TILT)) * 2) / 2;
 }

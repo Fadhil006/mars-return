@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { cellCenter, elevationAt } from "../src/mission/geo";
 import type { RegionBundle } from "../src/mission/types";
-import { autoRelief, heightfield, meshIndices, originElevation, skirtPositions, surfacePoint, toScene } from "../src/terrain/scene";
+import { MAX_TILT, autoRelief, heightfield, meshIndices, originElevation, skirtPositions, surfacePoint, toScene } from "../src/terrain/scene";
 
 // Invented 3 × 3 grid for transform checks only; not Mars terrain.
 const bundle = (elevation: (number | null)[][], mask: boolean[][] | null = null) => ({
@@ -79,6 +79,7 @@ describe("auto relief", () => {
     expect(autoRelief(0.6)).toBe(1);
     expect(autoRelief(0.95)).toBe(2);
     expect(autoRelief(1.3)).toBe(3);
-    expect(autoRelief(Math.PI / 2)).toBe(3);
+    expect(autoRelief(MAX_TILT)).toBe(5);
+    expect(autoRelief(Math.PI / 2)).toBe(5);
   });
 });

@@ -8,7 +8,7 @@ import { layerCanvas } from "../map/layers";
 import { extentM, returnRetraces } from "../mission/geo";
 import type { Mission } from "../mission/state";
 import type { XY } from "../mission/types";
-import { autoRelief, heightfield, skirtPositions, surfacePoint } from "./scene";
+import { MAX_TILT, autoRelief, heightfield, skirtPositions, surfacePoint } from "./scene";
 import "./terrain.css";
 
 const ROUTE = 0x3dd6e8, HYPOTHETICAL = 0xc9a0ff, WHITE = 0xffffff, CASING = 0x0b1114, WALL = 0x2a201b;
@@ -181,7 +181,7 @@ export function TerrainView({ m }: { m: Mission }) {
     scene.add(sun, sun.target);
     const camera = new THREE.PerspectiveCamera(45, 1, span / 500, span * 10);
     const controls = new OrbitControls(camera, canvas); // no damping: every camera move is immediate
-    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.maxPolarAngle = MAX_TILT;
     controls.minDistance = span / 20;
     controls.maxDistance = span * 3;
     const render = () => {
