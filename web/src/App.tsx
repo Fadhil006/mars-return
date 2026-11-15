@@ -39,6 +39,7 @@ function Layers({ m }: { m: Mission }) {
     ["labels", "Site labels", state.layers.stops ? null : "Turn on science stops to label them."],
     ["traverse", "Perseverance traverse", b.traverse ? null : "This region has no rover traverse."],
     ["envelope", "Return envelope", state.reach.data ? null : "Request the return envelope during rehearsal."],
+    ["contact", "Out of sight of base", state.plan?.contact ? null : "Compare routes to calculate line of sight."],
   ];
   return (
     <details className="layers">

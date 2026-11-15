@@ -3,7 +3,7 @@ import { num } from "../mission/format";
 import { extentM, returnRetraces, routesIdentical } from "../mission/geo";
 import type { Mission } from "../mission/state";
 import { MODE_LABEL, type Mode, type RegionBundle, type XY } from "../mission/types";
-import { arrowsAlong, calloutSide, cellMissing, layerCanvas, SLOPE_BREAKS, SLOPE_COLORS } from "./layers";
+import { arrowsAlong, blindRuns, calloutSide, cellMissing, CONTACT_FILL, contactCanvas, layerCanvas, SLOPE_BREAKS, SLOPE_COLORS } from "./layers";
 import "./map.css";
 
 const VIOLET = "var(--hypothetical)";
@@ -66,6 +66,8 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
   const reach = state.reach.data;
   const slopeUrl = useMemo(() => (layers.slope ? layerCanvas("slope", bundle)?.toDataURL() : undefined), [bundle, layers.slope]);
   const envelopeUrl = useMemo(() => (layers.envelope && reach ? layerCanvas("envelope", bundle, reach)?.toDataURL() : undefined), [bundle, reach, layers.envelope]);
+  const contact = state.freshness === "current" ? state.plan?.contact : null;
+  const contactUrl = useMemo(() => (layers.contact && contact ? contactCanvas(contact.visible)?.toDataURL() : undefined), [contact, layers.contact]);
   const missingUrl = useMemo(() => {
     for (let r = 0; r < manifest.height; r++)
       for (let c = 0; c < manifest.width; c++)
@@ -120,6 +122,8 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
     <li key="cont"><Swatch color={VIOLET} dash />Continue, then return <span className="tag tag-hyp">Hypothetical</span></li>);
   if (m.corridor) legend.push(<li key="cor"><span className="mm-swatch mm-swatch-hatch" aria-hidden="true" />Blocked corridor <span className="tag tag-hyp">Hypothetical</span></li>);
   if (stress) legend.push(<li key="stress"><span className="mm-swatch mm-swatch-oct" aria-hidden="true" />Closure tested, {num(stress.closureRadiusM)} m (✕ = return fails) <span className="tag tag-hyp">Hypothetical</span></li>);
+  if (contactUrl && contact) legend.push(<li key="contact"><Swatch fill={CONTACT_FILL} />Base cannot see here · {num(contact.mastHeightM)} m mast <span className="tag tag-hyp">Hypothetical</span></li>);
+  if (contactUrl && !outdated && (a?.outOfContactMin ?? 0) > 0) legend.push(<li key="blind"><Swatch color="#0b1220" dash />Route out of sight of base</li>);
   if (envelopeUrl) legend.push(<li key="env"><Swatch fill="rgba(61,214,232,0.35)" />Return envelope · Hypothetical scenario</li>);
   if (layers.traverse && bundle.traverse) legend.push(<li key="trav"><Swatch color="#eef1f3" />Perseverance traverse (real rover path)</li>);
   if (missingUrl) legend.push(<li key="miss"><span className="mm-swatch mm-swatch-missing" aria-hidden="true" />No elevation data</li>);
@@ -135,6 +139,7 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
           </defs>
           {layers.imagery && bundle.imageryUrl && <image className="mm-imagery" href={bundle.imageryUrl} x={ox} y={0} width={w} height={h} preserveAspectRatio="none" />}
           {grid(slopeUrl, 0.6)}
+          {grid(contactUrl)}
           {grid(envelopeUrl)}
           {grid(missingUrl)}
           <rect className="mm-line" x={ox} y={0} width={w} height={h} style={{ stroke: "var(--border-control)", strokeWidth: 1 }} />
@@ -162,6 +167,8 @@ function MapView({ m, bundle }: { m: Mission; bundle: RegionBundle }) {
             reveal={outdated ? undefined : { id: `out-${revealKey}` }} />
           {!retraces && <Line key={`back-${revealKey}`} pts={back} toSvg={toSvg} dash="8 6" opacity={routeOpacity} casing={outdated ? "6 4" : true} arrows={outdated ? undefined : backArrows}
             reveal={outdated ? undefined : { id: `back-${revealKey}`, delay: 700 }} />}
+          {contactUrl && !outdated && [a?.outbound, a?.return].flatMap((leg, k) => blindRuns(leg?.pathXY, leg?.inContact).map((run, i) =>
+            <Line key={`blind-${k}-${i}`} pts={run} toSvg={toSvg} color="#0b1220" width={3} dash="3 5" casing={false} opacity={routeOpacity} />))}
           {retraces && back && !outdated && <g opacity={routeOpacity}><Arrows pts={back} spec={backArrows} /></g>}
           <Line pts={travelled} toSvg={toSvg} />
 

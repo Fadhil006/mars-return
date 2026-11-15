@@ -6,7 +6,7 @@ import type { Assessment, BriefResponse, Mode, PlanResponse, ReachResponse, Regi
 
 export type Freshness = "none" | "requesting" | "current" | "outdated" | "failed";
 export type Tab = "routes" | "evidence" | "assistant";
-export type LayerKey = "imagery" | "slope" | "stops" | "labels" | "traverse" | "envelope";
+export type LayerKey = "imagery" | "slope" | "stops" | "labels" | "traverse" | "envelope" | "contact";
 export type ChildKey = "ret" | "reach" | "stress" | "brief";
 
 export interface Inputs {
@@ -63,7 +63,7 @@ export const initialState: State = {
   freshness: "none", expired: false, requestId: null, plan: null, planInputs: null, error: null,
   rehearsing: false, posIndex: 0, playing: false, scenario: { blocked: false, remainingMin: null },
   ret: idle, reach: idle, stress: idle, brief: idle, question: "",
-  view: "2d", layers: { imagery: true, slope: false, stops: true, labels: true, traverse: false, envelope: true },
+  view: "2d", layers: { imagery: true, slope: false, stops: true, labels: true, traverse: false, envelope: true, contact: true },
   tab: "evidence", reportOpen: false, highlight: null,
 };
 

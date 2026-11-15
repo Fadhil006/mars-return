@@ -86,6 +86,7 @@ function Headline({ a, mode, budget, outdated }: { a: Assessment; mode: Mode; bu
           </ul>
         </div>
       )}
+      <ContactVerdict a={a} id={mode} />
       {outside != null && (
         <div className="rc-dose" title="Curiosity RAD, Gale Crater, Aug 2012 to Jun 2013 (Hassler et al. 2014, Science). Galactic cosmic rays only; a solar particle event would add more.">
           <div className="rc-hero-top">
@@ -103,6 +104,25 @@ function Headline({ a, mode, budget, outdated }: { a: Assessment; mode: Mode; bu
   );
 }
 
+/** Second verdict from the server: the longest continuous time out of sight of base against the hypothetical rule. */
+export function ContactVerdict({ a, id }: { a: Assessment; id: string }) {
+  if (a.contactStatus == null) return null;
+  const over = a.contactStatus === "exceeds_rule";
+  return (
+    <div className={`rc-contact${over ? " is-over" : ""}`}>
+      <div className="rc-hero-top">
+        <span className="section-label">Out of sight of base</span>
+        <span className={`status ${over ? "status-contact" : "status-ok"}`}>{over ? "Exceeds contact rule" : "Within contact rule"}</span>
+      </div>
+      <p className="rc-dose-num" id={`metric-${id}.longestOutOfContactMin`}>{hm(a.longestOutOfContactMin)} <span>longest stretch</span></p>
+      <p className="caption">
+        {hm(a.outOfContactMin)} in total out of line of sight of the base mast; rule: no more than {hm(a.maxOutOfContactMin)} at a time
+        (hypothetical). Line of sight on 20 m terrain; no relays or radio effects modelled.
+      </p>
+    </div>
+  );
+}
+
 function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: string; a: Assessment }) {
   const hl = (field: string) => (m.state.highlight === `${id}.${field}` ? "highlight" : undefined);
   return (
@@ -114,6 +134,12 @@ function ReturnOption({ m, id, title, a }: { m: Mission; id: string; title: stri
         <dt>Travel time est.</dt><dd id={`metric-${id}.travelMin`} className={hl("travelMin")}><Hm v={a.travelMin} /></dd>
         <dt>Total required</dt><dd id={`metric-${id}.totalRequiredMin`} className={hl("totalRequiredMin")}><Hm v={a.totalRequiredMin} /></dd>
         <dt>Margin against remaining time</dt><dd id={`metric-${id}.marginMin`} className={hl("marginMin")}><Hm v={a.marginMin} /></dd>
+        {a.contactStatus != null && <>
+          <dt>Longest out of sight of base</dt>
+          <dd id={`metric-${id}.longestOutOfContactMin`} className={hl("longestOutOfContactMin")}>
+            <Hm v={a.longestOutOfContactMin} />{a.contactStatus === "exceeds_rule" && <> <span className="status status-contact">Exceeds rule</span></>}
+          </dd>
+        </>}
       </dl>
     </section>
   );

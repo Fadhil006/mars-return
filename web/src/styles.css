@@ -62,7 +62,7 @@ input[aria-invalid="true"] { outline: 2px solid var(--status-error); outline-off
 .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .status-current, .status-ok { color: var(--status-current); }
 .status-updating { color: var(--status-updating); }
-.status-outdated, .status-over_budget { color: var(--status-outdated); }
+.status-outdated, .status-over_budget, .status-contact { color: var(--status-outdated); }
 .status-error, .status-no_path, .status-invalid_input, .status-data_unavailable { color: var(--status-error); }
 
 .banner { border-left: 3px solid var(--status-updating); background: var(--surface-raised); padding: var(--s2) var(--s3); border-radius: 0 8px 8px 0; box-shadow: var(--shadow-card); margin: 0 0 var(--s3); display: flex; gap: var(--s3); align-items: center; justify-content: space-between; flex-wrap: wrap; }

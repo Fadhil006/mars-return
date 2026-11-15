@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { arrowsAlong, calloutSide, cellMissing, slopeClass, SLOPE_COLORS } from "../src/map/layers";
+import { arrowsAlong, blindRuns, calloutSide, cellMissing, slopeClass, SLOPE_COLORS } from "../src/map/layers";
 import type { RegionBundle } from "../src/mission/types";
 
 test("slope classes follow the legend breaks", () => {
@@ -25,4 +25,12 @@ test("callouts lean away from each other and back from the edges", () => {
   expect(calloutSide([0.3, 0.8], [0.7, 0.6])).toEqual({ left: false, up: true }); // west edge: leans east
   expect(calloutSide([0.5, 0.1], [0.4, 0.5])).toEqual({ left: false, up: false }); // near the top: goes down
   expect(calloutSide([0.8, 0.5])).toEqual({ left: true, up: true });
+});
+
+test("blind runs follow the server rule: a step is in contact only if both ends are", () => {
+  const path: [number, number][] = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0]];
+  expect(blindRuns(path, [true, true, false, false, true, true])).toEqual([[[1, 0], [2, 0], [3, 0], [4, 0]]]);
+  expect(blindRuns(path, [false, true, true, true, true, false])).toEqual([[[0, 0], [1, 0]], [[4, 0], [5, 0]]]);
+  expect(blindRuns(path, [true, true, true, true, true, true])).toEqual([]);
+  expect(blindRuns(path, [true, false])).toEqual([]); // mismatched lengths draw nothing rather than guess
 });

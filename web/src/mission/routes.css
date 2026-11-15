@@ -81,3 +81,6 @@ button.src-line:hover { color: var(--text-primary); text-decoration: underline; 
 .rc-dose-num { margin: var(--s1) 0 0; font: 600 24px/28px var(--heading); color: var(--text-primary); }
 .rc-dose-num span { font-size: 14px; color: var(--text-secondary); }
 .rc-dose .caption { margin: var(--s1) 0 0; }
+.rc-contact { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border-subtle); }
+.rc-contact.is-over { border-left: 3px solid var(--status-outdated); padding-left: var(--s3); margin-left: calc(-1 * var(--s3) - 3px); }
+.rc-contact .caption { margin: var(--s1) 0 0; }

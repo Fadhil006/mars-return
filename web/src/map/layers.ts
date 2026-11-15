@@ -81,3 +81,31 @@ export function calloutSide(f: [number, number], other?: [number, number] | null
   else if (!left && f[0] > 0.6) left = true;
   return { left, up: f[1] > 0.25 };
 }
+
+/** Cool wash over cells the base mast cannot see (server grid, never recomputed here). Null without a grid. */
+export function contactCanvas(visible: (0 | 1)[][] | null | undefined, scale = 4): HTMLCanvasElement | null {
+  if (!visible?.length) return null;
+  const canvas = document.createElement("canvas");
+  canvas.width = visible[0].length * scale;
+  canvas.height = visible.length * scale;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.fillStyle = CONTACT_FILL;
+  visible.forEach((row, r) => row.forEach((v, c) => { if (!v) ctx.fillRect(c * scale, r * scale, scale, scale); }));
+  return canvas;
+}
+
+export const CONTACT_FILL = "rgba(20, 32, 58, 0.55)";
+
+/** Runs of consecutive path steps where either end is out of sight, as separate polylines (matches the server rule). */
+export function blindRuns(path: XY[] | null | undefined, inContact: boolean[] | null | undefined): XY[][] {
+  if (!path || !inContact || inContact.length !== path.length) return [];
+  const runs: XY[][] = [];
+  let run: XY[] | null = null;
+  for (let i = 1; i < path.length; i++) {
+    if (inContact[i - 1] && inContact[i]) { run = null; continue; }
+    if (!run) { run = [path[i - 1]]; runs.push(run); }
+    run.push(path[i]);
+  }
+  return runs;
+}

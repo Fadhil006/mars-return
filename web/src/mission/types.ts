@@ -20,7 +20,12 @@ export interface Leg {
   profile: ProfileSample[] | null;
   travelMin: number | null;
   message: string | null;
+  outOfContactMin?: number | null;
+  longestOutOfContactMin?: number | null;
+  inContact?: boolean[] | null;
 }
+
+export type ContactStatus = "within_rule" | "exceeds_rule";
 
 export interface Assessment {
   status: Status;
@@ -35,6 +40,19 @@ export interface Assessment {
   totalRequiredMin: number | null;
   marginMin: number | null;
   message: string | null;
+  outOfContactMin?: number | null;
+  longestOutOfContactMin?: number | null;
+  maxOutOfContactMin?: number | null;
+  contactStatus?: ContactStatus | null;
+}
+
+/** Line of sight to the hypothetical base mast, computed by the server; row 0 is north. */
+export interface Contact {
+  visible: (0 | 1)[][];
+  visibleFraction: number;
+  mastHeightM: number;
+  eyeHeightM: number;
+  maxOutOfContactMin: number;
 }
 
 export interface Envelope {
@@ -48,7 +66,7 @@ export interface Envelope {
   warnings: string[];
 }
 
-export interface PlanResponse extends Envelope { options: Record<Mode, Assessment> }
+export interface PlanResponse extends Envelope { options: Record<Mode, Assessment>; contact?: Contact | null }
 
 export interface RehearsalResponse extends Envelope {
   selectedRouteMode: Mode;
