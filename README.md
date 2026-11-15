@@ -26,6 +26,8 @@ cd web && npm ci && npm run build && cd ..
 
 Open http://127.0.0.1:8000 for the planner and http://127.0.0.1:8000/docs for the API. On Windows, use `.venv\Scripts\python` instead of `.venv/bin/python`. Use a browser with WebGL to see the 3D view; without it, the 2D map keeps working.
 
+**Deploy (Render or any Docker host):** `docker build -t mars-return . && docker run -e PORT=8000 -p 8000:8000 mars-return`. The image prepares the terrain from the checksum-verified USGS files during the build and keeps only the ~1 MB prepared bundle. On Render, create a Blueprint from this repository (`render.yaml`, free plan). `.github/workflows/keep-alive.yml` pings `<RENDER_URL>/api/region` every 10 minutes once the repository variable `RENDER_URL` is set, so the free instance does not sleep.
+
 Optional: set `MODEL_API_KEY` (an Anthropic key) in the server's environment to have the assistant write its explanations with a model. Without it, the assistant gives fixed-template explanations built from the same saved results.
 
 ## Start here

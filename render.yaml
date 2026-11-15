@@ -1,0 +1,10 @@
+# Render Blueprint: New + > Blueprint > pick this repository. Builds the Dockerfile at the repository root.
+# No MODEL_API_KEY is set on purpose: the public demo uses the standard template explanations.
+services:
+  - type: web
+    name: mars-return
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/region
+    autoDeploy: true
