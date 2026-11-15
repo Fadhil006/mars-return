@@ -1,6 +1,6 @@
 # Submission kit — paste-ready text, video script, recording steps
 
-Fill the `[brackets]`. Every number below was read from the running app on dataset `7e08b277f6761b7c`; re-read them from the screen on the day you record, and change the text if they differ.
+Fill the `[brackets]`. Every number below was read from the running app; re-read them from the screen on the day you record, and change the text if they differ. The deployed app at https://mars-return.onrender.com shows dataset `7d9f33bef5a864c8`, the local build `7e08b277f6761b7c`: the only difference is floating-point rounding in 84 of 22,500 slope cells (at most 1.8e-15°) from a different CPU, and every route and contact result is identical.
 
 ## 1. Form fields
 
@@ -52,7 +52,7 @@ Fill the `[brackets]`. Every number below was read from the running app on datas
 **AI use (SI tools):** Code and documentation were written with the help of Claude (Anthropic) through Claude Code; the team designed the approach and reviewed, tested and validated the code. In the app, an optional Claude model can word the assistant's explanations, but it never calculates and its answers are discarded unless every number matches the saved plan; the public demo runs without a model. No NASA data, imagery or branding is AI-generated. The video uses screen recordings of the app and a human voice-over; it contains no AI-generated images or voice.
 
 **Links:**
-- Live demo: `[Render URL]`
+- Live demo: https://mars-return.onrender.com
 - Repository: https://github.com/Fadhil006/mars-return
 - Video: `[YouTube or Drive link]`
 
