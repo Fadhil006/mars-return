@@ -1,0 +1,24 @@
+.guide-scrim { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: var(--s4); background: rgb(11 17 20 / 0.8); overflow: auto; }
+.guide { width: min(560px, 100%); display: grid; gap: var(--s3); padding: var(--s5); border-radius: var(--radius-card); border: 1px solid var(--border-subtle);
+  background: var(--panel-grad), var(--surface-panel); box-shadow: var(--shadow-card); }
+.guide:focus { outline: none; }
+.guide-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+.guide-head .section-label { margin: 0; }
+.guide-title { margin: 0 0 var(--s2); font: 600 20px/28px var(--heading); letter-spacing: -0.01em; }
+.guide-sub { margin: var(--s3) 0 var(--s1); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); }
+.guide-list { margin: 0; padding-left: 20px; display: grid; gap: var(--s2); }
+.guide-why { margin: 0; padding: var(--s2) var(--s3); border-left: 3px solid var(--route); border-radius: 0 6px 6px 0; background: var(--surface-raised); color: var(--text-secondary); }
+.guide-terms { margin: 0 0 var(--s2); display: grid; gap: var(--s3); }
+.guide-terms dt { font-weight: 600; }
+.guide-terms dd { margin: 2px 0 0; color: var(--text-secondary); }
+.guide-dots { display: flex; justify-content: center; gap: var(--s1); }
+.guide-dots button { width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.guide-dots button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--border-control); }
+.guide-dots button[aria-current]::before { background: var(--action); width: 10px; height: 10px; }
+.guide-nav { display: flex; justify-content: space-between; gap: var(--s3); }
+.guide-nav .btn { min-width: 96px; }
+.guide-btn { display: inline-flex; align-items: center; gap: var(--s1); height: 32px; border-radius: 999px; font-size: 14px; }
+@media (max-width: 899px) {
+  .guide { padding: var(--s4); }
+  .guide-btn { height: 28px; padding: 0 var(--s3); font-size: 13px; }
+}
