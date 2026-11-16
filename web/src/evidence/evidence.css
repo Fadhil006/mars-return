@@ -1,8 +1,8 @@
 .evidence { font-size: 15px; line-height: 22px; }
-.evidence .panel-heading { font: 600 20px/28px var(--heading); padding-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
+.evidence .panel-heading { font: 600 18px/24px var(--heading); padding-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
 /* Headings in the mockup's type: sentence case, heading face, not small caps. */
 .evidence .section-label { margin-top: var(--s5); display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap;
-  font: 600 16px/24px var(--heading); letter-spacing: 0; text-transform: none; color: var(--text-primary); }
+  font: 600 15px/22px var(--heading); letter-spacing: 0; text-transform: none; color: var(--text-primary); }
 .evidence p { margin: 0 0 var(--s2); }
 .evidence .caption { font-size: 13px; line-height: 18px; }
 .ev-scroll { overflow-x: auto; }

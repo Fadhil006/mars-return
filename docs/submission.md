@@ -54,7 +54,7 @@ Fill the `[brackets]`. Every number below was read from the running app; re-read
 **Links:**
 - Live demo: https://mars-return.onrender.com
 - Repository: https://github.com/Fadhil006/mars-return
-- Video: `[YouTube or Drive link]`
+- Video: https://youtu.be/6CU2_zxpbPc
 
 ## 2. Thirty-second video with voice-over
 

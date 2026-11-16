@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { GUIDE_STEPS, GUIDE_TERMS } from "./content";
+import { GITHUB_URL, VIDEO_URL } from "../links";
 import "./guide.css";
 
 const TERMS = GUIDE_STEPS.length; // the page after the last step explains the labels
@@ -53,6 +54,12 @@ export function GuideDialog({ open, onClose }: { open: boolean; onClose: () => v
             <ul className="guide-list">{step.doThis.map((line) => <li key={line}>{line}</li>)}</ul>
             <h3 className="guide-sub">Why it matters</h3>
             <p className="guide-why">{step.why}</p>
+            {page === 0 && (
+              <p className="caption guide-links">
+                {VIDEO_URL && <><a href={VIDEO_URL} target="_blank" rel="noreferrer">Watch the 30-second demo</a> · </>}
+                <a href={GITHUB_URL} target="_blank" rel="noreferrer">Source code on GitHub</a>
+              </p>
+            )}
           </div>
         ) : (
           <div id="guide-body" aria-live="polite">

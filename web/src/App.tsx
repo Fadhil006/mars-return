@@ -4,6 +4,7 @@ import { MissionAssistant } from "./assistant/MissionAssistant";
 import { EvidencePanel } from "./evidence/EvidencePanel";
 import { guideSeen, markGuideSeen } from "./guide/content";
 import { GuideDialog } from "./guide/GuideDialog";
+import { GITHUB_URL, VIDEO_URL } from "./links";
 import { MissionMap } from "./map/MissionMap";
 import { isSample } from "./mission/geo";
 import { MissionControls } from "./mission/MissionControls";
@@ -163,6 +164,8 @@ export function App() {
           {isSample(b) ? <span className="tag tag-sample">Development sample data</span>
             : <span className="tag tag-data">Real CTX terrain · Jezero Crater</span>}
           <span className="bar-end">
+            {VIDEO_URL && <a className="bar-link" href={VIDEO_URL} target="_blank" rel="noreferrer">Video</a>}
+            <a className="bar-link" href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
             <button className="btn guide-btn" aria-haspopup="dialog" onClick={() => setGuide(true)}
               title="How to use the planner">{HELP_ICON}Guide</button>
             <time className="today" dateTime={TODAY.toISOString().slice(0, 10)}>

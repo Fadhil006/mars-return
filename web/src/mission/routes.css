@@ -1,6 +1,6 @@
 /* Right-panel route comparison, matched to the mission-control mockup. */
 .routes { gap: var(--s3); font-size: 15px; line-height: 22px; }
-.rc-h2 { font: 600 20px/28px var(--heading); margin: 0; color: var(--text-primary); }
+.rc-h2 { font: 600 18px/24px var(--heading); margin: 0; color: var(--text-primary); }
 .rc-title { padding-bottom: var(--s3); border-bottom: 1px solid var(--border-subtle); }
 .rc-sub { font: 400 14px/20px var(--heading); color: var(--text-muted); }
 .rc-h3 { font: 600 15px/22px var(--heading); margin: 0 0 var(--s2); display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; color: var(--text-primary); }
@@ -39,7 +39,7 @@
   .rc-row { grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
   .rc-figs { padding-left: calc(18px + var(--s3)); }
 }
-.rc-name { display: flex; gap: var(--s3); align-items: flex-start; font: 600 16px/22px var(--heading); cursor: pointer; }
+.rc-name { display: flex; gap: var(--s3); align-items: flex-start; font: 600 15px/20px var(--heading); cursor: pointer; }
 .rc-name input { appearance: none; flex: none; width: 18px; height: 18px; margin: 2px 0 0; border: 2px solid var(--text-secondary); border-radius: 50%; display: grid; place-items: center; cursor: pointer; }
 .rc-name input::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--action); transform: scale(0); }
 .rc-name input:checked { border-color: var(--action); }
@@ -78,7 +78,7 @@ button.src-line:hover { color: var(--text-primary); text-decoration: underline; 
 
 /* Radiation estimate: its own block under the time budget so the third data kind is visible at a glance. */
 .rc-dose { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border-subtle); }
-.rc-dose-num { margin: var(--s1) 0 0; font: 600 24px/28px var(--heading); color: var(--text-primary); }
+.rc-dose-num { margin: var(--s1) 0 0; font: 600 20px/26px var(--heading); color: var(--text-primary); }
 .rc-dose-num span { font-size: 14px; color: var(--text-secondary); }
 .rc-dose .caption { margin: var(--s1) 0 0; }
 .rc-contact { margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--border-subtle); }
