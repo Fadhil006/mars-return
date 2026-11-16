@@ -153,6 +153,7 @@ export function MissionControls({ m }: { m: Mission }) {
           <li><b>Pick</b> a destination and check the assumptions.</li>
           <li><b>Compare routes</b> to see the round trip and the time it leaves spare.</li>
           <li><b>Rehearse</b> the walk, pause anywhere and ask: can we still get back?</li>
+          <li>New here? Press <b>Guide</b> at the top for a full walkthrough.</li>
         </ol>
       )}
       {freshness === "failed" && error && (

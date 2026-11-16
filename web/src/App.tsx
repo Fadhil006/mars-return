@@ -1,7 +1,9 @@
-import { lazy, Suspense, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import "./app.css";
 import { MissionAssistant } from "./assistant/MissionAssistant";
 import { EvidencePanel } from "./evidence/EvidencePanel";
+import { guideSeen, markGuideSeen } from "./guide/content";
+import { GuideDialog } from "./guide/GuideDialog";
 import { MissionMap } from "./map/MissionMap";
 import { isSample } from "./mission/geo";
 import { MissionControls } from "./mission/MissionControls";
@@ -35,6 +37,7 @@ const icon = (d: ReactNode) => (
 const LAYERS_ICON = icon(<><path d="M12 4 3 9l9 5 9-5z" /><path d="m3 13 9 5 9-5" /></>);
 const FULL_ICON = icon(<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />);
 const EXIT_ICON = icon(<path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5" />);
+const HELP_ICON = icon(<><circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6" /><path d="M12 17h.01" /></>);
 
 function Layers({ m }: { m: Mission }) {
   const { state, dispatch } = m, b = state.bundle!;
@@ -79,6 +82,9 @@ export function App() {
     return () => observer.disconnect();
   }, [state.bundle]);
   const [full, setFull] = useState(false);
+  // First-time visitors get the walkthrough once the region has loaded; afterwards it opens from the header.
+  const [guide, setGuide] = useState(() => !guideSeen());
+  const closeGuide = useCallback(() => { setGuide(false); markGuideSeen(); }, []);
   useEffect(() => {
     const on = () => setFull(!!viewRef.current && document.fullscreenElement === viewRef.current);
     document.addEventListener("fullscreenchange", on);
@@ -157,6 +163,8 @@ export function App() {
           {isSample(b) ? <span className="tag tag-sample">Development sample data</span>
             : <span className="tag tag-data">Real CTX terrain · Jezero Crater</span>}
           <span className="bar-end">
+            <button className="btn guide-btn" aria-haspopup="dialog" onClick={() => setGuide(true)}
+              title="How to use the planner">{HELP_ICON}Guide</button>
             <time className="today" dateTime={TODAY.toISOString().slice(0, 10)}>
               {TODAY.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
             </time>
@@ -235,6 +243,7 @@ export function App() {
 
       {canRehearse && <footer className="strip"><RehearsalStrip m={m} /></footer>}
       <MissionReport m={m} />
+      <GuideDialog open={guide} onClose={closeGuide} />
     </div>
   );
 }
